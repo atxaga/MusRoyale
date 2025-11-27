@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "498565449322",
+    "project_id": "musroyale-488aa",
+    "storage_bucket": "musroyale-488aa.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:498565449322:android:60ac214c01922a3d762c13",
+        "android_client_info": {
+          "package_name": "com.example.musroyale"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_ku2aLOlKDNyzn2Br_PKOCTYCe7TzwcI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
