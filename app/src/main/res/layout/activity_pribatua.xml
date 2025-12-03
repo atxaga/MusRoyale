@@ -2,74 +2,67 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/match_setup_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".PrivateMatchSetupActivity">
 
     <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/setupBackground"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/fondo1">
 
         <LinearLayout
-            android:id="@+id/headerBar"
+            android:id="@+id/setupHeaderBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
             android:orientation="horizontal"
-            android:gravity="center_horizontal">
+            android:paddingTop="8dp"
+            >
 
             <TextView
-                android:padding="15dp"
-                android:layout_width="300sp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="USERNAME"
+                android:layout_weight="1"
                 android:paddingStart="30dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp"
+                android:text="@string/header_username"
                 android:textColor="@color/white"
-                android:textSize="25dp"
+                android:textSize="22sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:layout_width="100dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="00.00€"
+                android:paddingStart="16dp"
                 android:paddingEnd="30dp"
-                android:textAlignment="textEnd"
-                android:textColor="@color/white"/>
-
-
+                android:text="@string/header_balance_placeholder"
+                android:textColor="@color/white"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <include
-            layout="@layout/fragment_partida"
+            layout="@layout/fragment_sortu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/headerBar"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="40dp"
             android:layout_centerHorizontal="true" />
 
         <include
-            layout="@layout/fragment_duo"
+            layout="@layout/fragment_sartu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/headerBar"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="180dp"
+            android:layout_marginTop="40dp"
+            android:visibility="gone"
             android:layout_centerHorizontal="true" />
 
-        <include
-            layout="@layout/fragment_privada"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/headerBar"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="335dp"
-            android:layout_centerHorizontal="true" />
 
 
     </RelativeLayout>
 
-
 </androidx.constraintlayout.widget.ConstraintLayout>
+
