@@ -2,4 +2,10 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="toggle_bg_selected">#FFF4D28F</color>
+    <color name="toggle_bg_unselected">#33FFFFFF</color>
+    <color name="toggle_text_selected">#4B2C08</color>
+    <color name="toggle_text_unselected">#FFFFFFFF</color>
+    <color name="toggle_stroke_selected">#FFF4D28F</color>
+    <color name="toggle_stroke_unselected">#80FFFFFF</color>
 </resources>

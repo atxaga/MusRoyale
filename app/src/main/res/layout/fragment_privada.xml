@@ -30,10 +30,10 @@
                     android:id="@+id/imgKartak"
                     android:layout_width="match_parent"
                     android:layout_height="180dp"
-                    android:src="@drawable/kartak"
+                    android:src="@drawable/privado"
                     android:scaleType="centerCrop"
                     android:adjustViewBounds="true"
-                    android:contentDescription="@string/desc_kartak" />
+                    android:contentDescription="@string/desc_privado" />
 
                 <View
                     android:layout_width="match_parent"
@@ -45,7 +45,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="@string/partida_azkarra"
+                    android:text="@string/partida_pribatua"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     android:textColor="#FFFFFF"

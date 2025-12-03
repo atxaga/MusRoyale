@@ -1,3 +1,46 @@
 <resources>
     <string name="app_name">musroyale</string>
+    <string name="desc_kartak">Imagen de cartas</string>
+    <string name="desc_duosfondo">Imagen de parejas</string>
+    <string name="desc_privado">Imagen de partida privada</string>
+    <string name="partida_azkarra">Partida Azkarra</string>
+    <string name="parejas">Parejas</string>
+    <string name="partida_pribatua">Partida Pribatua</string>
+    <string name="header_username">USERNAME</string>
+    <string name="header_balance_placeholder">00.00€</string>
+    <string name="match_type_label">Tipo de partida</string>
+    <string name="match_type_hint">Elige contra quién quieres jugar</string>
+    <string name="match_online">Online</string>
+    <string name="match_ia">Contra IA</string>
+    <string name="match_bots_label">Partida online con bots</string>
+    <string name="match_bots_hint">Activa o desactiva para incluir bots</string>
+    <string name="match_bots_toggle">Jugar con bots</string>
+    <string name="match_mode_label">Modalidad</string>
+    <string name="four_kings">4 reyes</string>
+    <string name="eight_kings">8 reyes</string>
+    <string name="match_bet_label">Apuesta</string>
+    <string name="match_bet_hint">Selecciona el importe a apostar</string>
+    <string name="match_play_button">Jugar</string>
+    <string name="match_summary_template">%1$s · %2$s · Apuesta %3$s</string>
+    <string name="match_setup_title">Configura tu partida</string>
+    <string name="match_mode_hint">Decide la duración de la partida</string>
+    <string name="match_bet_100">100 €</string>
+    <string name="match_bet_250">250 €</string>
+    <string name="match_bet_500">500 €</string>
+    <string name="match_bet_1000">1.000 €</string>
+    <string name="match_bet_2500">2.500 €</string>
+    <string name="match_bet_5000">5.000 €</string>
+    <string name="match_bet_custom">O introduce tu cantidad</string>
+    <string name="match_bet_custom_hint">Cantidad personalizada</string>
+    <string name="private_match_setup_title">Configura tu partida privada</string>
+    <string name="private_match_invite_hint">Invita a un amigo para jugar</string>
+    <string name="invite_friend">Invitar amigo</string>
+    <string-array name="match_bet_options">
+        <item>100 €</item>
+        <item>250 €</item>
+        <item>500 €</item>
+        <item>1.000 €</item>
+        <item>2.500 €</item>
+        <item>5.000 €</item>
+    </string-array>
 </resources>
