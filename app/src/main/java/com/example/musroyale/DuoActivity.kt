@@ -8,17 +8,16 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.musroyale.databinding.ActivityDuosBinding
 import com.example.musroyale.databinding.ActivityMainBinding
-import com.example.musroyale.databinding.ActivityPribatuaBinding
 
-class PrivateMatchSetupActivity : AppCompatActivity() {
+class DuoActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityPribatuaBinding
+    private lateinit var binding: ActivityDuosBinding
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding = ActivityPribatuaBinding.inflate(layoutInflater)
+        binding = ActivityDuosBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         binding.btnBack.setOnClickListener {
@@ -26,15 +25,6 @@ class PrivateMatchSetupActivity : AppCompatActivity() {
             startActivity(intent)
 
         }
-        // Mostrar SortuFragment
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, SortuFragment())
-            .commit()
-
-        /*supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, SartuFragment())
-            .commit()*/
-
 
 
 
