@@ -43,4 +43,13 @@
         <item>2.500 €</item>
         <item>5.000 €</item>
     </string-array>
+    <string name="desc_back">Botón retroceso</string>
+    <string name="modes_hint">Desliza para elegir tu modo</string>
+    <string name="mode_quick_match">Partida azkarra</string>
+    <string name="mode_quick_match_desc">Jokalarien edo IA-ren kontra jokatu</string>
+    <string name="mode_duo">Parejak</string>
+    <string name="mode_duo_desc">Lagun batekin jokatu</string>
+    <string name="mode_private">Partida pribatua</string>
+    <string name="mode_private_desc">Zure lagunen kontra jokatu</string>
+    <string name="desc_add_balance">Añadir saldo</string>
 </resources>

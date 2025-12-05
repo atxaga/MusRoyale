@@ -13,52 +13,61 @@
         android:layout_height="match_parent"
         android:background="@drawable/fondo1">
 
+        <fragment
+            android:id="@+id/headerBar"
+            android:name="com.example.musroyale.HeaderFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
         <LinearLayout
-            android:id="@+id/setupHeaderBar"
+            android:padding="32dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal"
-            android:paddingTop="8dp"
-            >
+            android:orientation="vertical">
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/btnBack"
+            android:layout_marginTop="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="7dp"
+            app:cardElevation="10dp"
+            app:strokeColor="#8B4513"
+            app:strokeWidth="2dp"
+            app:cardBackgroundColor="#F5DEB3">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingStart="30dp"
-                android:paddingEnd="16dp"
-                android:paddingTop="12dp"
-                android:paddingBottom="12dp"
-                android:text="@string/header_username"
-                android:textColor="@color/white"
-                android:textSize="22sp"
-                android:textStyle="bold" />
+            <!-- Contenedor para ImageView y TextView -->
+            <LinearLayout
+                android:layout_width="140dp"
+                android:layout_height="60dp"
+                android:orientation="horizontal"
+                android:padding="8dp"
+                android:gravity="center_vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingStart="16dp"
-                android:paddingEnd="30dp"
-                android:text="@string/header_balance_placeholder"
-                android:textColor="@color/white"
-                android:textStyle="bold" />
+                <ImageView
+                    android:id="@+id/btnAtzera"
+                    android:layout_width="60dp"
+                    android:layout_height="90dp"
+                    android:src="@drawable/atras"
+                    android:contentDescription="Volver" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Atzera"
+                    android:textColor="#5B3A1C"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
 
-        <include
-            layout="@layout/fragment_sortu"
+        <FrameLayout
+            android:id="@+id/fragmentContainer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:layout_centerHorizontal="true" />
-
-        <include
-            layout="@layout/fragment_sartu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:visibility="gone"
-            android:layout_centerHorizontal="true" />
+            android:layout_height="match_parent"
+            android:layout_marginTop="110dp"/>
 
 
 

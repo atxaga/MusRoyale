@@ -9,7 +9,7 @@
         android:id="@+id/sortuSartu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/setupHeaderBar"
+        android:layout_below="@id/headerBar"
         android:padding="16dp"
         android:clipToPadding="false">
 
@@ -83,7 +83,7 @@
         android:id="@+id/setupScroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/setupHeaderBar"
+        android:layout_below="@id/headerBar"
         android:padding="16dp"
         android:clipToPadding="false">
 

@@ -7,69 +7,50 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/fondo1">
+    <ImageView
+        android:id="@+id/backgroundImage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/fondo1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-        <LinearLayout
-            android:id="@+id/headerBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_horizontal">
+   <fragment
+       android:id="@+id/headerBar"
+       android:name="com.example.musroyale.HeaderFragment"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"/>
 
-            <TextView
-                android:padding="15dp"
-                android:layout_width="300sp"
-                android:layout_height="wrap_content"
-                android:text="USERNAME"
-                android:paddingStart="30dp"
-                android:textColor="@color/white"
-                android:textSize="25dp"
-                android:textStyle="bold" />
+    <TextView
+        android:id="@+id/carruselHint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Deslizatu mota aldatzeko"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/headerBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="96dp"/>
 
-            <TextView
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:text="00.00€"
-                android:paddingEnd="30dp"
-                android:textAlignment="textEnd"
-                android:textColor="@color/white"/>
-
-
-        </LinearLayout>
-
-        <include
-            layout="@layout/fragment_partida"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/headerBar"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="24dp"
-            android:layout_centerHorizontal="true" />
-
-        <include
-            layout="@layout/fragment_duo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/headerBar"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="180dp"
-            android:layout_centerHorizontal="true" />
-
-        <include
-            layout="@layout/fragment_privada"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/headerBar"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="335dp"
-            android:layout_centerHorizontal="true" />
-
-
-    </RelativeLayout>
-
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/modesRecycler"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:layout_marginTop="100dp"
+        android:paddingBottom="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/carruselHint"
+        app:layout_constraintVertical_bias="0.0"
+        tools:listitem="@layout/item_game_mode" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

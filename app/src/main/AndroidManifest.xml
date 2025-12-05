@@ -21,6 +21,7 @@
         </activity>
         <activity android:name=".MatchSetupActivity" />
         <activity android:name=".PrivateMatchSetupActivity" />
+        <activity android:name=".DuoActivity"/>
     </application>
 
 </manifest>
