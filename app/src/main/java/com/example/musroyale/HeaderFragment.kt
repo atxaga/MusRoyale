@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.musroyale.databinding.FragmentHeaderBinding
-import com.example.musroyale.databinding.FragmentPartidaBinding
 import com.example.musroyale.databinding.FragmentSartuBinding
 
 
