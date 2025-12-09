@@ -1,0 +1,68 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="80dp">
+
+
+<!-- MADERA -->
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/fondo1"
+        android:scaleType="centerCrop"/>
+
+    <!-- CAPA CLARA -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_footer"/>
+
+    <!-- BOTONES -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:weightSum="5">
+
+        <ImageView
+            android:id="@+id/btnAvatar"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_avatar"/>
+
+        <ImageView
+            android:id="@+id/btnChat"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_chat"/>
+
+        <ImageView
+            android:id="@+id/btnPlay"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_home"/>
+
+        <ImageView
+            android:id="@+id/btnFriends"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_friends"/>
+
+        <ImageView
+            android:id="@+id/btnShop"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_shop"/>
+
+    </LinearLayout>
+
+</FrameLayout>
+
+
+
