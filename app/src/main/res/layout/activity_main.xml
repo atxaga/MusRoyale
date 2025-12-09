@@ -6,34 +6,34 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <!-- CONTENIDO PRINCIPAL -->
-    <RelativeLayout
-        android:id="@+id/mainContent"
+    <ImageView
+        android:id="@+id/backgroundImage"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@drawable/fondo1"
-
+        android:scaleType="centerCrop"
+        android:src="@drawable/fondo1"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/footer"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-   <fragment
-       android:id="@+id/headerBar"
-       android:name="com.example.musroyale.HeaderFragment"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"/>
+       <fragment
+           android:id="@+id/headerBar"
+           android:name="com.example.musroyale.HeaderFragment"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"/>
 
-    <TextView
-        android:id="@+id/carruselHint"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Deslizatu mota aldatzeko"
-        android:textColor="@android:color/white"
-        android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/headerBar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="96dp"/>
+        <TextView
+            android:id="@+id/carruselHint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Deslizatu mota aldatzeko"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            app:layout_constraintTop_toBottomOf="@id/headerBar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="96dp"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/modesRecycler"
@@ -50,10 +50,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/carruselHint"
             app:layout_constraintVertical_bias="0.0"
-            tools:listitem="@layout/item_game_mode" />
-
-    </RelativeLayout>
-
+            tools:listitem="@layout/item_game_mode" >
+        </androidx.recyclerview.widget.RecyclerView>
 
 
 
@@ -65,5 +63,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
