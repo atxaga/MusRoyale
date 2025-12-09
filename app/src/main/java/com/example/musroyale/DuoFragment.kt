@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.musroyale.databinding.FragmentDuoBinding
-import com.example.musroyale.databinding.FragmentPartidaBinding
 
 class DuoFragment: Fragment() {
     private lateinit var binding: FragmentDuoBinding
