@@ -8,4 +8,13 @@
     <color name="toggle_text_unselected">#FFFFFFFF</color>
     <color name="toggle_stroke_selected">#FFF4D28F</color>
     <color name="toggle_stroke_unselected">#80FFFFFF</color>
+    <color name="chip_background_active">#F5DEB3</color> <!-- wheat / beige claro -->
+    <color name="chip_background">#F5F5DC</color>        <!-- beige -->
+    <color name="chip_stroke_active">#8B4513</color>     <!-- saddle brown -->
+    <color name="chip_stroke">#A0522D</color>            <!-- sienna / marrón -->
+    <color name="chip_text_inactive">#9E9E9E</color>     <!-- gris para texto inactivo -->
+
+    <!-- Colores para la card (según peticiones anteriores) -->
+    <color name="card_bg_beige">#F5F5DC</color>
+    <color name="card_border_brown">#8B4513</color>
 </resources>
