@@ -54,11 +54,9 @@
 
     </RelativeLayout>
 
-
-
-
-    <include
+    <fragment
         android:id="@+id/footer"
+        android:name="com.example.musroyale.FooterFragment"
         layout="@layout/view_footer"
         android:layout_width="0dp"
         android:layout_height="80dp"
