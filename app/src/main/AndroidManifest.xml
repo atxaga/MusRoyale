@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Musroyale">
         <activity
-            android:name=".MainActivity"
+            android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,6 +22,8 @@
         <activity android:name=".MatchSetupActivity" />
         <activity android:name=".PrivateMatchSetupActivity" />
         <activity android:name=".DuoActivity"/>
+        <activity android:name=".RegistroActivity"/>
+        <activity android:name=".MainActivity"/>
     </application>
 
 </manifest>
