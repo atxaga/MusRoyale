@@ -5,31 +5,47 @@
     android:layout_height="320dp"
     android:layout_marginHorizontal="12dp"
     android:layout_marginVertical="8dp"
+    app:cardBackgroundColor="#F9F2E4"
+    android:padding="200dp"
     app:cardCornerRadius="28dp"
     app:cardElevation="12dp"
     app:strokeColor="@color/card_border_brown"
-    android:background="@drawable/beige"
-
     app:strokeWidth="1.5dp">
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:background="@drawable/beige"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_footer">
 
-        android:layout_height="match_parent">
+        <View
+            android:layout_width="220dp"
+            android:layout_height="2dp"
+            android:layout_gravity="center"
+            android:alpha="0.35"
+            android:background="#8B5E3C"
+            android:rotation="-28" />
 
-        <ImageView
-            android:id="@+id/modeImage"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:contentDescription="@null"
-            android:src="@drawable/kartak" />
+        <View
+            android:layout_width="260dp"
+            android:layout_height="2dp"
+            android:layout_gravity="center"
+            android:alpha="0.25"
+            android:background="#8B5E3C"
+            android:rotation="18" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#80000000" />
+            android:background="#19000000" />
+
+        <ImageView
+            android:id="@+id/modeIcon"
+            android:layout_width="128dp"
+            android:layout_height="128dp"
+            android:layout_gravity="center"
+            android:contentDescription="@null"
+            android:scaleType="fitCenter"
+            android:src="@drawable/rapida" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -42,23 +58,22 @@
                 android:id="@+id/modeTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="Mode"
                 android:textColor="@android:color/white"
                 android:textSize="24sp"
-                android:textStyle="bold"
-                android:text="Mode" />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/modeSubtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
+                android:text="Descripcion"
                 android:textColor="#F5DEB3"
-                android:textSize="15sp"
-                android:text="Descripcion" />
+                android:textSize="15sp" />
 
         </LinearLayout>
 
     </FrameLayout>
 
 </com.google.android.material.card.MaterialCardView>
-
