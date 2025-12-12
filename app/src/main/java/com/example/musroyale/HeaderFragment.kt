@@ -19,6 +19,11 @@ class HeaderFragment: Fragment() {
     ): View? {
         binding = FragmentHeaderBinding.inflate(inflater, container, false)
 
+        binding.btnAddBalance.setOnClickListener {
+            val act = activity ?: return@setOnClickListener
+            val intent = Intent(act, AddBalanceActivity::class.java)
+            act.startActivity(intent)
+        }
 
         return binding.root
     }
