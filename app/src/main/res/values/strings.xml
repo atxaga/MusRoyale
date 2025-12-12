@@ -52,4 +52,10 @@
     <string name="mode_private">Partida pribatua</string>
     <string name="mode_private_desc">Zure lagunen kontra jokatu</string>
     <string name="desc_add_balance">Añadir saldo</string>
+    <string name="desc_chat">Abrir chat</string>
+    <string name="desc_camara">Abrir cámara</string>
+    <string name="desc_settings">Ajustes</string>
+    <string name="action_raise">Subir</string>
+    <string name="action_call">Ir</string>
+    <string name="action_fold">Plantarse</string>
 </resources>

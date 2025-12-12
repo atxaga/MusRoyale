@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="96dp"
+    android:background="@android:color/transparent"
+    android:clipToPadding="false">
+
+    <!-- Left team score -->
+    <LinearLayout
+        android:id="@+id/leftScoreContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="8dp"
+        android:background="@drawable/bg_score_transparent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/centerRoundContainer"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_chainStyle="spread_inside">
+
+        <TextView
+            android:id="@+id/leftTeamName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Etxekoak"
+            android:textSize="12sp"
+            android:textColor="#DDFFFFFF"
+            android:alpha="0.9"
+            android:textStyle="bold" />
+
+        <!-- Two score boxes for Mus scoring -->
+        <LinearLayout
+            android:id="@+id/leftScoreBoxes"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:gravity="center"
+            android:spacing="6dp">
+
+            <TextView
+                android:id="@+id/leftScoreBox1"
+                android:layout_width="36dp"
+                android:layout_height="28dp"
+                android:background="@drawable/bg_score_box"
+                android:gravity="center"
+                android:text="1"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/leftScoreBox2"
+                android:layout_width="36dp"
+                android:layout_height="28dp"
+                android:layout_marginStart="6dp"
+                android:background="@drawable/bg_score_box"
+                android:gravity="center"
+                android:text="2"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Center round indicator -->
+    <LinearLayout
+        android:id="@+id/centerRoundContainer"
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp"
+        android:background="@drawable/bg_round_beige"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/leftScoreContainer"
+        app:layout_constraintEnd_toStartOf="@+id/rightScoreContainer">
+
+        <TextView
+            android:id="@+id/roundLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ronda"
+            android:textSize="12sp"
+            android:textColor="#8B5E3C"
+            android:textStyle="bold" />
+
+
+    </LinearLayout>
+
+    <!-- Right team score -->
+    <LinearLayout
+        android:id="@+id/rightScoreContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="8dp"
+        android:background="@drawable/bg_score_transparent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/centerRoundContainer"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:id="@+id/rightTeamName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Kanpokoak"
+            android:textSize="12sp"
+            android:textColor="#DDFFFFFF"
+            android:alpha="0.9"
+            android:textStyle="bold" />
+
+        <!-- Two score boxes for Mus scoring -->
+        <LinearLayout
+            android:id="@+id/rightScoreBoxes"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/rightScoreBox1"
+                android:layout_width="36dp"
+                android:layout_height="28dp"
+                android:background="@drawable/bg_score_box"
+                android:gravity="center"
+                android:text="0"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/rightScoreBox2"
+                android:layout_width="36dp"
+                android:layout_height="28dp"
+                android:layout_marginStart="6dp"
+                android:background="@drawable/bg_score_box"
+                android:gravity="center"
+                android:text="0"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Ajustes: icono debajo del marcador derecho -->
+    <ImageButton
+        android:id="@+id/buttonSettings"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:src="@drawable/ajustes"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/desc_settings"
+        app:tint="@color/partida_icon_tint"
+        android:layout_marginTop="4dp"
+        app:layout_constraintTop_toBottomOf="@id/rightScoreContainer"
+        app:layout_constraintEnd_toEndOf="@id/rightScoreContainer" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
