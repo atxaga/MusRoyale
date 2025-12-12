@@ -22,7 +22,7 @@
     <ImageView
         android:id="@+id/tapete"
         android:layout_width="600dp"
-        android:layout_height="500dp"
+        android:layout_height="700dp"
         android:src="@drawable/tapete"
         android:alpha="0.9"
         app:layout_constraintTop_toTopOf="parent"
@@ -54,7 +54,7 @@
         android:id="@+id/playerTop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="28dp"
         app:layout_constraintTop_toBottomOf="@id/headerFragment"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -371,12 +371,13 @@
         android:id="@+id/playerBottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="76dp"
+        android:paddingBottom="56dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <FrameLayout
+            android:paddingBottom="30dp"
             android:id="@+id/cardsBottomFrame"
             android:layout_width="350dp"
             android:layout_height="200dp"
