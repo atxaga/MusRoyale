@@ -1,61 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">musroyale</string>
-    <string name="desc_kartak">Imagen de cartas</string>
-    <string name="desc_duosfondo">Imagen de parejas</string>
-    <string name="desc_privado">Imagen de partida privada</string>
-    <string name="partida_azkarra">Partida Azkarra</string>
-    <string name="parejas">Parejas</string>
-    <string name="partida_pribatua">Partida Pribatua</string>
-    <string name="header_username">USERNAME</string>
-    <string name="header_balance_placeholder">00.00€</string>
-    <string name="match_type_label">Tipo de partida</string>
-    <string name="match_type_hint">Elige contra quién quieres jugar</string>
-    <string name="match_online">Online</string>
-    <string name="match_ia">Contra IA</string>
-    <string name="match_bots_label">Partida online con bots</string>
-    <string name="match_bots_hint">Activa o desactiva para incluir bots</string>
-    <string name="match_bots_toggle">Jugar con bots</string>
-    <string name="match_mode_label">Modalidad</string>
-    <string name="four_kings">4 reyes</string>
-    <string name="eight_kings">8 reyes</string>
-    <string name="match_bet_label">Apuesta</string>
-    <string name="match_bet_hint">Selecciona el importe a apostar</string>
-    <string name="match_play_button">Jugar</string>
-    <string name="match_summary_template">%1$s · %2$s · Apuesta %3$s</string>
-    <string name="match_setup_title">Configura tu partida</string>
-    <string name="match_mode_hint">Decide la duración de la partida</string>
-    <string name="match_bet_100">100 €</string>
-    <string name="match_bet_250">250 €</string>
-    <string name="match_bet_500">500 €</string>
-    <string name="match_bet_1000">1.000 €</string>
-    <string name="match_bet_2500">2.500 €</string>
-    <string name="match_bet_5000">5.000 €</string>
-    <string name="match_bet_custom">O introduce tu cantidad</string>
-    <string name="match_bet_custom_hint">Cantidad personalizada</string>
-    <string name="private_match_setup_title">Configura tu partida privada</string>
-    <string name="private_match_invite_hint">Invita a un amigo para jugar</string>
-    <string name="invite_friend">Invitar amigo</string>
-    <string-array name="match_bet_options">
-        <item>100 €</item>
-        <item>250 €</item>
-        <item>500 €</item>
-        <item>1.000 €</item>
-        <item>2.500 €</item>
-        <item>5.000 €</item>
-    </string-array>
-    <string name="desc_back">Botón retroceso</string>
-    <string name="modes_hint">Desliza para elegir tu modo</string>
-    <string name="mode_quick_match">Partida azkarra</string>
-    <string name="mode_quick_match_desc">Jokalarien edo IA-ren kontra jokatu</string>
-    <string name="mode_duo">Parejak</string>
-    <string name="mode_duo_desc">Lagun batekin jokatu</string>
-    <string name="mode_private">Partida pribatua</string>
-    <string name="mode_private_desc">Zure lagunen kontra jokatu</string>
+    <string name="app_name">MusRoyale</string>
+    <string name="enviado">Enviado</string>
+
+    <!-- Strings añadidos para resolver errores de linking -->
+    <string name="header_username">Usuario</string>
+    <string name="header_balance_placeholder">Saldo: --</string>
     <string name="desc_add_balance">Añadir saldo</string>
-    <string name="desc_chat">Abrir chat</string>
-    <string name="desc_camara">Abrir cámara</string>
-    <string name="desc_settings">Ajustes</string>
-    <string name="action_raise">Subir</string>
-    <string name="action_call">Ir</string>
-    <string name="action_fold">Plantarse</string>
+    <string name="desc_duosfondo">Descripción del fondo de Duos</string>
+    <string name="desc_privado">Descripción del modo privado</string>
+    <string name="partida_pribatua">Partida Privada</string>
+
+    <!-- Mode strings referenciadas en MainActivity -->
+    <string name="mode_quick_match">Partida rápida</string>
+    <string name="mode_quick_match_desc">Juega una partida rápida</string>
+
+    <string name="mode_duo">Duos</string>
+    <string name="mode_duo_desc">Juega en pareja</string>
+
+    <string name="mode_private">Privada</string>
+    <string name="mode_private_desc">Crea una partida privada</string>
+
+    <!-- Friends UI strings -->
+    <string name="friends_title">Amigos</string>
+    <string name="avatar_desc">Avatar del usuario</string>
+    <string name="friend_name_placeholder">Nombre de usuario</string>
+    <string name="action_text">Acción</string>
+    <string name="friend_status_online">En línea</string>
+    <string name="friend_status_offline">Desconectado</string>
+    <string name="friend_invite">Invitar</string>
+    <string name="search_users_hint">Buscar usuarios</string>
+    <string name="tab_friends">Amigos</string>
+    <string name="tab_requests_sent">Solicitudes enviadas</string>
+    <string name="tab_requests_received">Solicitudes recibidas</string>
 </resources>
