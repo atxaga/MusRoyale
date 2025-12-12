@@ -29,6 +29,10 @@ class MatchSetupActivity : AppCompatActivity() {
             startActivity(intent)
 
         }
+        binding.btnPlay.setOnClickListener {
+            var intent = Intent(this, PartidaActivity::class.java)
+            startActivity(intent)
+        }
 
 
     }
