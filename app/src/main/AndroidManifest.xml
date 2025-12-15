@@ -25,6 +25,10 @@
         <activity android:name=".DuoActivity"/>
         <activity android:name=".RegistroActivity"/>
         <activity android:name=".LoginActivity"/>
+<<<<<<< HEAD
+=======
+        <activity android:name=".FriendsActivity"/>
+>>>>>>> 55de108b806d6cbe845db0afc8fb0702c7e2a5bb
     </application>
 
 </manifest>

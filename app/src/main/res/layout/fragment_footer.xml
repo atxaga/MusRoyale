@@ -8,7 +8,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/fondo5"
+        android:background="@android:color/transparent"
         android:scaleType="centerCrop"/>
 
     <!-- CAPA CLARA -->
@@ -30,7 +30,7 @@
             android:layout_width="0dp"
             android:layout_height="32dp"
             android:layout_weight="1"
-            android:src="@drawable/ic_avatar"/>
+            android:src="@drawable/ic_avatar3"/>
 
         <ImageView
             android:id="@+id/btnChat"
@@ -44,21 +44,21 @@
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_weight="1"
-            android:src="@drawable/ic_home"/>
+            android:src="@drawable/ic_home3"/>
 
         <ImageView
             android:id="@+id/btnFriends"
             android:layout_width="0dp"
             android:layout_height="32dp"
             android:layout_weight="1"
-            android:src="@drawable/ic_friends"/>
+            android:src="@drawable/ic_friends3"/>
 
         <ImageView
             android:id="@+id/btnShop"
             android:layout_width="0dp"
             android:layout_height="32dp"
             android:layout_weight="1"
-            android:src="@drawable/ic_shop"/>
+            android:src="@drawable/ic_shop3"/>
 
     </LinearLayout>
 
