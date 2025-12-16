@@ -54,7 +54,7 @@
             android:src="@drawable/ic_friends3"/>
 
         <ImageView
-            android:id="@+id/btnShop"
+            android:id="@+id/btnStore"
             android:layout_width="0dp"
             android:layout_height="32dp"
             android:layout_weight="1"
