@@ -1,0 +1,4 @@
+<resources>
+    <!-- Ajusta este valor al alto real de tu barra inferior (por ejemplo 96dp o 120dp si es más grande) -->
+    <dimen name="bottom_navigation_height">96dp</dimen>
+</resources>
