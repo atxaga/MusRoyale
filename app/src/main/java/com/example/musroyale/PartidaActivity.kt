@@ -15,9 +15,10 @@ class PartidaActivity : AppCompatActivity() {
         val btnCam = findViewById<ImageButton>(R.id.buttonCamara)
 
         btnChat?.setOnClickListener {
-            Toast.makeText(this, "Abrir chat (placeholder)", Toast.LENGTH_SHORT).show()
-            // TODO: abrir pantalla de chat
+            val chatDialog = ChatDialogFragment()
+            chatDialog.show(supportFragmentManager, "ChatPopup")
         }
+
 
         btnCam?.setOnClickListener {
             Toast.makeText(this, "Abrir cámara (placeholder)", Toast.LENGTH_SHORT).show()

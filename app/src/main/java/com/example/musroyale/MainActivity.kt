@@ -18,13 +18,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val modes = listOf(
-            GameMode(R.string.mode_quick_match, R.string.mode_quick_match_desc, R.drawable.rapida) {
+            GameMode(R.drawable.partida_azkarra) {
                 startActivity(Intent(this, MatchSetupActivity::class.java))
             },
-            GameMode(R.string.mode_duo, R.string.mode_duo_desc, R.drawable.duo) {
+            GameMode( R.drawable.parejak) {
                 startActivity(Intent(this, DuoActivity::class.java))
             },
-            GameMode(R.string.mode_private, R.string.mode_private_desc, R.drawable.privada) {
+            GameMode(R.drawable.pribatua) {
                 startActivity(Intent(this, PrivateMatchSetupActivity::class.java))
             }
         )

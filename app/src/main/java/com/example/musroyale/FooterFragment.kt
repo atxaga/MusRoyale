@@ -18,6 +18,10 @@ class FooterFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentFooterBinding.inflate(inflater, container, false)
+        binding.btnChat.setOnClickListener {
+            var intent = Intent(activity, ChatSplitActivity::class.java)
+            startActivity(intent)
+        }
 
 
         return binding.root
