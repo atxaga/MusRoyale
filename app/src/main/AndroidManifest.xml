@@ -25,6 +25,11 @@
         <activity android:name=".DuoActivity"/>
         <activity android:name=".RegistroActivity"/>
         <activity android:name=".LoginActivity"/>
+        <activity
+            android:name=".ChatSplitActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:windowSoftInputMode="adjustResize"/>
     </application>
 
 </manifest>

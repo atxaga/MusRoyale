@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.musroyale.databinding.ItemGameModeBinding
 
+
 class GameModeAdapter(
     private val modes: List<GameMode>
 ) : RecyclerView.Adapter<GameModeAdapter.ModeViewHolder>() {
@@ -22,11 +23,15 @@ class GameModeAdapter(
 
     inner class ModeViewHolder(private val binding: ItemGameModeBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(mode: GameMode) {
-            binding.modeTitle.setText(mode.titleRes)
-            binding.modeSubtitle.setText(mode.subtitleRes)
-            binding.modeIcon.setImageResource(mode.imageRes)
-            binding.root.setOnClickListener { mode.onClick.invoke() }
+            binding.imageGameMode.setImageResource(mode.imageRes)
+            binding.root.setOnClickListener {
+                mode.function()
+            }
+            }
+
+
         }
-    }
-}
+        }
+
+
 
