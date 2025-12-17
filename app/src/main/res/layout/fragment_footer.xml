@@ -1,7 +1,7 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="80dp">
+    android:layout_height="100dp">
 
 
 <!-- MADERA -->
@@ -25,40 +25,85 @@
         android:gravity="center"
         android:weightSum="5">
 
-        <ImageView
-            android:id="@+id/btnAvatar"
+        <FrameLayout
+            android:id="@+id/tabAvatar"
             android:layout_width="0dp"
-            android:layout_height="32dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@drawable/ic_avatar3"/>
+            android:clickable="true"
+            android:focusable="true">
 
-        <ImageView
-            android:id="@+id/btnChat"
-            android:layout_width="0dp"
-            android:layout_height="32dp"
-            android:layout_weight="1"
-            android:src="@drawable/ic_chat2"/>
+            <ImageView
+                android:id="@+id/imgAvatar"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_avatar3"/>
+        </FrameLayout>
 
-        <ImageView
-            android:id="@+id/btnPlay"
+        <FrameLayout
+            android:id="@+id/tabChat"
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@drawable/ic_home3"/>
+            android:clickable="true"
+            android:focusable="true">
 
-        <ImageView
-            android:id="@+id/btnFriends"
-            android:layout_width="0dp"
-            android:layout_height="32dp"
-            android:layout_weight="1"
-            android:src="@drawable/ic_friends3"/>
+            <ImageView
+                android:id="@+id/imgChat"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_chat2"/>
+        </FrameLayout>
 
-        <ImageView
-            android:id="@+id/btnStore"
+        <FrameLayout
+            android:id="@+id/tabPlay"
             android:layout_width="0dp"
-            android:layout_height="32dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@drawable/ic_shop3"/>
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:id="@+id/imgPlay"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_home3"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/tabFriends"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:id="@+id/imgFriends"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_friends3"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/tabStore"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:id="@+id/imgStore"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_shop3"/>
+        </FrameLayout>
 
     </LinearLayout>
 
