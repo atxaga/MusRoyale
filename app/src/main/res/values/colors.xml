@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <color name="black">#FF000000</color>
+<resources><color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="toggle_bg_selected">#FFF4D28F</color>
     <color name="toggle_bg_unselected">#33FFFFFF</color>
@@ -79,4 +78,5 @@
     <color name="friends_text_dark">#3E2A19</color>
     <color name="friends_text_medium">#8F795F</color>
     <color name="friends_button_tint">#8A734F</color>
+    <color name="brown_redish">#8D4034</color>
 </resources>
