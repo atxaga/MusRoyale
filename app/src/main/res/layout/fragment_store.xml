@@ -8,24 +8,12 @@
         android:id="@+id/background_texture"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:alpha="0.85"
         android:scaleType="centerCrop"
         android:src="@drawable/fondo1"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-
-    <View
-        android:id="@+id/beige_overlay"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:alpha="0.8"
-        android:background="@color/friends_beige_dark"
-        app:layout_constraintTop_toTopOf="@id/background_texture"
-        app:layout_constraintBottom_toBottomOf="@id/background_texture"
-        app:layout_constraintStart_toStartOf="@id/background_texture"
-        app:layout_constraintEnd_toEndOf="@id/background_texture" />
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardHeader"
