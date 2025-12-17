@@ -51,15 +51,32 @@
     <!-- Paleta beige/madera compartida -->
     <color name="beige">#FFBFA06A</color>
     <color name="friends_beige_primary">#FFBFA06A</color>
+
     <color name="friends_beige_light">#FFF4E2C7</color>
     <color name="friends_beige_dark">#FF8E6A33</color>
+    <color name="friends_item_border">#B9874C</color>
     <color name="friends_background">#FFEEDFC7</color>
     <color name="friends_surface">#FFF6EAD6</color>
     <color name="friends_surface_dark">#FFE3CBA5</color>
     <color name="friends_text_primary">#3A1E05</color>
     <color name="friends_text_secondary">#6B4A20</color>
-    <color name="friends_item_border">#B9874C</color>
     <color name="friends_button_bg">#FFF8F1E6</color>
     <color name="friends_button_pressed">#FFE3CBA5</color>
     <color name="friends_overlay_light">#1A000000</color>
+
+
+    <color name="friends_beige_primary_dark">#FF9F8B54</color>
+
+
+    <!-- Paleta beige/madera compartida -->
+
+    <color name="card_surface">#1AFFFFFF</color>
+    <color name="text_hint">#80FFFFFF</color>
+    <!-- <color name="friends_beige_dark">#D1C4B0</color>
+    <color name="friends_item_border">#B8A78F</color>
+
+    <color name="friends_beige_light">#F8F5EE</color> -->
+    <color name="friends_text_dark">#3E2A19</color>
+    <color name="friends_text_medium">#8F795F</color>
+    <color name="friends_button_tint">#8A734F</color>
 </resources>
