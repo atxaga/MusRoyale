@@ -1,26 +1,19 @@
-<!-- xml: res/layout/fragment_friends_list.xml -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="8dp"
-    android:paddingBottom="88dp"
     android:background="@android:color/transparent">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="8dp"
+        android:clipToPadding="false"
         android:paddingStart="4dp"
-        android:paddingEnd="4dp">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginTop="8dp"
-            android:clipToPadding="false"
-            android:paddingBottom="8dp" />
-    </LinearLayout>
+        android:paddingEnd="4dp"
+        android:paddingBottom="@dimen/bottom_navigation_height"
+        android:overScrollMode="always"
+        android:scrollbars="vertical" />
 
 </FrameLayout>

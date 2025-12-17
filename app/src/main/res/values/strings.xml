@@ -42,5 +42,10 @@
     <string name="tab_friends">Amigos</string>
     <string name="tab_requests_sent">Solicitudes enviadas</string>
     <string name="tab_requests_received">Solicitudes recibidas</string>
+    <string name="invitar">Invitar</string>
+
+    <string name="store_title">Tienda</string>
+    <string name="store_subtitle">Mejora tu mazo con objetos exclusivos</string>
+    <string name="store_search_hint">Buscar en la tienda</string>
 </resources>
 >>>>>>> 55de108b806d6cbe845db0afc8fb0702c7e2a5bb

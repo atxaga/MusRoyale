@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/transparent">
+    android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/background_texture"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:alpha="0.85"
         android:scaleType="centerCrop"
         android:src="@drawable/fondo1"
-        android:alpha="0.85"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,15 +20,15 @@
         android:id="@+id/beige_overlay"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/friends_beige_dark"
         android:alpha="0.8"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:background="@color/friends_beige_dark"
+        app:layout_constraintTop_toTopOf="@id/background_texture"
+        app:layout_constraintBottom_toBottomOf="@id/background_texture"
+        app:layout_constraintStart_toStartOf="@id/background_texture"
+        app:layout_constraintEnd_toEndOf="@id/background_texture" />
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/header_card"
+        android:id="@+id/cardHeader"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -53,87 +50,82 @@
             android:padding="20dp">
 
             <TextView
-                android:id="@+id/header_title"
+                android:id="@+id/tvStoreTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/friends_title"
+                android:text="@string/store_title"
                 android:textColor="@color/friends_text_primary"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/header_subtitle"
+                android:id="@+id/tvStoreSubtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Gestiona amigos y solicitudes"
+                android:layout_marginTop="4dp"
+                android:text="@string/store_subtitle"
                 android:textColor="@color/friends_text_secondary"
-                android:textSize="15sp"
-                android:layout_marginTop="4dp" />
-
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/header_tab_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:tabIndicatorColor="@color/friends_beige_primary"
-                app:tabIndicatorHeight="4dp"
-                app:tabTextColor="@color/friends_text_secondary"
-                app:tabSelectedTextColor="@color/friends_text_primary"
-                app:tabRippleColor="@color/friends_overlay_light"
-                app:tabMode="fixed" />
-
+                android:textSize="15sp" />
         </LinearLayout>
-
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/search_card"
+        android:id="@+id/cardSearch"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:layout_marginTop="12dp"
-        app:cardBackgroundColor="@color/friends_surface_dark"
-        app:cardCornerRadius="20dp"
+        android:layout_marginTop="16dp"
+        app:cardBackgroundColor="@color/friends_surface_dark" app:cardCornerRadius="20dp"
         app:cardElevation="6dp"
         app:strokeColor="@color/friends_item_border"
         app:strokeWidth="1dp"
-        app:layout_constraintTop_toBottomOf="@id/header_card"
+        app:layout_constraintTop_toBottomOf="@id/cardHeader"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/search_view"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:iconifiedByDefault="false"
-            android:queryHint="@string/search_users_hint"
-            android:background="@drawable/bg_search"
-            android:layout_margin="10dp"
-            android:padding="0dp" />
+            android:layout_height="56dp"  android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp">
 
+            <ImageView
+                android:layout_width="24dp" android:layout_height="24dp"
+                android:src="@drawable/bg_search"
+                app:tint="@color/text_hint" />
+
+            <EditText
+                android:id="@+id/etStoreSearch"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:hint="@string/store_search_hint"
+                android:inputType="text"
+                android:singleLine="true"
+                android:textColor="@color/friends_text_primary"
+                android:textColorHint="@color/text_hint" />
+        </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/view_pager"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvStoreProducts"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/search_card"
+        android:clipToPadding="false"
+        android:paddingTop="12dp"  android:paddingStart="10dp"  android:paddingEnd="10dp"    android:paddingBottom="12dp"
+        app:layout_constraintTop_toBottomOf="@id/cardSearch"
         app:layout_constraintBottom_toTopOf="@id/footer"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:overScrollMode="always" />
-
-
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/footer"
         android:name="com.example.musroyale.FooterFragment"
         android:layout_width="0dp"
-        android:layout_height="80dp"
+        android:layout_height="@dimen/footer_height"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
