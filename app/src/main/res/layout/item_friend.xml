@@ -1,5 +1,6 @@
 <!-- xml: res/layout/item_friend.xml -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
@@ -42,14 +43,18 @@
             android:textSize="13sp" />
     </LinearLayout>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_action"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:text="Invitar"
+        android:layout_height="36dp"
+        android:text="@string/invitar"
         android:textAllCaps="false"
         android:textColor="@color/friends_text_primary"
-        android:background="@drawable/bg_friend_button" />
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        app:cornerRadius="18dp"
+        app:iconTint="@color/friends_text_primary"
+        app:backgroundTint="@color/friends_beige_primary_dark"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"/>
 </LinearLayout>

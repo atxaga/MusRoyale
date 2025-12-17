@@ -24,6 +24,12 @@ class FooterFragment: Fragment() {
             startActivity(intent)
         }
 
+        // btnStore -> abrir StoreActivity
+        binding.root.findViewById<View>(R.id.btnStore)?.setOnClickListener {
+            val intent = Intent(requireContext(), StoreActivity::class.java)
+            startActivity(intent)
+        }
+
         // btnPlay -> ir a la pantalla principal (MainActivity)
         binding.root.findViewById<View>(R.id.btnPlay)?.setOnClickListener {
             val intent = Intent(requireContext(), MainActivity::class.java)
