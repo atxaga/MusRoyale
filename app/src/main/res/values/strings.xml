@@ -13,6 +13,7 @@
     <string name="action_raise">Subir</string>
     <string name="action_call">Ir</string>
     <string name="action_fold">Plantarse</string>
+
     <string name="desc_duosfondo">Descripción del fondo de Duos</string>
     <string name="desc_privado">Descripción del modo privado</string>
     <string name="partida_pribatua">Partida Privada</string>

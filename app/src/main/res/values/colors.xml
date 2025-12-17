@@ -36,6 +36,7 @@
     <!-- Primary color usado en avatars/botones -->
     <color name="primary">#8B4513</color>
 
+    <!-- Capa oscura semitransparente sobre beige -->
     <color name="beige_overlay">#66000000</color>
 
     <color name="primary_light">#7E57C2</color>
@@ -47,7 +48,10 @@
     <color name="button_text">#FFFFFF</color>
     <color name="stroke">#E0D7EE</color>
 
+    <!-- Paleta beige/madera compartida -->
     <color name="beige">#FFBFA06A</color>
+    <color name="friends_beige_primary">#FFBFA06A</color>
+
     <color name="friends_beige_light">#FFF4E2C7</color>
     <color name="friends_beige_dark">#FF8E6A33</color>
     <color name="friends_item_border">#B9874C</color>
@@ -56,12 +60,12 @@
     <color name="friends_surface_dark">#FFE3CBA5</color>
     <color name="friends_text_primary">#3A1E05</color>
     <color name="friends_text_secondary">#6B4A20</color>
-
     <color name="friends_button_bg">#FFF8F1E6</color>
     <color name="friends_button_pressed">#FFE3CBA5</color>
     <color name="friends_overlay_light">#1A000000</color>
+
+
     <color name="friends_beige_primary_dark">#FF9F8B54</color>
-    <color name="friends_beige_primary">#FFBFA06A</color>
 
 
     <!-- Paleta beige/madera compartida -->
