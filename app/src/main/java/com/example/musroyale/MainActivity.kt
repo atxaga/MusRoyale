@@ -1,108 +1,121 @@
 package com.example.musroyale
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
-import android.widget.FrameLayout
+import android.view.View
 import android.widget.ImageView
-import androidx.activity.enableEdgeToEdge
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.example.musroyale.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private lateinit var tabList: List<FrameLayout>
+
+    data class TabItem(
+        val layout: LinearLayout,
+        val icon: ImageView,
+        val text: TextView
+    )
+
+    private lateinit var tabs: List<TabItem>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // 1. Cargar HomeFragment en el contenedor central (si es la primera vez)
-
-
-        // 2. Inicializar lista de pestañas del Footer
-        tabList = listOf(
-            binding.tabAvatar,
-            binding.tabChat,
-            binding.tabPlay,
-            binding.tabFriends,
-            binding.tabStore
+        tabs = listOf(
+            TabItem(binding.tabAvatar, binding.imgAvatar, binding.txtAvatar),
+            TabItem(binding.tabChat, binding.imgChat, binding.txtChat),
+            TabItem(binding.tabPlay, binding.imgPlay, binding.txtPlay),
+            TabItem(binding.tabFriends, binding.imgFriends, binding.txtFriends),
+            TabItem(binding.tabStore, binding.imgStore, binding.txtStore)
         )
 
-        // 3. Configurar Listeners del Footer
-        setupFooterListeners()
+        if (savedInstanceState == null) {
+            loadFragment(HomeFragment())
+            selectTab(binding.tabPlay)
+        }
 
-        // 4. Marcar la pestaña "Play" como seleccionada por defecto al entrar
-        selectTab(binding.tabPlay)
+        setupFooterListeners()
     }
 
     private fun setupFooterListeners() {
-        // --- AVATAR ---
         binding.tabAvatar.setOnClickListener {
             selectTab(binding.tabAvatar)
-            // startActivity(Intent(this, AvatarActivity::class.java))
+            binding.header.visibility = View.VISIBLE
         }
 
-        // --- CHAT (Abre otra Activity) ---
         binding.tabChat.setOnClickListener {
-            selectTab(binding.tabChat)
-            val intent = Intent(this, ChatSplitActivity::class.java)
-            // Opcional: Animation transitions
-            startActivity(intent)
+            // Si el chat es otra activity, no necesitamos hacer selectTab aquí visualmente
+            startActivity(Intent(this, ChatSplitActivity::class.java))
         }
 
-        // --- PLAY/HOME (Se queda aquí) ---
         binding.tabPlay.setOnClickListener {
             selectTab(binding.tabPlay)
-            // Como ya estamos en MainActivity, no hacemos startActivity.
-            // Opcional: Si quisieras reiniciar el fragmento home:
-            // supportFragmentManager.beginTransaction().replace(R.id.mainContainer, HomeFragment()).commit()
+            loadFragment(HomeFragment())
+            binding.header.visibility = View.VISIBLE
         }
 
-        // --- FRIENDS (Abre otra Activity) ---
         binding.tabFriends.setOnClickListener {
             selectTab(binding.tabFriends)
-            startActivity(Intent(this, FriendsActivity::class.java))
+            loadFragment(FriendsFragment())
+            binding.header.visibility = View.GONE
         }
 
-        // --- STORE (Abre otra Activity) ---
         binding.tabStore.setOnClickListener {
             selectTab(binding.tabStore)
-            startActivity(Intent(this, StoreActivity::class.java))
+            loadFragment(StoreFragment())
+            binding.header.visibility = View.GONE
         }
     }
 
-    private fun selectTab(selectedTab: FrameLayout?) {
-        val moveUpY = -25f
+    private fun loadFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.mainContainer, fragment)
+            .commit()
+    }
 
-        for ((index, tab) in tabList.withIndex()) {
-            val iconImage = tab.getChildAt(0) as ImageView
+    private fun selectTab(selectedLayout: LinearLayout) {
+        tabs.forEachIndexed { index, tab ->
 
-            if (tab == selectedTab) {
-                // --- SELECCIONADO ---
-                // Asignar fondo según posición (Izquierda, Derecha o Centro)
+            // Aseguramos que el icono siempre sea BLANCO
+            tab.icon.setColorFilter(Color.WHITE)
+
+            // Aseguramos que el texto siempre sea BLANCO (por si acaso el XML tenía otro color)
+            tab.text.setTextColor(Color.WHITE)
+
+            if (tab.layout == selectedLayout) {
+                // === SELECCIONADO ===
+
+                // 1. Fondo marrón/rojizo (Según posición)
                 when (index) {
-                    0 -> tab.setBackgroundResource(R.drawable.bg_tab_selected_left)
-                    tabList.size - 1 -> tab.setBackgroundResource(R.drawable.bg_tab_selected_right)
-                    else -> tab.setBackgroundResource(R.drawable.bg_tab_selected_center)
+                    0 -> tab.layout.setBackgroundResource(R.drawable.bg_tab_selected_left)
+                    tabs.size - 1 -> tab.layout.setBackgroundResource(R.drawable.bg_tab_selected_right)
+                    else -> tab.layout.setBackgroundResource(R.drawable.bg_tab_selected_center)
                 }
 
-                // Animación Subir
-                iconImage.animate()
-                    .translationY(moveUpY)
-                    .setDuration(200)
-                    .start()
+                // 2. Animación (Subir y mostrar texto)
+                if (tab.text.visibility != View.VISIBLE) {
+                    tab.icon.animate().translationY(-8f).setDuration(200).start()
+
+                    tab.text.visibility = View.VISIBLE
+                    tab.text.alpha = 0f
+                    tab.text.animate().alpha(1f).setDuration(200).start()
+                }
 
             } else {
-                // --- NO SELECCIONADO ---
-                tab.background = null
+                // === NO SELECCIONADO ===
 
-                // Animación Bajar
-                iconImage.animate()
-                    .translationY(0f)
-                    .setDuration(200)
-                    .start()
+                // 1. Quitar fondo
+                tab.layout.background = null
+
+                // 2. Resetear animación
+                tab.icon.animate().translationY(0f).setDuration(200).start()
+                tab.text.visibility = View.GONE
             }
         }
     }

@@ -1,12 +1,12 @@
 package com.example.musroyale
 
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 
-class FriendsPagerAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapter(fragmentActivity) {
+// CAMBIO CLAVE: Ahora recibe 'fragment: Fragment' en lugar de FragmentActivity
+class FriendsPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
 
-    // Mantener instancias simples para poder pasar búsquedas
+    // Mantener instancias para la búsqueda (Nota: Esto funciona para listas pequeñas y fijas)
     private val fragments: List<Fragment> = listOf(
         FriendsListFragment(),
         RequestsSentFragment(),
@@ -15,9 +15,13 @@ class FriendsPagerAdapter(fragmentActivity: FragmentActivity) : FragmentStateAda
 
     override fun getItemCount(): Int = fragments.size
 
-    override fun createFragment(position: Int): Fragment = fragments[position]
+    override fun createFragment(position: Int): Fragment {
+        // Devolvemos la instancia de nuestra lista
+        return fragments[position]
+    }
 
-    // Método utilitario para obtener la instancia
-    fun getFragmentAt(position: Int): Fragment = fragments[position]
+    // Método utilitario para obtener la instancia para el buscador
+    fun getFragmentAt(position: Int): Fragment {
+        return fragments[position]
+    }
 }
-

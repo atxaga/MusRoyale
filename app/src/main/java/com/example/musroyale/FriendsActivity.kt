@@ -1,4 +1,4 @@
-package com.example.musroyale
+/*package com.example.musroyale
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -42,3 +42,4 @@ class FriendsActivity : AppCompatActivity() {
 interface Searchable {
     fun onSearch(query: String)
 }
+*/
