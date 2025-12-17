@@ -20,7 +20,6 @@
     <color name="card_bg_beige">#F5F5DC</color>
     <color name="card_border_brown">#8B4513</color>
     <color name="dark_card_border">#3E2723</color>
-<<<<<<< HEAD
     <color name="partida_overlay_start">#B2201406</color>
     <color name="partida_overlay_end">#E6000000</color>
     <color name="partida_surface">#F4EEE1</color>
@@ -33,7 +32,6 @@
     <color name="action_button_red">#C62828</color>
     <color name="action_button_beige">#FAF3E0</color>
     <color name="action_button_mocha">#6D4C41</color>
-=======
 
     <!-- Primary color usado en avatars/botones -->
     <color name="primary">#8B4513</color>
@@ -64,5 +62,4 @@
     <color name="friends_button_bg">#FFF8F1E6</color>
     <color name="friends_button_pressed">#FFE3CBA5</color>
     <color name="friends_overlay_light">#1A000000</color>
->>>>>>> 55de108b806d6cbe845db0afc8fb0702c7e2a5bb
 </resources>
