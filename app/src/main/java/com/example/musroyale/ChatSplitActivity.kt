@@ -3,7 +3,6 @@ package com.example.musroyale
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,7 +16,7 @@ class ChatSplitActivity : AppCompatActivity() {
 
     // Adaptadores
     private lateinit var chatAdapter: ChatAdapter
-    private lateinit var friendsAdapter: FriendsAdapter
+    private lateinit var friendsAdapter: FriendsChatAdapter
 
     // Datos
     private val messagesList = mutableListOf<ChatMessage>()
@@ -63,7 +62,7 @@ class ChatSplitActivity : AppCompatActivity() {
     }
 
     private fun setupFriendsList() {
-        friendsAdapter = FriendsAdapter(friendsList) { friend ->
+        friendsAdapter = FriendsChatAdapter(friendsList) { friend ->
             // AL HACER CLICK EN UN AMIGO:
             loadChatForFriend(friend)
         }
