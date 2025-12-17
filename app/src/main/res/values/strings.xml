@@ -7,6 +7,12 @@
     <string name="header_username">Usuario</string>
     <string name="header_balance_placeholder">Saldo: --</string>
     <string name="desc_add_balance">Añadir saldo</string>
+    <string name="desc_chat">Abrir chat</string>
+    <string name="desc_camara">Abrir cámara</string>
+    <string name="desc_settings">Ajustes</string>
+    <string name="action_raise">Subir</string>
+    <string name="action_call">Ir</string>
+    <string name="action_fold">Plantarse</string>
     <string name="desc_duosfondo">Descripción del fondo de Duos</string>
     <string name="desc_privado">Descripción del modo privado</string>
     <string name="partida_pribatua">Partida Privada</string>
@@ -38,4 +44,5 @@
     <string name="store_title">Tienda</string>
     <string name="store_subtitle">Mejora tu mazo con objetos exclusivos</string>
     <string name="store_search_hint">Buscar en la tienda</string>
+
 </resources>
