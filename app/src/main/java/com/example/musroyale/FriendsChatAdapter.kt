@@ -7,12 +7,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.musroyale.databinding.ItemFriendChatBinding
 
-data class Friend(val name: String, val status: String, val isOnline: Boolean)
-
-class FriendsAdapter(
+class FriendsChatAdapter(
     private val friends: List<Friend>,
     private val onClick: (Friend) -> Unit
-) : RecyclerView.Adapter<FriendsAdapter.FriendViewHolder>() {
+) : RecyclerView.Adapter<FriendsChatAdapter.FriendViewHolder>() {
 
     // Variable para saber cuál está seleccionado y pintarlo diferente
     private var selectedPosition = -1
@@ -38,7 +36,7 @@ class FriendsAdapter(
         holder.binding.onlineIndicator.visibility = if (friend.isOnline) View.VISIBLE else View.GONE
 
         holder.itemView.setOnClickListener {
-            selectedPosition = holder.adapterPosition
+            selectedPosition = holder.bindingAdapterPosition
             notifyDataSetChanged() // Refrescar lista para actualizar selección
             onClick(friend)
         }
