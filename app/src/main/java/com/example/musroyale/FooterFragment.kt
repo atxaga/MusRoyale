@@ -1,4 +1,4 @@
-package com.example.musroyale
+/*package com.example.musroyale
 
 import android.content.Intent
 import android.os.Bundle
@@ -134,4 +134,4 @@ class FooterFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-}
+}*/

@@ -3,87 +3,87 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/fondo1"
     android:clipChildren="false">
-    <FrameLayout
-    android:id="@+id/header"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintEnd_toEndOf="parent">
 
-    <LinearLayout
-        android:id="@+id/headerBar"
+    <FrameLayout
+        android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:padding="24dp"
-        android:background="@drawable/header_background">
-
-        <TextView
-            android:id="@+id/txtUsername"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/header_username"
-            android:textColor="@android:color/white"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
-            android:id="@+id/balanceContainer"
-            android:layout_width="wrap_content"
+            android:id="@+id/headerBar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:padding="24dp"
+            android:background="@drawable/header_background">
+
+            <TextView
+                android:id="@+id/txtUsername"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/header_username"
+                android:textColor="@android:color/white"
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
             <LinearLayout
+                android:id="@+id/balanceContainer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center">
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
-                <TextView
-                    android:id="@+id/txtBalance"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="1000"
-                    android:textColor="@android:color/white"
-                    android:textStyle="bold"
-                    android:textSize="16sp" />
+                    android:orientation="vertical"
+                    android:gravity="center">
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="#FFFFFF"
-                    android:layout_marginTop="4dp" />
+                    <TextView
+                        android:id="@+id/txtBalance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="1000"
+                        android:textColor="@android:color/white"
+                        android:textStyle="bold"
+                        android:textSize="16sp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:background="#FFFFFF"
+                        android:layout_marginTop="4dp" />
+                </LinearLayout>
+
+                <ImageButton
+                    android:id="@+id/btnAddBalance"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@android:drawable/ic_input_add"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    app:tint="@android:color/white"
+                    android:contentDescription="@string/desc_add_balance"
+                    android:layout_marginStart="8dp" />
             </LinearLayout>
-
-            <ImageButton
-                android:id="@+id/btnAddBalance"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@android:drawable/ic_input_add"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="@android:color/white"
-                android:contentDescription="@string/desc_add_balance"
-                android:layout_marginStart="8dp" />
         </LinearLayout>
-    </LinearLayout>
-</FrameLayout>
+    </FrameLayout>
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/mainContainer"
-        android:name="com.example.musroyale.HomeFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="150dp"
-        android:layout_marginBottom="110dp"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@+id/header"
+        app:layout_constraintBottom_toTopOf="@+id/footer"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -95,6 +95,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
+
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -114,81 +115,146 @@
             android:weightSum="5"
             android:clipChildren="false">
 
-            <FrameLayout
+            <LinearLayout
                 android:id="@+id/tabAvatar"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
                 android:clickable="true"
                 android:focusable="true">
+
                 <ImageView
                     android:id="@+id/imgAvatar"
                     android:layout_width="wrap_content"
                     android:layout_height="32dp"
-                    android:layout_gravity="center"
                     android:src="@drawable/ic_avatar3"/>
-            </FrameLayout>
 
-            <FrameLayout
+                <TextView
+                    android:id="@+id/txtAvatar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Profila"
+                    android:textColor="#FFD700"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    android:layout_marginTop="4dp"/>
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/tabChat"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
                 android:clickable="true"
                 android:focusable="true">
+
                 <ImageView
                     android:id="@+id/imgChat"
                     android:layout_width="wrap_content"
                     android:layout_height="32dp"
-                    android:layout_gravity="center"
                     android:src="@drawable/ic_chat2"/>
-            </FrameLayout>
 
-            <FrameLayout
+                <TextView
+                    android:id="@+id/txtChat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Txat"
+                    android:textColor="#FFD700"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    android:layout_marginTop="4dp"/>
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/tabPlay"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
                 android:clickable="true"
                 android:focusable="true">
+
                 <ImageView
                     android:id="@+id/imgPlay"
                     android:layout_width="wrap_content"
                     android:layout_height="48dp"
-                    android:layout_gravity="center"
                     android:src="@drawable/ic_home3"/>
-            </FrameLayout>
 
-            <FrameLayout
+                <TextView
+                    android:id="@+id/txtPlay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nagusia"
+                    android:textColor="#FFD700"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    android:layout_marginTop="4dp"/>
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/tabFriends"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
                 android:clickable="true"
                 android:focusable="true">
+
                 <ImageView
                     android:id="@+id/imgFriends"
                     android:layout_width="wrap_content"
                     android:layout_height="32dp"
-                    android:layout_gravity="center"
                     android:src="@drawable/ic_friends3"/>
-            </FrameLayout>
 
-            <FrameLayout
+                <TextView
+                    android:id="@+id/txtFriends"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Lagunak"
+                    android:textColor="#FFD700"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    android:layout_marginTop="4dp"/>
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/tabStore"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
                 android:clickable="true"
                 android:focusable="true">
+
                 <ImageView
                     android:id="@+id/imgStore"
                     android:layout_width="wrap_content"
                     android:layout_height="32dp"
-                    android:layout_gravity="center"
                     android:src="@drawable/ic_shop3"/>
-            </FrameLayout>
+
+                <TextView
+                    android:id="@+id/txtStore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Denda"
+                    android:textColor="#FFD700"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    android:layout_marginTop="4dp"/>
+            </LinearLayout>
+
         </LinearLayout>
     </FrameLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
