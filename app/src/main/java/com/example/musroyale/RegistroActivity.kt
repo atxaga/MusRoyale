@@ -43,7 +43,7 @@ class RegistroActivity : AppCompatActivity() {
 
         tvHaveAccount.setOnClickListener {
             // Volver al login
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             startActivity(intent)
             finish()
@@ -109,7 +109,7 @@ class RegistroActivity : AppCompatActivity() {
                                 userMap["email"] = email
                                 userMap["username"] = username
                                 userMap["password"] = hashedPassword
-                                userMap["dinero"] = 0  
+                                userMap["dinero"] = 0
                                 userMap["createdAt"] = FieldValue.serverTimestamp()
 
                                 db.collection("Users")
@@ -120,6 +120,11 @@ class RegistroActivity : AppCompatActivity() {
                                             "Erregistratuta",
                                             Toast.LENGTH_SHORT
                                         ).show()
+                                        val userId = it.id
+                                        val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+                                        prefs.edit().putString("userRegistrado", userId).apply()
+
+
                                         val intent = Intent(this, MainActivity::class.java)
                                         startActivity(intent)
                                         finish()

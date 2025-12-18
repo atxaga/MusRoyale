@@ -17,7 +17,7 @@
         android:layout_width="140dp"
         android:layout_height="140dp"
         android:layout_marginTop="60dp"
-        android:src="@drawable/kartak"
+        android:src="@drawable/logo"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
