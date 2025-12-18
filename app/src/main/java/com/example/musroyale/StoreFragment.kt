@@ -36,15 +36,17 @@ class StoreFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Nota: En fragmentos usamos 'view.findViewById'
         val recyclerView = view.findViewById<RecyclerView>(R.id.rvStoreProducts)
 
-        // Usamos requireContext() en lugar de 'this'
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        // CAMBIO CLAVE: Usamos GridLayoutManager con 2 columnas
+        val gridLayoutManager = androidx.recyclerview.widget.GridLayoutManager(requireContext(), 2)
+        recyclerView.layoutManager = gridLayoutManager
+
         recyclerView.setHasFixedSize(true)
         recyclerView.adapter = storeAdapter
         storeAdapter.submitList(catalog)
 
+        // Configuración de la búsqueda
         view.findViewById<EditText>(R.id.etStoreSearch)?.doAfterTextChanged { text ->
             val query = text?.toString()?.trim()?.lowercase().orEmpty()
             val filtered = if (query.isEmpty()) catalog else catalog.filter {
@@ -92,13 +94,14 @@ class StoreFragment : Fragment() {
 
         private val image: ImageView = itemView.findViewById(R.id.ivProductImage)
         private val name: TextView = itemView.findViewById(R.id.tvProductName)
-        private val description: TextView = itemView.findViewById(R.id.tvProductDescription)
+        // Si quitaste la descripción del XML, comenta la siguiente línea:
+        // private val description: TextView = itemView.findViewById(R.id.tvProductDescription)
         private val price: TextView = itemView.findViewById(R.id.tvProductPrice)
         private val buyButton: MaterialButton = itemView.findViewById(R.id.btnBuy)
 
         fun bind(product: StoreProduct) {
             name.text = product.name
-            description.text = product.description
+            // description.text = product.description // Solo si el ID existe en el XML
             price.text = product.priceLabel
             image.setImageResource(product.imageRes)
             buyButton.setOnClickListener { onBuyClick(product) }
