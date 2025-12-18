@@ -30,7 +30,14 @@ class LoginActivity : AppCompatActivity() {
         etPassword = findViewById(R.id.etPassword)
         btnLogin = findViewById(R.id.btnLogin)
         btnRegister = findViewById(R.id.Erregistrobtn)
+// Comprobar si ya hay un usuario guardado
+        val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        val savedUser = prefs.getString("userRegistrado", null)
 
+        if (savedUser != null) {
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+        }
         btnLogin.setOnClickListener(View.OnClickListener { v: View? -> loginUser() })
         btnRegister.setOnClickListener(View.OnClickListener { v: View? -> erregistroPantaila() })
     }
@@ -69,6 +76,10 @@ class LoginActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT
 
                     ).show()
+                    val userId = userDoc.id
+                    val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+                    prefs.edit().putString("userRegistrado", userId).apply()
+
                     startActivity(Intent(this, MainActivity::class.java))
 
                 } else {
