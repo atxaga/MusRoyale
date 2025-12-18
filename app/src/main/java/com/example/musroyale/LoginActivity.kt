@@ -67,7 +67,10 @@ class LoginActivity : AppCompatActivity() {
                         this,
                         "Bienvenido " + userDoc.getString("email"),
                         Toast.LENGTH_SHORT
+
                     ).show()
+                    startActivity(Intent(this, MainActivity::class.java))
+
                 } else {
                     Toast.makeText(this, "Email edo pasahitza okerrak", Toast.LENGTH_LONG).show()
                 }

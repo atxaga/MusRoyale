@@ -26,14 +26,14 @@ class RegistroActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.erregitro_activity)
+        setContentView(R.layout.activity_register)
 
         etUsuario = findViewById(R.id.etRegUsuario)
         etEmail = findViewById(R.id.etRegEmail)
         etPassword = findViewById(R.id.etRegPassword)
-        etConfirm = findViewById(R.id.etRegConfirmPassword)
+        etConfirm = findViewById(R.id.errepikatuPass)
         btnRegister = findViewById(R.id.btnRegister)
-        tvHaveAccount = findViewById(R.id.tvHaveAccount)
+        tvHaveAccount = findViewById(R.id.Loginbtn)
 
         db = FirebaseFirestore.getInstance()
 
@@ -109,6 +109,7 @@ class RegistroActivity : AppCompatActivity() {
                                 userMap["email"] = email
                                 userMap["username"] = username
                                 userMap["password"] = hashedPassword
+                                userMap["dinero"] = 0  
                                 userMap["createdAt"] = FieldValue.serverTimestamp()
 
                                 db.collection("Users")
