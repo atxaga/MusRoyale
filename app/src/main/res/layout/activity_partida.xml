@@ -461,7 +461,7 @@
                     android:id="@+id/bottomCard4"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:src="@drawable/asbastod"
+                    android:src="@drawable/basto1"
                     android:scaleType="fitXY"
                     android:adjustViewBounds="true" />
             </com.google.android.material.card.MaterialCardView>
