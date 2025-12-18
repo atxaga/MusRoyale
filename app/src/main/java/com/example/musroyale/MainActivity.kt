@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.musroyale.databinding.ActivityMainBinding
+import com.google.firebase.firestore.FirebaseFirestore
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -21,11 +22,17 @@ class MainActivity : AppCompatActivity() {
     )
 
     private lateinit var tabs: List<TabItem>
+    private var currentUserId: String? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        currentUserId = prefs.getString("userRegistrado", null)
+
 
         tabs = listOf(
             TabItem(binding.tabAvatar, binding.imgAvatar, binding.txtAvatar),
@@ -39,8 +46,38 @@ class MainActivity : AppCompatActivity() {
             loadFragment(HomeFragment())
             selectTab(binding.tabPlay)
         }
+        binding.btnLogout.setOnClickListener { logout() }
 
         setupFooterListeners()
+        cargarDatosUser()
+    }
+    fun logout(){
+        val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        prefs.edit().remove("userRegistrado").apply()
+        currentUserId = null;
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+    }
+    private fun cargarDatosUser() {
+        if (currentUserId != null) {
+            val db = FirebaseFirestore.getInstance()
+            val docRef = db.collection("Users").document(currentUserId!!)
+            docRef.get()
+                .addOnSuccessListener { document ->
+                    if (document != null) {
+                        val username = document.getString("username") ?: "Usuario"
+                        val balance = document.getString("dinero") ?: "0"
+                        binding.txtUsername.text = username
+                        binding.txtBalance.text = balance
+                    } else {
+                        binding.txtUsername.text = "Usuario"
+                    }
+                }
+                .addOnFailureListener {
+                    binding.txtUsername.text = "Usuario"
+                }
+        }
+
     }
 
     private fun setupFooterListeners() {
