@@ -109,7 +109,7 @@ class RegistroActivity : AppCompatActivity() {
                                 userMap["email"] = email
                                 userMap["username"] = username
                                 userMap["password"] = hashedPassword
-                                userMap["dinero"] = 0
+                                userMap["dinero"] = "0"
                                 userMap["createdAt"] = FieldValue.serverTimestamp()
 
                                 db.collection("Users")
