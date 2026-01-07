@@ -50,6 +50,9 @@ class MainActivity : AppCompatActivity() {
 
         setupFooterListeners()
         cargarDatosUser()
+        binding.btnAddBalance.setOnClickListener {
+            var intent = Intent(this, AddBalanceActivity::class.java)
+            startActivity(intent)  }
     }
     fun logout(){
         val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
@@ -68,7 +71,7 @@ class MainActivity : AppCompatActivity() {
                     if (document != null) {
                         binding.loadingOverlay.visibility = View.GONE
 
-                        val username = document.getString("username") ?: "Usuario"
+                        val username = document.getString(  "username") ?: "Usuario"
                         val balance = document.getString("dinero") ?: "0"
                         binding.txtUsername.text = username
                         binding.txtBalance.text = balance
