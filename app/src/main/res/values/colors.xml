@@ -31,7 +31,10 @@
     <color name="action_button_red">#C62828</color>
     <color name="action_button_beige">#FAF3E0</color>
     <color name="action_button_mocha">#6D4C41</color>
-
+    <color name="gold">#FFD700</color>
+    <color name="dark_green_text">#004d40</color>
+    <color name="red_button">#B71C1C</color>
+    <color name="dialog_background_color">#FFFFFF</color>
     <!-- Primary color usado en avatars/botones -->
     <color name="primary">#8B4513</color>
 
