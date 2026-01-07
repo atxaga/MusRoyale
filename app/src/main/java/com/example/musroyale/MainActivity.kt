@@ -60,11 +60,14 @@ class MainActivity : AppCompatActivity() {
     }
     private fun cargarDatosUser() {
         if (currentUserId != null) {
+
             val db = FirebaseFirestore.getInstance()
             val docRef = db.collection("Users").document(currentUserId!!)
             docRef.get()
                 .addOnSuccessListener { document ->
                     if (document != null) {
+                        binding.loadingOverlay.visibility = View.GONE
+
                         val username = document.getString("username") ?: "Usuario"
                         val balance = document.getString("dinero") ?: "0"
                         binding.txtUsername.text = username
