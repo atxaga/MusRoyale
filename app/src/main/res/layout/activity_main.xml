@@ -9,6 +9,31 @@
     android:background="@drawable/fondo1"
     android:clipChildren="false">
 
+    <LinearLayout
+        android:id="@+id/loadingOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#AA000000"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:clickable="true"
+        android:focusable="true"
+        android:elevation="10dp"
+        >
+        <ProgressBar
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:indeterminateTint="#FFD700" />
+        <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Datuak eskuratzen..."
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+    </LinearLayout>
+
     <FrameLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
