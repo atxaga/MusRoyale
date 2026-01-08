@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import com.example.musroyale.databinding.ActivityMainBinding
 import com.google.firebase.firestore.FirebaseFirestore
@@ -50,59 +51,45 @@ class MainActivity : AppCompatActivity() {
 
         setupFooterListeners()
         cargarDatosUser()
-        binding.btnAddBalance.setOnClickListener {
-            var intent = Intent(this, AddBalanceActivity::class.java)
-            startActivity(intent)  }
     }
-    override fun onResume() {
-        super.onResume()
-        cargarDatosUser()
-    }
+
     fun logout(){
         val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
-        prefs.edit().remove("userRegistrado").apply()
-        currentUserId = null;
+        prefs.edit { remove("userRegistrado") }
+        currentUserId = null
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
     }
-    private var userListener: com.google.firebase.firestore.ListenerRegistration? = null
 
     private fun cargarDatosUser() {
         if (currentUserId != null) {
+
             val db = FirebaseFirestore.getInstance()
             val docRef = db.collection("Users").document(currentUserId!!)
+            docRef.get()
+                .addOnSuccessListener { document ->
+                    if (document != null) {
+                        binding.loadingOverlay.visibility = View.GONE
 
-            userListener?.remove()
-
-            // Iniciamos la escucha en tiempo real
-            userListener = docRef.addSnapshotListener { document, error ->
-                if (error != null) {
-                    return@addSnapshotListener
+                        val username = document.getString("username") ?: "Usuario"
+                        val balance = document.getString("dinero") ?: "0"
+                        binding.txtUsername.text = username
+                        binding.txtBalance.text = balance
+                    } else {
+                        binding.txtUsername.text = getString(R.string.default_user)
+                    }
                 }
-
-                if (document != null && document.exists()) {
-                    binding.loadingOverlay.visibility = View.GONE
-
-                    val username = document.getString("username") ?: "Usuario"
-                    // Importante: Si en Firebase es un número, usa getLong
-                    val balance = document.get("dinero")?.toString() ?: "0"
-
-                    binding.txtUsername.text = username
-                    binding.txtBalance.text = balance
+                .addOnFailureListener {
+                    binding.txtUsername.text = getString(R.string.default_user)
                 }
-            }
         }
-    }
 
-    // Limpieza para evitar fugas de memoria
-    override fun onDestroy() {
-        super.onDestroy()
-        userListener?.remove()
     }
 
     private fun setupFooterListeners() {
         binding.tabAvatar.setOnClickListener {
             selectTab(binding.tabAvatar)
+            loadFragment(EditProfileFragment())
             binding.header.visibility = View.VISIBLE
         }
 
