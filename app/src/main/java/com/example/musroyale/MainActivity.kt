@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import com.example.musroyale.databinding.ActivityMainBinding
 import com.google.firebase.firestore.FirebaseFirestore
@@ -51,13 +52,15 @@ class MainActivity : AppCompatActivity() {
         setupFooterListeners()
         cargarDatosUser()
     }
+
     fun logout(){
         val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
-        prefs.edit().remove("userRegistrado").apply()
-        currentUserId = null;
+        prefs.edit { remove("userRegistrado") }
+        currentUserId = null
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
     }
+
     private fun cargarDatosUser() {
         if (currentUserId != null) {
 
@@ -73,11 +76,11 @@ class MainActivity : AppCompatActivity() {
                         binding.txtUsername.text = username
                         binding.txtBalance.text = balance
                     } else {
-                        binding.txtUsername.text = "Usuario"
+                        binding.txtUsername.text = getString(R.string.default_user)
                     }
                 }
                 .addOnFailureListener {
-                    binding.txtUsername.text = "Usuario"
+                    binding.txtUsername.text = getString(R.string.default_user)
                 }
         }
 
@@ -86,6 +89,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupFooterListeners() {
         binding.tabAvatar.setOnClickListener {
             selectTab(binding.tabAvatar)
+            loadFragment(EditProfileFragment())
             binding.header.visibility = View.VISIBLE
         }
 
