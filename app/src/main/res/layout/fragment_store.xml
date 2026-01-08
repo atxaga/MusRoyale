@@ -65,63 +65,84 @@
             android:orientation="vertical">
 
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/premiumBanner"
+                android:id="@+id/dailySpinCard"
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
                 android:layout_margin="12dp"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="6dp"
                 app:strokeWidth="2dp"
-                app:strokeColor="#FFD700"> <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/bg_premium_gradient">
+                app:strokeColor="#FFD700">
 
-                <ImageView
-                    android:layout_width="120dp"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:src="@android:drawable/btn_star_big_on"
-                    android:alpha="0.3"
-                    android:scaleType="centerInside"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    android:background="@drawable/bg_premium_gradient">
+                    <ImageView
+                        android:id="@+id/ivWheel"
+                        android:layout_width="180dp"
+                        android:layout_height="180dp"
+                        android:src="@drawable/ruleta_premios"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginStart="20dp"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent">
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@android:drawable/arrow_down_float"
+                        app:layout_constraintEnd_toEndOf="@id/ivWheel"
+                        app:layout_constraintStart_toStartOf="@id/ivWheel"
+                        app:layout_constraintTop_toTopOf="@id/ivWheel"
+                        android:translationY="-10dp"
+                        app:tint="#FFD700" />
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="¡PREMIUM PASS!"
-                        android:textColor="#FFD700"
-                        android:textStyle="bold"
-                        android:textSize="22sp" />
+                        android:orientation="vertical"
+                        android:layout_marginStart="20dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Gemas infinitas y recompensas diarias"
-                        android:textColor="@android:color/white"
-                        android:textSize="12sp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="¡RULETA DIARIA!"
+                            android:textColor="#FFD700"
+                            android:textStyle="bold"
+                            android:textSize="22sp" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="PLANAK IKUSI"
-                        android:textSize="12sp"
-                        app:cornerRadius="20dp"
-                        app:backgroundTint="#FFD700"
-                        android:textColor="#212121" />
-                </LinearLayout>
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Prueba tu suerte hoy mismo"
+                            android:textColor="@android:color/white"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Premios: Monedas, Gemas o nada..."
+                            android:textColor="#BBBBBB"
+                            android:textSize="10sp"
+                            android:layout_marginTop="2dp"/>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnSpinWheel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:text="GIRAR POR 0.30€"
+                            android:textSize="12sp"
+                            app:cornerRadius="20dp"
+                            app:backgroundTint="#FFD700"
+                            android:textColor="#212121" />
+                    </LinearLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvStoreProducts"
                 android:layout_width="match_parent"
