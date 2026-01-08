@@ -8,39 +8,31 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.musroyale.databinding.ItemFriendChatBinding
 
 class FriendsChatAdapter(
-    private val friends: List<Friend>,
+    private var friends: MutableList<Friend>,
     private val onClick: (Friend) -> Unit
-) : RecyclerView.Adapter<FriendsChatAdapter.FriendViewHolder>() {
+) : RecyclerView.Adapter<FriendsChatAdapter.FriendVH>() {
 
-    // Variable para saber cuál está seleccionado y pintarlo diferente
-    private var selectedPosition = -1
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendViewHolder {
-        val binding = ItemFriendChatBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return FriendViewHolder(binding)
+    class FriendVH(view: android.view.View) : RecyclerView.ViewHolder(view) {
+        val nameText: android.widget.TextView = view.findViewById(R.id.txtName)
     }
 
-    override fun getItemCount(): Int = friends.size
+    override fun onCreateViewHolder(parent: android.view.ViewGroup, viewType: Int): FriendVH {
+        val view = android.view.LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_friend_chat, parent, false) // Crea un layout simple para esto
+        return FriendVH(view)
+    }
 
-    override fun onBindViewHolder(holder: FriendViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: FriendVH, position: Int) {
         val friend = friends[position]
-        holder.binding.txtName.text = friend.name
-        holder.binding.txtStatus.text = friend.status
-
-        // Cambiar color si está seleccionado
-        if (selectedPosition == position) {
-            holder.itemView.setBackgroundColor(Color.parseColor("#1F4E38")) // Verde seleccionado
-        } else {
-            holder.itemView.setBackgroundColor(Color.TRANSPARENT)
-        }
-        holder.binding.onlineIndicator.visibility = if (friend.isOnline) View.VISIBLE else View.GONE
-
-        holder.itemView.setOnClickListener {
-            selectedPosition = holder.bindingAdapterPosition
-            notifyDataSetChanged() // Refrescar lista para actualizar selección
-            onClick(friend)
-        }
+        holder.nameText.text = friend.name
+        holder.itemView.setOnClickListener { onClick(friend) }
     }
 
-    class FriendViewHolder(val binding: ItemFriendChatBinding) : RecyclerView.ViewHolder(binding.root)
+    override fun getItemCount() = friends.size
+
+    fun updateData(newList: List<Friend>) {
+        friends.clear()
+        friends.addAll(newList)
+        notifyDataSetChanged()
+    }
 }

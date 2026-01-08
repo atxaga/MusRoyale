@@ -1,7 +1,9 @@
 package com.example.musroyale
 
 data class ChatMessage(
-    val text: String,
-    val isMine: Boolean, // true = enviado por mi, false = recibido
-    val timestamp: String
+    val senderId: String = "",
+    val receiverId: String = "",
+    val message: String = "",
+    val timestamp: Long = 0L,
+    val isMine: Boolean = false // Se calcula al recibirlo
 )
