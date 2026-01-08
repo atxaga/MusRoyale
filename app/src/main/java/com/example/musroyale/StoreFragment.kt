@@ -147,7 +147,7 @@ class StoreFragment : Fragment() {
 
             // 2. Verificar si tiene saldo suficiente para pagar el giro
             if (saldoActualDouble < costeGiro) {
-                throw Exception("Saldo insuficiente") // Esto cancela la transacción
+                throw Exception("Ez duzu dirurik") // Esto cancela la transacción
             }
 
             // 3. Calcular nuevo saldo: (Saldo - 0.30) + Premio
@@ -161,13 +161,13 @@ class StoreFragment : Fragment() {
         }.addOnSuccessListener { nuevoTotal ->
             // Mostrar la alerta elegante que creamos antes
             if (cantidadGanada > 0) {
-                mostrarAlertaPremio("Has ganado ${String.format("%.2f", cantidadGanada)}€", cantidadGanada)
+                mostrarAlertaPremio("Irabazi duzu ${String.format("%.2f", cantidadGanada)}€", cantidadGanada)
             } else {
-                mostrarAlertaPremio("No hubo suerte. El giro costó 0.30€", 0.0)
+                mostrarAlertaPremio("Zorte txarra!", 0.0)
             }
         }.addOnFailureListener { e ->
-            if (e.message == "Saldo insuficiente") {
-                Toast.makeText(requireContext(), "Necesitas al menos 0.30€ para girar", Toast.LENGTH_LONG).show()
+            if (e.message == "Ez duzu dirurik") {
+                Toast.makeText(requireContext(), "Gutzienez 0.30€ behar dituzu", Toast.LENGTH_LONG).show()
             } else {
                 Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
@@ -293,11 +293,11 @@ class StoreFragment : Fragment() {
         // Si ganó, mostramos el número. Si no, un mensaje suave.
         if (cantidad > 0.0) {
             tvAmount.text = String.format("%.2f €", cantidad)
-            tvSubTitle.text = "Añadido a tu saldo"
+            tvSubTitle.text = "Zorionak!"
             tvAmount.setTextColor(Color.parseColor("#27AE60")) // Un verde elegante
         } else {
             tvAmount.text = "—"
-            tvSubTitle.text = "No hubo suerte esta vez"
+            tvSubTitle.text = "Zorte txarra!"
             tvAmount.setTextColor(Color.parseColor("#BDC3C7")) // Gris suave
         }
 

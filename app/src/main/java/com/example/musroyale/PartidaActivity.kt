@@ -25,10 +25,7 @@ class PartidaActivity : AppCompatActivity() {
         val btnChat = findViewById<ImageButton>(R.id.buttonChat)
         val btnCam = findViewById<ImageButton>(R.id.buttonCamara)
 
-        btnChat?.setOnClickListener {
-            val chatDialog = ChatDialogFragment()
-            chatDialog.show(supportFragmentManager, "ChatPopup")
-        }
+
 
 
         btnCam?.setOnClickListener {

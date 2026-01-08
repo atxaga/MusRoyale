@@ -78,6 +78,8 @@
                         android:layout_height="wrap_content"
                         android:hint="Erabiltzailea"
                         app:boxStrokeColor="#D4AF37"
+
+                        android:textColorHint="#5D4037"
                         app:hintTextColor="#3E2723"
                         app:boxCornerRadiusTopStart="12dp"
                         app:boxCornerRadiusBottomEnd="12dp">
@@ -98,6 +100,8 @@
                         android:layout_marginTop="12dp"
                         android:hint="E-posta"
                         app:boxStrokeColor="#D4AF37"
+
+                        android:textColorHint="#5D4037"
                         app:hintTextColor="#3E2723"
                         app:boxCornerRadiusTopStart="12dp"
                         app:boxCornerRadiusBottomEnd="12dp">
@@ -118,6 +122,8 @@
                         android:layout_marginTop="12dp"
                         android:hint="Pasahitza"
                         app:boxStrokeColor="#D4AF37"
+
+                        android:textColorHint="#5D4037"
                         app:hintTextColor="#3E2723"
                         app:passwordToggleEnabled="true"
                         app:passwordToggleTint="#3E2723"
@@ -139,6 +145,8 @@
                         android:layout_marginTop="12dp"
                         android:hint="Errepikatu Pasahitza"
                         app:boxStrokeColor="#D4AF37"
+
+                        android:textColorHint="#5D4037"
                         app:hintTextColor="#3E2723"
                         app:passwordToggleEnabled="true"
                         app:passwordToggleTint="#3E2723"

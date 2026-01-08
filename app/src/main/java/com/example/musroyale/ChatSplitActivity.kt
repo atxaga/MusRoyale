@@ -9,115 +9,145 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.musroyale.databinding.ActivityChatSplitBinding
 import java.text.SimpleDateFormat
 import java.util.*
-
 class ChatSplitActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityChatSplitBinding
-
-    // Adaptadores
     private lateinit var chatAdapter: ChatAdapter
     private lateinit var friendsAdapter: FriendsChatAdapter
 
-    // Datos
     private val messagesList = mutableListOf<ChatMessage>()
-    private val friendsList = listOf(
-        Friend("Sala General", "Todos los jugadores", true),
-        Friend("Iñaki", "Jugando...", true),
-        Friend("Maite", "En línea", true),
-        Friend("Jon", "Desconectado", false),
-        Friend("Mikel", "En partida", true)
-    )
+    private val db = com.google.firebase.firestore.FirebaseFirestore.getInstance()
+
+    private var currentUserId: String? = null
+    private var selectedFriendId: String? = null // El ID del amigo con el que hablas
+    private var chatListener: com.google.firebase.firestore.ListenerRegistration? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityChatSplitBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // ----------------------------------------------------
-        // 1. ABRIR EL MENÚ (Al pulsar la hamburguesa)
-        // ----------------------------------------------------
-        binding.btnMenuFriends.setOnClickListener {
-            // Abre el panel desde la izquierda (START)
-            binding.drawerLayout.openDrawer(GravityCompat.START)
-        }
+        // 1. Obtener mi ID de usuario
+        val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        currentUserId = prefs.getString("userRegistrado", null)
 
-        // ----------------------------------------------------
-        // 2. CERRAR EL MENÚ (Al pulsar la X dentro del menú)
-        // ----------------------------------------------------
-        binding.btnCloseDrawer.setOnClickListener {
-            // Cierra el panel
-            binding.drawerLayout.closeDrawer(GravityCompat.START)
-        }
-
-        // Configuración de listas (el resto sigue igual)
         setupFriendsList()
         setupChatArea()
+        cargarAmigosDelDrawer()
 
-        // Botón salir
-        binding.btnExit.setOnClickListener {
-            finish()
-        }
-        // Botón enviar
+        binding.btnMenuFriends.setOnClickListener { binding.drawerLayout.openDrawer(GravityCompat.START) }
+        binding.btnCloseDrawer.setOnClickListener { binding.drawerLayout.closeDrawer(GravityCompat.START) }
+        binding.btnExit.setOnClickListener { finish() }
+
+        // 2. Botón enviar ahora usa la base de datos real
         binding.btnSend.setOnClickListener { sendMessage() }
     }
 
     private fun setupFriendsList() {
-        friendsAdapter = FriendsChatAdapter(friendsList) { friend ->
-            // AL HACER CLICK EN UN AMIGO:
-            loadChatForFriend(friend)
+        friendsAdapter = FriendsChatAdapter(mutableListOf()) { friend ->
+            selectedFriendId = friend.id
+            escucharChatReal(friend) // Cargamos el chat real al pulsar un amigo
+            binding.drawerLayout.closeDrawer(GravityCompat.START)
         }
         binding.recyclerFriends.layoutManager = LinearLayoutManager(this)
         binding.recyclerFriends.adapter = friendsAdapter
     }
 
-    private fun setupChatArea() {
-        chatAdapter = ChatAdapter(messagesList)
-        binding.recyclerChat.layoutManager = LinearLayoutManager(this).apply {
-            stackFromEnd = true
-        }
-        binding.recyclerChat.adapter = chatAdapter
-
-        // Cargar por defecto la sala general
-        loadChatForFriend(friendsList[0])
-    }
-
-    private fun loadChatForFriend(friend: Friend) {
-        // 1. Cambiar Título
+    private fun escucharChatReal(friend: Friend) {
         binding.chatTitleName.text = friend.name
 
-        // 2. Cambiar Estado
-        binding.chatTitleStatus.text = if(friend.isOnline) "• En línea" else "• Offline"
-        binding.chatTitleStatus.setTextColor(
-            if(friend.isOnline) android.graphics.Color.parseColor("#4CAF50")
-            else android.graphics.Color.GRAY
-        )
+        // Cerramos el listener anterior si existía
+        chatListener?.remove()
 
-        // 3. Limpiar mensajes anteriores (simulación)
-        messagesList.clear()
+        // Escuchamos la colección "Chats" filtrada por los dos usuarios
+        chatListener = db.collection("Chats")
+            .orderBy("timestamp", com.google.firebase.firestore.Query.Direction.ASCENDING)
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) return@addSnapshotListener
 
-        // 4. Añadir un mensaje de bienvenida ficticio
-        messagesList.add(ChatMessage("Has entrado al chat con ${friend.name}", false, getCurrentTime()))
-        chatAdapter.notifyDataSetChanged()
+                messagesList.clear()
+                snapshot?.documents?.forEach { doc ->
+                    val emisor = doc.getString("idemisor") ?: ""
+                    val receptor = doc.getString("idreceptor") ?: ""
+
+                    // Filtrado: Solo mensajes entre YO y el AMIGO seleccionado
+                    if ((emisor == currentUserId && receptor == friend.id) ||
+                        (emisor == friend.id && receptor == currentUserId)) {
+
+                        messagesList.add(ChatMessage(
+                            senderId = emisor,
+                            receiverId = receptor,
+                            message = doc.getString("mensaje") ?: "",
+                            timestamp = doc.getLong("timestamp") ?: 0L,
+                            isMine = emisor == currentUserId
+                        ))
+                    }
+                }
+                chatAdapter.notifyDataSetChanged()
+                if (messagesList.isNotEmpty()) {
+                    binding.recyclerChat.scrollToPosition(messagesList.size - 1)
+                }
+            }
     }
 
     private fun sendMessage() {
         val text = binding.editMessage.text.toString().trim()
-        if (text.isNotEmpty()) {
-            val myMessage = ChatMessage(text, true, getCurrentTime())
-            messagesList.add(myMessage)
-            chatAdapter.notifyItemInserted(messagesList.size - 1)
-            binding.recyclerChat.smoothScrollToPosition(messagesList.size - 1)
+        val fId = selectedFriendId
 
-            binding.editMessage.setText("")
+        if (text.isNotEmpty() && currentUserId != null && fId != null) {
+            val messageData = mapOf(
+                "idemisor" to currentUserId,
+                "idreceptor" to fId,
+                "mensaje" to text,
+                "timestamp" to System.currentTimeMillis()
+            )
 
-            // Simular respuesta
-            Handler(Looper.getMainLooper()).postDelayed({
-                messagesList.add(ChatMessage("Jajaja, ¡buena esa!", false, getCurrentTime()))
-                chatAdapter.notifyItemInserted(messagesList.size - 1)
-                binding.recyclerChat.smoothScrollToPosition(messagesList.size - 1)
-            }, 1500)
+            // Guardamos en Firestore
+            db.collection("Chats").add(messageData).addOnSuccessListener {
+                binding.editMessage.setText("") // El listener lo pintará automáticamente
+            }
         }
     }
 
-    private fun getCurrentTime(): String = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
+    private fun setupChatArea() {
+        chatAdapter = ChatAdapter(messagesList)
+        binding.recyclerChat.layoutManager = LinearLayoutManager(this).apply { stackFromEnd = true }
+        binding.recyclerChat.adapter = chatAdapter
+    }
+
+    private var friendsListener: com.google.firebase.firestore.ListenerRegistration? = null
+
+    private fun cargarAmigosDelDrawer() {
+        val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        val currentUserEmail = prefs.getString("userRegistrado", null) ?: return
+
+        // Escuchamos MI documento para ver si mi lista de "amigos" cambia
+        friendsListener = db.collection("Users").document(currentUserEmail)
+            .addSnapshotListener { document, error ->
+                if (error != null) return@addSnapshotListener
+
+                val amigosIds = document?.get("amigos") as? List<String> ?: listOf()
+
+                if (amigosIds.isNotEmpty()) {
+                    // Buscamos los datos de esos IDs
+                    db.collection("Users")
+                        .whereIn(com.google.firebase.firestore.FieldPath.documentId(), amigosIds)
+                        .get()
+                        .addOnSuccessListener { query ->
+                            val listaAmigos = query.documents.map {
+                                Friend(it.id, it.getString("username") ?: "Usuario")
+                            }
+                            friendsAdapter.updateData(listaAmigos)
+                        }
+                } else {
+                    // Si no tienes amigos, vaciamos la lista
+                    friendsAdapter.updateData(mutableListOf())
+                }
+            }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        chatListener?.remove() // Importante limpiar al salir de la pantalla
+    }
 }
