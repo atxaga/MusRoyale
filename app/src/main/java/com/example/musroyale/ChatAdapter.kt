@@ -23,13 +23,13 @@ class ChatAdapter(private val messages: List<ChatMessage>) :
     inner class ChatViewHolder(private val binding: ItemChatMessageBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(message: ChatMessage) {
             if (message.isMine) {
-                // Es mi mensaje: Muestro el de la derecha, oculto el de la izquierda
-                binding.textSent.text = message.text
+                // MENSAJE ENVIADO (Derecha)
+                binding.textSent.text = message.message // Usamos .message
                 binding.textSent.visibility = View.VISIBLE
                 binding.textReceived.visibility = View.GONE
             } else {
-                // Es su mensaje: Muestro el de la izquierda, oculto el de la derecha
-                binding.textReceived.text = message.text
+                // MENSAJE RECIBIDO (Izquierda)
+                binding.textReceived.text = message.message // Usamos .message
                 binding.textReceived.visibility = View.VISIBLE
                 binding.textSent.visibility = View.GONE
             }

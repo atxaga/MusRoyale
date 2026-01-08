@@ -111,6 +111,9 @@ class RegistroActivity : AppCompatActivity() {
                                 userMap["password"] = hashedPassword
                                 userMap["dinero"] = "0"
                                 userMap["createdAt"] = FieldValue.serverTimestamp()
+                                userMap["amigos"] = ArrayList<String>()
+                                userMap["solicitudMandada"] = ArrayList<String>()
+                                userMap["solicitudRecivida"] = ArrayList<String>()
 
                                 db.collection("Users")
                                     .add(userMap)
