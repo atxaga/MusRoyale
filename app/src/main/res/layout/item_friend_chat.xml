@@ -16,7 +16,6 @@
         android:layout_height="48dp"
         android:padding="2dp"
         android:src="@drawable/avarat_circle_bg"
-        android:background="@drawable/avarat_circle_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

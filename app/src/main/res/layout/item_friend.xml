@@ -32,8 +32,7 @@
                 android:padding="2dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_avatar3"
-                app:strokeColor="@color/friends_beige_primary"
-                app:strokeWidth="2dp" />
+                 />
 
 
         </FrameLayout>
