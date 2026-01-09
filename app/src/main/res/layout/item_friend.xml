@@ -35,13 +35,7 @@
                 app:strokeColor="@color/friends_beige_primary"
                 app:strokeWidth="2dp" />
 
-            <View
-                android:id="@+id/online_indicator"
-                android:layout_width="14dp"
-                android:layout_height="14dp"
-                android:layout_gravity="bottom|end"
-                android:background="@drawable/shape_online_dot"
-                android:elevation="4dp" />
+
         </FrameLayout>
 
         <LinearLayout
@@ -65,13 +59,7 @@
                 android:textSize="17sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="En línea • Jugando ahora"
-                android:textColor="@color/friends_text_secondary"
-                android:textSize="13sp" />
+
         </LinearLayout>
 
         <com.google.android.material.button.MaterialButton

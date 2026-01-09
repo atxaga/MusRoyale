@@ -120,9 +120,9 @@ class StoreFragment : Fragment() {
         var premioEuros = 0.0
 
         when (sectorApuntado) {
-            in 337.5..360.0, in 0.0..22.5 -> premioEuros = 0.50
-            in 247.5..292.5 -> premioEuros = 1.00
-            in 157.5..202.5 -> premioEuros = 5.00
+            in 358.0..360.0 -> premioEuros = 20.00
+            in 347.5..357.0 -> premioEuros = 0.50
+            in 247.5..292.5 -> premioEuros = 0.20
             in 67.5..112.5 -> premioEuros = 0.10
             else -> premioEuros = 0.0
         }

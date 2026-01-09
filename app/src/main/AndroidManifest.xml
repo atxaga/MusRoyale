@@ -30,6 +30,29 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar"
             android:windowSoftInputMode="adjustResize"/>
+        <activity
+            android:name=".AddBalanceActivity"
+            android:exported="true"
+            android:launchMode="singleTop">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="musroyale" android:host="pago_exitoso" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="musroyale" android:host="pago_cancelado" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".CryptoPaymentActivity" />
+        <activity android:name=".AdminActivity" />
         <activity android:name=".EditProfileActivity"/>
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>

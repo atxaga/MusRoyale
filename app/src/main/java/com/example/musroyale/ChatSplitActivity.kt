@@ -55,22 +55,23 @@ class ChatSplitActivity : AppCompatActivity() {
 
     private fun escucharChatReal(friend: Friend) {
         binding.chatTitleName.text = friend.name
-
-        // Cerramos el listener anterior si existía
         chatListener?.remove()
 
-        // Escuchamos la colección "Chats" filtrada por los dos usuarios
         chatListener = db.collection("Chats")
             .orderBy("timestamp", com.google.firebase.firestore.Query.Direction.ASCENDING)
             .addSnapshotListener { snapshot, e ->
                 if (e != null) return@addSnapshotListener
 
+                val batch = db.batch()
+                var hayCambiosPorMarcar = false
+
                 messagesList.clear()
                 snapshot?.documents?.forEach { doc ->
                     val emisor = doc.getString("idemisor") ?: ""
                     val receptor = doc.getString("idreceptor") ?: ""
+                    val leido = doc.getBoolean("leido") ?: false
 
-                    // Filtrado: Solo mensajes entre YO y el AMIGO seleccionado
+                    // 1. Filtrado de mensajes para mostrar en pantalla
                     if ((emisor == currentUserId && receptor == friend.id) ||
                         (emisor == friend.id && receptor == currentUserId)) {
 
@@ -81,8 +82,23 @@ class ChatSplitActivity : AppCompatActivity() {
                             timestamp = doc.getLong("timestamp") ?: 0L,
                             isMine = emisor == currentUserId
                         ))
+
+                        // 2. LÓGICA CLAVE: Si el mensaje es para MÍ, viene de ESTE AMIGO y no está LEÍDO...
+                        if (receptor == currentUserId && emisor == friend.id && !leido) {
+                            // ...lo preparamos para marcar como leído en el servidor
+                            batch.update(doc.reference, "leido", true)
+                            hayCambiosPorMarcar = true
+                        }
                     }
                 }
+
+                // 3. Ejecutamos la actualización en Firebase si hay mensajes nuevos
+                if (hayCambiosPorMarcar) {
+                    batch.commit().addOnSuccessListener {
+                        // Opcional: Log o acción tras marcar como leído
+                    }
+                }
+
                 chatAdapter.notifyDataSetChanged()
                 if (messagesList.isNotEmpty()) {
                     binding.recyclerChat.scrollToPosition(messagesList.size - 1)
@@ -95,17 +111,22 @@ class ChatSplitActivity : AppCompatActivity() {
         val fId = selectedFriendId
 
         if (text.isNotEmpty() && currentUserId != null && fId != null) {
-            val messageData = mapOf(
-                "idemisor" to currentUserId,
+            var messageData: HashMap<String, Any> = hashMapOf(
+                "idemisor" to currentUserId!!,
                 "idreceptor" to fId,
                 "mensaje" to text,
-                "timestamp" to System.currentTimeMillis()
+                "timestamp" to System.currentTimeMillis(),
+                "leido" to false
             )
 
-            // Guardamos en Firestore
-            db.collection("Chats").add(messageData).addOnSuccessListener {
-                binding.editMessage.setText("") // El listener lo pintará automáticamente
-            }
+            db.collection("Chats")
+                .add(messageData)
+                .addOnSuccessListener {
+                    binding.editMessage.setText("")
+                }
+                .addOnFailureListener { e ->
+                    android.util.Log.e("FirestoreError", "Error al enviar", e)
+                }
         }
     }
 
@@ -121,15 +142,11 @@ class ChatSplitActivity : AppCompatActivity() {
         val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
         val currentUserEmail = prefs.getString("userRegistrado", null) ?: return
 
-        // Escuchamos MI documento para ver si mi lista de "amigos" cambia
         friendsListener = db.collection("Users").document(currentUserEmail)
-            .addSnapshotListener { document, error ->
-                if (error != null) return@addSnapshotListener
-
+            .addSnapshotListener { document, _ ->
                 val amigosIds = document?.get("amigos") as? List<String> ?: listOf()
 
                 if (amigosIds.isNotEmpty()) {
-                    // Buscamos los datos de esos IDs
                     db.collection("Users")
                         .whereIn(com.google.firebase.firestore.FieldPath.documentId(), amigosIds)
                         .get()
@@ -137,11 +154,23 @@ class ChatSplitActivity : AppCompatActivity() {
                             val listaAmigos = query.documents.map {
                                 Friend(it.id, it.getString("username") ?: "Usuario")
                             }
+
+                            // --- INICIO LÓGICA DE CONTEO ---
+                            for (friend in listaAmigos) {
+                                db.collection("Chats")
+                                    .whereEqualTo("idemisor", friend.id)
+                                    .whereEqualTo("idreceptor", currentUserId)
+                                    .whereEqualTo("leido", false)
+                                    .addSnapshotListener { snapshots, _ ->
+                                        val count = snapshots?.size() ?: 0
+                                        friend.unreadCount = count
+                                        friendsAdapter.notifyDataSetChanged()
+                                    }
+                            }
+                            // --- FIN LÓGICA DE CONTEO ---
+
                             friendsAdapter.updateData(listaAmigos)
                         }
-                } else {
-                    // Si no tienes amigos, vaciamos la lista
-                    friendsAdapter.updateData(mutableListOf())
                 }
             }
     }

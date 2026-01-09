@@ -8,7 +8,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import com.example.musroyale.databinding.ActivityMainBinding
 import com.google.firebase.firestore.FirebaseFirestore
@@ -34,62 +33,87 @@ class MainActivity : AppCompatActivity() {
         val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
         currentUserId = prefs.getString("userRegistrado", null)
 
+        // 1. Escucha de notificaciones de chat
+        if (currentUserId != null) {
+            escucharNotificacionesChat()
+        }
 
-        tabs = listOf(
-            TabItem(binding.tabAvatar, binding.imgAvatar, binding.txtAvatar),
-            TabItem(binding.tabChat, binding.imgChat, binding.txtChat),
-            TabItem(binding.tabPlay, binding.imgPlay, binding.txtPlay),
-            TabItem(binding.tabFriends, binding.imgFriends, binding.txtFriends),
-            TabItem(binding.tabStore, binding.imgStore, binding.txtStore)
-        )
-
+        // 2. Setup de Tabs y Fragment inicial
+        setupTabs()
         if (savedInstanceState == null) {
             loadFragment(HomeFragment())
             selectTab(binding.tabPlay)
         }
+
+        // 3. Listeners de Botones de Cabecera
         binding.btnLogout.setOnClickListener { logout() }
 
+        // El botón de balance ahora lleva a la pantalla de Crypto
+        binding.btnAddBalance.setOnClickListener {
+            startActivity(Intent(this, CryptoPaymentActivity::class.java))
+        }
+
         setupFooterListeners()
-        cargarDatosUser()
+        cargarDatosUser() // Aquí dentro manejaremos la visibilidad del panel admin
     }
 
+
+    override fun onResume() {
+        super.onResume()
+        cargarDatosUser()
+    }
     fun logout(){
         val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
-        prefs.edit { remove("userRegistrado") }
-        currentUserId = null
+        prefs.edit().remove("userRegistrado").apply()
+        currentUserId = null;
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
     }
+    private var userListener: com.google.firebase.firestore.ListenerRegistration? = null
 
     private fun cargarDatosUser() {
-        if (currentUserId != null) {
+        if (currentUserId == null) return
 
-            val db = FirebaseFirestore.getInstance()
-            val docRef = db.collection("Users").document(currentUserId!!)
-            docRef.get()
-                .addOnSuccessListener { document ->
-                    if (document != null) {
-                        binding.loadingOverlay.visibility = View.GONE
+        val db = FirebaseFirestore.getInstance()
+        val docRef = db.collection("Users").document(currentUserId!!)
 
-                        val username = document.getString("username") ?: "Usuario"
-                        val balance = document.getString("dinero") ?: "0"
-                        binding.txtUsername.text = username
-                        binding.txtBalance.text = balance
-                    } else {
-                        binding.txtUsername.text = getString(R.string.default_user)
+        userListener?.remove()
+        userListener = docRef.addSnapshotListener { document, error ->
+            if (error != null) return@addSnapshotListener
+
+            if (document != null && document.exists()) {
+                binding.loadingOverlay.visibility = View.GONE
+
+                val username = document.getString("username") ?: "Usuario"
+                val balance = document.get("dinero")?.toString() ?: "0"
+
+                binding.txtUsername.text = username
+                binding.txtBalance.text = balance
+
+                // === LÓGICA DE ADMINISTRADOR SEGURA ===
+                // Cambia "tu_correo@gmail.com" por tu correo real o ID de administrador
+                if (currentUserId == "kHjrbXVjxZQzRHRvvqf7") {
+                    binding.btnAdminPanel.visibility = View.VISIBLE
+                    binding.btnAdminPanel.setOnClickListener {
+                        startActivity(Intent(this, AdminActivity::class.java))
                     }
+                } else {
+                    binding.btnAdminPanel.visibility = View.GONE
                 }
-                .addOnFailureListener {
-                    binding.txtUsername.text = getString(R.string.default_user)
-                }
+            }
         }
+    }
 
+    // Limpieza para evitar fugas de memoria
+    override fun onDestroy() {
+        super.onDestroy()
+        userListener?.remove()
+        chatNotificationsListener?.remove() // Limpiar también este
     }
 
     private fun setupFooterListeners() {
         binding.tabAvatar.setOnClickListener {
             selectTab(binding.tabAvatar)
-            loadFragment(EditProfileFragment())
             binding.header.visibility = View.VISIBLE
         }
 
@@ -122,7 +146,29 @@ class MainActivity : AppCompatActivity() {
             .replace(R.id.mainContainer, fragment)
             .commit()
     }
+    private var chatNotificationsListener: com.google.firebase.firestore.ListenerRegistration? = null
 
+    private fun escucharNotificacionesChat() {
+        val uid = currentUserId ?: return
+        val db = FirebaseFirestore.getInstance()
+
+        // Escuchamos mensajes dirigidos a mí que no han sido leídos
+        chatNotificationsListener = db.collection("Chats")
+            .whereEqualTo("idreceptor", uid)
+            .whereEqualTo("leido", false)
+            .addSnapshotListener { snapshots, e ->
+                if (e != null) return@addSnapshotListener
+
+                val count = snapshots?.size() ?: 0
+
+                if (count > 0) {
+                    binding.badgeTotalChat.visibility = View.VISIBLE
+                    binding.badgeTotalChat.text = if (count > 99) "+99" else count.toString()
+                } else {
+                    binding.badgeTotalChat.visibility = View.GONE
+                }
+            }
+    }
     private fun selectTab(selectedLayout: LinearLayout) {
         tabs.forEachIndexed { index, tab ->
 
@@ -162,5 +208,14 @@ class MainActivity : AppCompatActivity() {
                 tab.text.visibility = View.GONE
             }
         }
+    }
+    private fun setupTabs() {
+        tabs = listOf(
+            TabItem(binding.tabAvatar, binding.imgAvatar, binding.txtAvatar),
+            TabItem(binding.tabChat, binding.imgChat, binding.txtChat),
+            TabItem(binding.tabPlay, binding.imgPlay, binding.txtPlay),
+            TabItem(binding.tabFriends, binding.imgFriends, binding.txtFriends),
+            TabItem(binding.tabStore, binding.imgStore, binding.txtStore)
+        )
     }
 }
