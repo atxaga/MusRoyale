@@ -1,6 +1,5 @@
 package com.example.musroyale
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,19 +11,30 @@ class FriendsChatAdapter(
     private val onClick: (Friend) -> Unit
 ) : RecyclerView.Adapter<FriendsChatAdapter.FriendVH>() {
 
-    class FriendVH(view: android.view.View) : RecyclerView.ViewHolder(view) {
-        val nameText: android.widget.TextView = view.findViewById(R.id.txtName)
-    }
+    // Cambiamos a ViewBinding para acceder fácilmente a todos los IDs
+    class FriendVH(val binding: ItemFriendChatBinding) : RecyclerView.ViewHolder(binding.root)
 
-    override fun onCreateViewHolder(parent: android.view.ViewGroup, viewType: Int): FriendVH {
-        val view = android.view.LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_friend_chat, parent, false) // Crea un layout simple para esto
-        return FriendVH(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendVH {
+        val binding = ItemFriendChatBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        return FriendVH(binding)
     }
 
     override fun onBindViewHolder(holder: FriendVH, position: Int) {
         val friend = friends[position]
-        holder.nameText.text = friend.name
+        holder.binding.txtName.text = friend.name
+
+        // Si hay mensajes, muestra el badge, si no, ocúltalo
+        if (friend.unreadCount > 0) {
+            holder.binding.badgeCount.visibility = View.VISIBLE
+            holder.binding.badgeCount.text = friend.unreadCount.toString()
+        } else {
+            holder.binding.badgeCount.visibility = View.GONE
+        }
+
         holder.itemView.setOnClickListener { onClick(friend) }
     }
 

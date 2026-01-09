@@ -38,7 +38,7 @@ class FriendsAdapter(
         // Configuramos el botón según el modo de la pantalla
         when (modo) {
             "RECIBIDAS" -> {
-                holder.action.text = "Aceptar"
+                holder.action.text = "Onartu"
                 holder.action.isEnabled = true
                 holder.action.alpha = 1.0f
                 holder.action.setOnClickListener {
@@ -47,7 +47,7 @@ class FriendsAdapter(
                 }
             }
             "ENVIADAS" -> {
-                holder.action.text = "Cancelar"
+                holder.action.text = "Kendu"
                 holder.action.isEnabled = true
                 holder.action.alpha = 1.0f
                 holder.action.setOnClickListener {
@@ -60,22 +60,22 @@ class FriendsAdapter(
             "BUSCAR" -> {
                 when (relacion) {
                     "AMIGO" -> {
-                        holder.action.text = "Amigo"
+                        holder.action.text = "Laguna"
                         holder.action.isEnabled = false
                         holder.action.alpha = 0.5f
                     }
                     "PENDIENTE" -> {
-                        holder.action.text = "Enviada"
+                        holder.action.text = "Bidalita"
                         holder.action.isEnabled = false
                         holder.action.alpha = 0.5f
                     }
                     else -> { // EXPLORAR
-                        holder.action.text = "Solicitar"
+                        holder.action.text = "Gehitu"
                         holder.action.isEnabled = true
                         holder.action.alpha = 1.0f
                         holder.action.setOnClickListener {
                             enviarSolicitudAmistad(userId, holder.itemView.context)
-                            holder.action.text = "Enviada"
+                            holder.action.text = "Bidalita"
                             holder.action.isEnabled = false
                             holder.action.alpha = 0.5f
                         }

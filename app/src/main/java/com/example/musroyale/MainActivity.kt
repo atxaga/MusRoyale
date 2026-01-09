@@ -33,27 +33,31 @@ class MainActivity : AppCompatActivity() {
         val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
         currentUserId = prefs.getString("userRegistrado", null)
 
+        // 1. Escucha de notificaciones de chat
+        if (currentUserId != null) {
+            escucharNotificacionesChat()
+        }
 
-        tabs = listOf(
-            TabItem(binding.tabAvatar, binding.imgAvatar, binding.txtAvatar),
-            TabItem(binding.tabChat, binding.imgChat, binding.txtChat),
-            TabItem(binding.tabPlay, binding.imgPlay, binding.txtPlay),
-            TabItem(binding.tabFriends, binding.imgFriends, binding.txtFriends),
-            TabItem(binding.tabStore, binding.imgStore, binding.txtStore)
-        )
-
+        // 2. Setup de Tabs y Fragment inicial
+        setupTabs()
         if (savedInstanceState == null) {
             loadFragment(HomeFragment())
             selectTab(binding.tabPlay)
         }
+
+        // 3. Listeners de Botones de Cabecera
         binding.btnLogout.setOnClickListener { logout() }
 
-        setupFooterListeners()
-        cargarDatosUser()
+        // El botón de balance ahora lleva a la pantalla de Crypto
         binding.btnAddBalance.setOnClickListener {
-            var intent = Intent(this, AddBalanceActivity::class.java)
-            startActivity(intent)  }
+            startActivity(Intent(this, CryptoPaymentActivity::class.java))
+        }
+
+        setupFooterListeners()
+        cargarDatosUser() // Aquí dentro manejaremos la visibilidad del panel admin
     }
+
+
     override fun onResume() {
         super.onResume()
         cargarDatosUser()
@@ -68,27 +72,33 @@ class MainActivity : AppCompatActivity() {
     private var userListener: com.google.firebase.firestore.ListenerRegistration? = null
 
     private fun cargarDatosUser() {
-        if (currentUserId != null) {
-            val db = FirebaseFirestore.getInstance()
-            val docRef = db.collection("Users").document(currentUserId!!)
+        if (currentUserId == null) return
 
-            userListener?.remove()
+        val db = FirebaseFirestore.getInstance()
+        val docRef = db.collection("Users").document(currentUserId!!)
 
-            // Iniciamos la escucha en tiempo real
-            userListener = docRef.addSnapshotListener { document, error ->
-                if (error != null) {
-                    return@addSnapshotListener
-                }
+        userListener?.remove()
+        userListener = docRef.addSnapshotListener { document, error ->
+            if (error != null) return@addSnapshotListener
 
-                if (document != null && document.exists()) {
-                    binding.loadingOverlay.visibility = View.GONE
+            if (document != null && document.exists()) {
+                binding.loadingOverlay.visibility = View.GONE
 
-                    val username = document.getString("username") ?: "Usuario"
-                    // Importante: Si en Firebase es un número, usa getLong
-                    val balance = document.get("dinero")?.toString() ?: "0"
+                val username = document.getString("username") ?: "Usuario"
+                val balance = document.get("dinero")?.toString() ?: "0"
 
-                    binding.txtUsername.text = username
-                    binding.txtBalance.text = balance
+                binding.txtUsername.text = username
+                binding.txtBalance.text = balance
+
+                // === LÓGICA DE ADMINISTRADOR SEGURA ===
+                // Cambia "tu_correo@gmail.com" por tu correo real o ID de administrador
+                if (currentUserId == "kHjrbXVjxZQzRHRvvqf7") {
+                    binding.btnAdminPanel.visibility = View.VISIBLE
+                    binding.btnAdminPanel.setOnClickListener {
+                        startActivity(Intent(this, AdminActivity::class.java))
+                    }
+                } else {
+                    binding.btnAdminPanel.visibility = View.GONE
                 }
             }
         }
@@ -98,6 +108,7 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         userListener?.remove()
+        chatNotificationsListener?.remove() // Limpiar también este
     }
 
     private fun setupFooterListeners() {
@@ -135,7 +146,29 @@ class MainActivity : AppCompatActivity() {
             .replace(R.id.mainContainer, fragment)
             .commit()
     }
+    private var chatNotificationsListener: com.google.firebase.firestore.ListenerRegistration? = null
 
+    private fun escucharNotificacionesChat() {
+        val uid = currentUserId ?: return
+        val db = FirebaseFirestore.getInstance()
+
+        // Escuchamos mensajes dirigidos a mí que no han sido leídos
+        chatNotificationsListener = db.collection("Chats")
+            .whereEqualTo("idreceptor", uid)
+            .whereEqualTo("leido", false)
+            .addSnapshotListener { snapshots, e ->
+                if (e != null) return@addSnapshotListener
+
+                val count = snapshots?.size() ?: 0
+
+                if (count > 0) {
+                    binding.badgeTotalChat.visibility = View.VISIBLE
+                    binding.badgeTotalChat.text = if (count > 99) "+99" else count.toString()
+                } else {
+                    binding.badgeTotalChat.visibility = View.GONE
+                }
+            }
+    }
     private fun selectTab(selectedLayout: LinearLayout) {
         tabs.forEachIndexed { index, tab ->
 
@@ -175,5 +208,14 @@ class MainActivity : AppCompatActivity() {
                 tab.text.visibility = View.GONE
             }
         }
+    }
+    private fun setupTabs() {
+        tabs = listOf(
+            TabItem(binding.tabAvatar, binding.imgAvatar, binding.txtAvatar),
+            TabItem(binding.tabChat, binding.imgChat, binding.txtChat),
+            TabItem(binding.tabPlay, binding.imgPlay, binding.txtPlay),
+            TabItem(binding.tabFriends, binding.imgFriends, binding.txtFriends),
+            TabItem(binding.tabStore, binding.imgStore, binding.txtStore)
+        )
     }
 }
