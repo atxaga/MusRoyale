@@ -152,7 +152,7 @@ class ChatSplitActivity : AppCompatActivity() {
                         .get()
                         .addOnSuccessListener { query ->
                             val listaAmigos = query.documents.map {
-                                Friend(it.id, it.getString("username") ?: "Usuario")
+                                Friend(it.id, it.getString("username") ?: "Usuario",0, it.getString("avatarActual") ?: "avadef.png", )
                             }
 
                             // --- INICIO LÓGICA DE CONTEO ---
