@@ -15,6 +15,8 @@ class AdminPagosAdapter(
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val txtInfo: TextView = view.findViewById(R.id.txtInfoSolicitud)
         val btnAprobar: Button = view.findViewById(R.id.btnAprobar)
+        val txtMontoAdmin: TextView = view.findViewById(R.id.txtMontoAdmin)
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -24,7 +26,8 @@ class AdminPagosAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = solicitudes[position]
-        holder.txtInfo.text = "${item.username} - ${item.monto} USDT\nID: ${item.orderId}"
+        holder.txtMontoAdmin.text = "${item.monto} €"
+        holder.txtInfo.text = "${item.username} - ID: ${item.orderId}"
         holder.btnAprobar.setOnClickListener { onAprobarClick(item) }
     }
 

@@ -54,7 +54,9 @@ class FriendsListFragment : Fragment(), Searchable {
 
                         val userData = mutableMapOf(
                             "id" to id,
-                            "username" to (doc.getString("username") ?: "Sin nombre")
+                            "username" to (doc.getString("username") ?: "Sin nombre"),
+                            "avatarActual" to (doc.getString("avatarActual") ?: "avatar_default.png")
+
                         )
 
                         when {

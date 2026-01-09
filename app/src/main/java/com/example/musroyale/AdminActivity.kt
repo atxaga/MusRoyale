@@ -19,6 +19,7 @@ class AdminActivity : AppCompatActivity() {
         binding.btnBack.setOnClickListener {
             finish()
         }
+
         cargarSolicitudes()
     }
 
