@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FieldValue
@@ -22,6 +23,7 @@ class FriendsAdapter(
     class VH(view: View) : RecyclerView.ViewHolder(view) {
         val name: TextView = view.findViewById(R.id.name)
         val action: Button = view.findViewById(R.id.btn_action)
+        val avatar: ImageView = view.findViewById(R.id.avatar) // Añadida esta línea
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
@@ -35,6 +37,20 @@ class FriendsAdapter(
         val userId = user["id"].toString()
         val relacion = user["relacion"] ?: "EXPLORAR"
         holder.name.text = user["username"]
+
+        // --- LÓGICA PARA EL AVATAR ---
+        val avatarNombre = user["avatarActual"] ?: "avadef.png"
+        val context = holder.itemView.context
+
+        // Quitamos el .png para buscar el recurso en Android
+        val cleanName = avatarNombre.replace(".png", "")
+        val resId = context.resources.getIdentifier(cleanName, "drawable", context.packageName)
+
+        if (resId != 0) {
+            holder.avatar.setImageResource(resId)
+        } else {
+            holder.avatar.setImageResource(R.drawable.ic_avatar3) // Imagen por defecto
+        }
         // Configuramos el botón según el modo de la pantalla
         when (modo) {
             "RECIBIDAS" -> {

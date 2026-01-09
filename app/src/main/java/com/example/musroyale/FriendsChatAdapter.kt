@@ -25,9 +25,25 @@ class FriendsChatAdapter(
 
     override fun onBindViewHolder(holder: FriendVH, position: Int) {
         val friend = friends[position]
+        val context = holder.itemView.context
+
         holder.binding.txtName.text = friend.name
 
-        // Si hay mensajes, muestra el badge, si no, ocúltalo
+        // --- LÓGICA DEL AVATAR ---
+        // 1. Limpiamos el nombre (ej: "ava1.png" -> "ava1")
+        val cleanName = friend.avatar.replace(".png", "")
+
+        // 2. Buscamos el ID del recurso
+        val resId = context.resources.getIdentifier(cleanName, "drawable", context.packageName)
+
+        // 3. Lo aplicamos al ImageView (asegúrate de que el ID en el XML sea imgFriendAvatar)
+        if (resId != 0) {
+            holder.binding.imgAvatar.setImageResource(resId)
+        } else {
+            holder.binding.imgAvatar.setImageResource(R.drawable.ic_avatar3) // Fallback
+        }
+
+        // --- LÓGICA DEL BADGE ---
         if (friend.unreadCount > 0) {
             holder.binding.badgeCount.visibility = View.VISIBLE
             holder.binding.badgeCount.text = friend.unreadCount.toString()
