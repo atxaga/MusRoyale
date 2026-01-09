@@ -43,7 +43,7 @@
                 android:id="@+id/header_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/friends_title"
+                android:text="Lagunak"
                 android:textColor="@color/friends_text_primary"
                 android:textSize="24sp"
                 android:textStyle="bold" />
@@ -52,7 +52,7 @@
                 android:id="@+id/header_subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Gestiona amigos y solicitudes"
+                android:text="Zure lagunak kudeatu eta bilatu"
                 android:textColor="@color/friends_text_secondary"
                 android:textSize="15sp"
                 android:layout_marginTop="4dp" />

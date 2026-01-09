@@ -64,7 +64,17 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/btnSettings" />
-
+            <ImageButton
+                android:id="@+id/btnAdminPanel"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@android:drawable/ic_menu_agenda"
+                android:visibility="gone"
+                app:tint="#FFD700"
+                app:layout_constraintTop_toTopOf="@id/btnSettings"
+                app:layout_constraintEnd_toStartOf="@id/btnSettings" />
             <TextView
                 android:id="@+id/txtStatus"
                 android:layout_width="wrap_content"
@@ -206,6 +216,8 @@
                     android:layout_marginTop="4dp"/>
             </LinearLayout>
 
+
+
             <LinearLayout
                 android:id="@+id/tabChat"
                 android:layout_width="0dp"
@@ -214,13 +226,33 @@
                 android:orientation="vertical"
                 android:gravity="center"
                 android:clickable="true"
-                android:focusable="true">
+                android:focusable="true"
+                android:clipChildren="false"> <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clipChildren="false">
 
                 <ImageView
                     android:id="@+id/imgChat"
                     android:layout_width="wrap_content"
                     android:layout_height="32dp"
                     android:src="@drawable/ic_chat2"/>
+
+                <TextView
+                    android:id="@+id/badgeTotalChat"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_gravity="top|end"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginTop="-4dp"
+                    android:background="@drawable/bg_notification_badge"
+                    android:gravity="center"
+                    android:text="1"
+                    android:textColor="#FFFFFF"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </FrameLayout>
 
                 <TextView
                     android:id="@+id/txtChat"

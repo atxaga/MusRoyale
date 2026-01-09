@@ -51,6 +51,8 @@
                 <data android:scheme="musroyale" android:host="pago_cancelado" />
             </intent-filter>
         </activity>
+        <activity android:name=".CryptoPaymentActivity" />
+        <activity android:name=".AdminActivity" />
         <activity android:name=".EditProfileActivity"/>
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>
