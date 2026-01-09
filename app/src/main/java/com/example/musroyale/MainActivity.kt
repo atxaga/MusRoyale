@@ -103,6 +103,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupFooterListeners() {
         binding.tabAvatar.setOnClickListener {
             selectTab(binding.tabAvatar)
+            loadFragment(EditProfileFragment())
             binding.header.visibility = View.VISIBLE
         }
 
