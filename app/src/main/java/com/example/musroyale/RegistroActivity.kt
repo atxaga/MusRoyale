@@ -114,6 +114,8 @@ class RegistroActivity : AppCompatActivity() {
                                 userMap["amigos"] = ArrayList<String>()
                                 userMap["solicitudMandada"] = ArrayList<String>()
                                 userMap["solicitudRecivida"] = ArrayList<String>()
+                                userMap["avatarActual"] = "avadef.png"
+                                userMap["avatares"] = arrayListOf("avadef.png")
 
                                 db.collection("Users")
                                     .add(userMap)
