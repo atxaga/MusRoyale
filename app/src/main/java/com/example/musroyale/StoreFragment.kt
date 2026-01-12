@@ -1,5 +1,6 @@
 package com.example.musroyale
 
+import android.animation.ObjectAnimator
 import android.app.AlertDialog
 import android.content.Context
 import android.graphics.Color
@@ -45,12 +46,22 @@ class StoreFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val shake = ObjectAnimator.ofFloat(binding.ivBoxIcon, "translationY", 0f, -15f, 0f)
+        shake.duration = 1200 // Un poco más de un segundo por ciclo
+        shake.repeatCount = ObjectAnimator.INFINITE // No para nunca
+        shake.start()
 
-        // 1. Configurar RecyclerView de Productos
-        binding.rvStoreProducts.apply {
-            layoutManager = GridLayoutManager(requireContext(), 2)
-            adapter = storeAdapter
+        // 2. Configurar el clic para abrir el LootboxFragment
+        binding.btnOpenLootboxView.setOnClickListener {
+            val lootboxFragment = LootboxFragment()
+
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.mainContainer, lootboxFragment)
+                .addToBackStack(null) // Permite volver atrás a la tienda
+                .commit()
         }
+        // 1. Configurar RecyclerView de Productos
+
         storeAdapter.submitList(catalog)
 
         // 2. Click Ruleta (Dinero)
