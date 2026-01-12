@@ -92,13 +92,7 @@
                         app:strokeColor="#26A17B"/>
                 </LinearLayout>
 
-                <ImageView
-                    android:id="@+id/imgQR"
-                    android:layout_width="180dp"
-                    android:layout_height="180dp"
-                    android:background="@android:color/white"
-                    android:padding="8dp"
-                    android:src="@drawable/qr_btc" />
+
                 <TextView
                 android:id="@+id/txtLabelRed"
                 android:layout_width="wrap_content"

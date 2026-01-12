@@ -2,59 +2,62 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="300dp"
+    android:layout_width="280dp"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="28dp"
-    app:cardElevation="12dp"
-    app:strokeColor="#FFD700"
-    app:strokeWidth="3dp">
+    app:cardCornerRadius="20dp"
+    app:cardElevation="8dp"
+    app:strokeColor="#FFFFFF"
+    app:strokeWidth="2dp">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#1A1A1A"
+        android:layout_height="300dp"
+        android:background="@drawable/bg_gradient_verde"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:padding="16dp">
 
         <TextView
             android:id="@+id/tvWinTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="¡ZORIONAK!"
-            android:textColor="#FFD700"
-            android:textSize="26sp"
-            android:textStyle="bold" />
+            android:textColor="#FFFFFF"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:shadowColor="#000000"
+            android:shadowRadius="4"
+            android:shadowDx="2"
+            android:shadowDy="2" />
 
         <ImageView
             android:id="@+id/ivAvatarWon"
-            android:layout_width="140dp"
-            android:layout_height="140dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
-            android:scaleType="centerInside"
-            android:elevation="8dp"/>
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            android:scaleType="centerInside" />
 
         <TextView
             android:id="@+id/tvWinMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="AVATAR BERRIA!"
-            android:textColor="#FFFFFF"
+            android:textColor="#CCFF00"
             android:textSize="16sp"
             android:textStyle="bold" />
 
-        <TextView
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnWinAccept"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="24dp"
-            android:background="@drawable/bg_search"
-            android:backgroundTint="#FFD700"
-            android:gravity="center"
-            android:text="GORDETZEKO"
+            android:layout_height="48dp"
+            android:layout_marginTop="16dp"
+            android:text="GORDE"
             android:textColor="#000000"
-            android:textStyle="bold" />
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:backgroundTint="#FFFFFF"
+            app:cornerRadius="12dp" />
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>
