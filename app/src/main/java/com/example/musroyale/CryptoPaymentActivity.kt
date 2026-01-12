@@ -34,21 +34,18 @@ class CryptoPaymentActivity : AppCompatActivity() {
         val usdtAddress = "0x742d35Cc6634C0532925a3b844Bc454e4438f44e" // BEP20 suele ser igual que ETH
 
         binding.btnSelectBTC.setOnClickListener {
-            binding.imgQR.setImageResource(R.drawable.qr_btc)
             binding.txtWalletAddress.text = btcAddress
             binding.txtLabelRed.text = "Sarea: Bitcoin"
             binding.txtLabelRed.setTextColor(Color.parseColor("#F7931A"))
         }
 
         binding.btnSelectETH.setOnClickListener {
-            binding.imgQR.setImageResource(R.drawable.qr_eth)
             binding.txtWalletAddress.text = ethAddress
             binding.txtLabelRed.text = "Sarea: Ethereum (ERC20)"
             binding.txtLabelRed.setTextColor(Color.parseColor("#627EEA"))
         }
 
         binding.btnSelectUSDT.setOnClickListener {
-            binding.imgQR.setImageResource(R.drawable.qr_usdt)
             binding.txtWalletAddress.text = usdtAddress
             binding.txtLabelRed.text = "Sarea: BNB Smart Chain (BEP20)"
             binding.txtLabelRed.setTextColor(Color.parseColor("#26A17B"))

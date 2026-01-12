@@ -221,13 +221,72 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvStoreProducts"
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/lootboxCard"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:nestedScrollingEnabled="false"
-                tools:listitem="@layout/item_store_product" />
+                android:layout_height="180dp"
+                android:layout_margin="12dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp"
+                app:strokeWidth="2dp"
+                app:strokeColor="#FF5722">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#263238">
+
+                    <ImageView
+                        android:id="@+id/ivBoxIcon"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:src="@drawable/ic_lootbox_icon"
+                        android:layout_marginEnd="10dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginStart="20dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/ivBoxIcon"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="MISTERIO KUTXA"
+                            android:textColor="#FF5722"
+                            android:textStyle="bold"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Lortu avatar legendarioak"
+                            android:textColor="@android:color/white"
+                            android:textSize="12sp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnOpenLootboxView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:text="1.00€ - IREKI"
+                            android:textSize="12sp"
+                            app:cornerRadius="20dp"
+                            app:backgroundTint="#FF5722"
+                            android:textColor="@android:color/white" />
+                    </LinearLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

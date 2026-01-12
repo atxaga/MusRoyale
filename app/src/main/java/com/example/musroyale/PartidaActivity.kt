@@ -14,7 +14,7 @@ import java.net.InetSocketAddress
 import java.net.Socket
 
 class PartidaActivity : AppCompatActivity() {
-    private val serverHost = "10.14.0.106"
+    private val serverHost = "54.90.254.16"
     private val serverPort = 13000
     private val connectTimeoutMs = 20000
     override fun onCreate(savedInstanceState: Bundle?) {
