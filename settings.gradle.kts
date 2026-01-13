@@ -16,6 +16,9 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+
+        // ASÍ SE ESCRIBE EN KOTLIN (.kts):
+        maven { url = uri("https://jitpack.io") }
     }
 }
 
