@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardCornerRadius="24dp"
-    app:cardElevation="8dp"
+    app:cardElevation="10dp"
     android:layout_margin="20dp">
 
     <LinearLayout
@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="32dp"
+        android:background="@drawable/bg_gradient_verde"
         android:gravity="center">
 
         <TextView
@@ -20,8 +21,8 @@
             android:layout_height="wrap_content"
             android:text="0.50 €"
             android:textSize="48sp"
-            android:fontFamily="sans-serif-light"
-            android:textColor="#2C3E50" />
+            android:fontFamily="sans-serif-medium"
+            android:textColor="#FFFFFF" />
 
         <TextView
             android:id="@+id/tvDialogTitle"
@@ -32,24 +33,25 @@
             android:textSize="14sp"
             android:textAllCaps="true"
             android:letterSpacing="0.1"
-            android:textColor="#95A5A6" />
+            android:textColor="#CCFF00" />
 
         <View
             android:layout_width="40dp"
-            android:layout_height="1dp"
+            android:layout_height="2dp"
             android:layout_marginTop="24dp"
-            android:background="#D5D8DC" />
+            android:background="#44FFFFFF" />
 
-        <TextView
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnDialogAccept"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
             android:layout_marginTop="24dp"
             android:text="ONARTU"
+            android:textColor="#000000"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:padding="12dp"
-            android:textColor="#3498DB" />
+            app:backgroundTint="#FFFFFF"
+            app:cornerRadius="12dp" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>
