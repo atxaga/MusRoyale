@@ -16,16 +16,17 @@ class AdminActivity : AppCompatActivity() {
         binding = ActivityAdminPaymentsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.btnBack.setOnClickListener {
-            finish()
-        }
+        binding.btnBack.setOnClickListener { finish() }
+
+        // Configuramos el RecyclerView una sola vez
+        binding.rvSolicitudes.layoutManager = LinearLayoutManager(this)
 
         cargarSolicitudes()
     }
 
     private fun cargarSolicitudes() {
         db.collection("SolicitudesRecarga")
-            .whereEqualTo("status", "pendiente")
+            .whereIn("status", listOf("pendiente", "retirada"))
             .addSnapshotListener { snapshot, _ ->
                 val lista = snapshot?.map { doc ->
                     SolicitudPago(
@@ -33,42 +34,65 @@ class AdminActivity : AppCompatActivity() {
                         userId = doc.getString("userId") ?: "",
                         username = doc.getString("username") ?: "",
                         monto = doc.getDouble("monto") ?: 0.00,
-                        orderId = doc.getString("orderId") ?: ""
+                        orderId = doc.getString("orderId") ?: "",
+                        status = doc.getString("status") ?: "pendiente"
                     )
                 } ?: listOf()
 
-                binding.rvSolicitudes.layoutManager = LinearLayoutManager(this)
-                binding.rvSolicitudes.adapter = AdminPagosAdapter(lista) { solicitud ->
-                    confirmarYVincular(solicitud)
-                }
+                // PASAMOS AMBAS FUNCIONES AL ADAPTADOR
+                binding.rvSolicitudes.adapter = AdminPagosAdapter(
+                    lista,
+                    onAprobarClick = { solicitud -> confirmarAccion(solicitud) },
+                    onRechazarClick = { solicitud -> rechazarSolicitud(solicitud) }
+                )
             }
     }
 
-    private fun confirmarYVincular(solicitud: SolicitudPago) {
+    private fun confirmarAccion(solicitud: SolicitudPago) {
         val userRef = db.collection("Users").document(solicitud.userId)
 
-        // 1. Obtenemos el documento del usuario para leer su saldo actual (que es String)
         userRef.get().addOnSuccessListener { document ->
             if (document.exists()) {
                 val dineroActualString = document.getString("dinero") ?: "0.00"
+                val dineroActualDouble = dineroActualString.replace(",", ".").toDoubleOrNull() ?: 0.00
 
-                // Convertimos el String a Double para poder sumar
-                val dineroActualDouble = dineroActualString.toDoubleOrNull() ?: 0.00
-                val nuevoSaldo = dineroActualDouble + solicitud.monto
+                val nuevoSaldo = if (solicitud.status == "retirada") {
+                    dineroActualDouble - solicitud.monto
+                } else {
+                    dineroActualDouble + solicitud.monto
+                }
 
-                // 2. Guardamos el nuevo saldo otra vez como String
-                userRef.update("dinero", nuevoSaldo.toString())
+                if (nuevoSaldo < 0 && solicitud.status == "retirada") {
+                    Toast.makeText(this, "Errorea: Erabiltzaileak ez du saldo nahikorik", Toast.LENGTH_LONG).show()
+                    return@addOnSuccessListener
+                }
+
+                val saldoFormateado = String.format(java.util.Locale.US, "%.2f", nuevoSaldo)
+
+                userRef.update("dinero", saldoFormateado)
                     .addOnSuccessListener {
-
-                        // 3. Marcamos la solicitud como aprobada
                         db.collection("SolicitudesRecarga").document(solicitud.idDoc)
                             .update("status", "aprobado")
 
-                        Toast.makeText(this, "${solicitud.username}(r)en ordainketa onartua", Toast.LENGTH_SHORT).show()
+                        val msg = if (solicitud.status == "retirada") "Erretiratzea onartua" else "Karga onartua"
+                        Toast.makeText(this, "$msg: ${solicitud.username}", Toast.LENGTH_SHORT).show()
                     }
             }
-        }.addOnFailureListener {
-            Toast.makeText(this, "Errorea saldoa kargatzean", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun rechazarSolicitud(solicitud: SolicitudPago) {
+        android.app.AlertDialog.Builder(this)
+            .setTitle("Eskaera Ukatu")
+            .setMessage("Ziur zaude ${solicitud.username}(r)en eskaera ukatu nahi duzula?")
+            .setPositiveButton("Bai, Ukatu") { _, _ ->
+                db.collection("SolicitudesRecarga").document(solicitud.idDoc)
+                    .update("status", "rechazado") // Se marca como rechazado y desaparece de la lista
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "Eskaera ukatua", Toast.LENGTH_SHORT).show()
+                    }
+            }
+            .setNegativeButton("Utzi", null)
+            .show()
     }
 }

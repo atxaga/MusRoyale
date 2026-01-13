@@ -1,70 +1,43 @@
 package com.example.musroyale
 
-import android.net.Uri
 import android.os.Bundle
-import android.widget.*
-import androidx.activity.result.contract.ActivityResultContracts
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.musroyale.databinding.ActivityEditProfileBinding
+import com.example.musroyale.databinding.FragmentEditProfileBinding // Asegúrate de que este nombre coincida con tu XML
 import com.google.firebase.firestore.FirebaseFirestore
-import java.lang.Exception
 import java.security.MessageDigest
 
 class EditProfileActivity : AppCompatActivity() {
 
-    private lateinit var ivAvatar: ImageView
-    private lateinit var btnChangeAvatar: Button
-    private lateinit var etUsername: EditText
-    private lateinit var etEmail: EditText
-    private lateinit var etPassword: EditText
-    private lateinit var etConfirm: EditText
-    private lateinit var tvGamesPlayed: TextView
-    private lateinit var tvGamesWon: TextView
-    private lateinit var tvMoney: TextView
-    private lateinit var btnSave: Button
-
+    // Se genera automáticamente según el nombre de tu layout: fragment_edit_profile.xml
+    private lateinit var binding: ActivityEditProfileBinding
     private val db = FirebaseFirestore.getInstance()
-
     private var userId: String? = null
-    private var avatarUriToUpload: Uri? = null
-
-    private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        if (uri != null) {
-            avatarUriToUpload = uri
-            ivAvatar.setImageURI(uri)
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_edit_profile)
 
-        ivAvatar = findViewById(R.id.ivAvatar)
-        btnChangeAvatar = findViewById(R.id.btnChangeAvatar)
-        etUsername = findViewById(R.id.etEditUsername)
-        etEmail = findViewById(R.id.etEditEmail)
-        etPassword = findViewById(R.id.etEditPassword)
-        etConfirm = findViewById(R.id.etEditConfirm)
-        tvGamesPlayed = findViewById(R.id.tvGamesPlayed)
-        tvGamesWon = findViewById(R.id.tvGamesWon)
-        tvMoney = findViewById(R.id.tvMoney)
-        btnSave = findViewById(R.id.btnSaveProfile)
+        // Inicializar Binding
+        binding = ActivityEditProfileBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        userId = getSharedPreferences("UserPrefs", MODE_PRIVATE).getString("userRegistrado", null)
-        if (userId == null) {
-            Toast.makeText(this, "Usuario no identificado", Toast.LENGTH_SHORT).show()
-            finish()
-            return
+        // Obtener ID del usuario desde SharedPreferences
+        val prefs = getSharedPreferences("UserPrefs", 0)
+        userId = prefs.getString("userRegistrado", null)
+
+        loadProfile()
+
+        // Configurar Listeners usando binding.ID
+        binding.btnBack.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
         }
 
-        btnChangeAvatar.setOnClickListener {
-            pickImageLauncher.launch("image/*")
-        }
-
-        btnSave.setOnClickListener {
+        binding.btnSaveProfile.setOnClickListener {
             saveProfile()
         }
 
-        loadProfile()
+
     }
 
     private fun loadProfile() {
@@ -72,92 +45,71 @@ class EditProfileActivity : AppCompatActivity() {
             db.collection("Users").document(id).get()
                 .addOnSuccessListener { doc ->
                     if (doc.exists()) {
-                        etUsername.setText(doc.getString("username") ?: "")
-                        etEmail.setText(doc.getString("email") ?: "")
-                        val avatarUrl = doc.getString("avatarUrl")
-                        // Cargar avatar si existe (si usas Glide/Picasso, reemplaza)
-                        avatarUrl?.let {
-                            // Glide.with(this).load(it).into(ivAvatar)
-                        }
+                        // Acceso directo a las vistas mediante binding
+                        binding.etEditUsername.setText(doc.getString("username") ?: "")
+                        binding.etEditEmail.setText(doc.getString("email") ?: "")
 
-                        tvGamesPlayed.text = (doc.getLong("gamesPlayed") ?: 0L).toString()
-                        tvGamesWon.text = (doc.getLong("gamesWon") ?: 0L).toString()
-                        tvMoney.text = (doc.getString("money") ?: doc.getDouble("money")?.toString() ?: "0")
+                        val saldo = doc.getString("dinero") ?: "0.00"
+                        binding.tvMoney.text = "$saldo USDT"
+
+                        // Carga de avatar
+                        val nombreImagen = doc.getString("avatarActual")
+                        if (!nombreImagen.isNullOrEmpty()) {
+                            val resId = resources.getIdentifier(
+                                nombreImagen.replace(".png", ""),
+                                "drawable",
+                                packageName
+                            )
+                            if (resId != 0) {
+                                binding.ivAvatar.setImageResource(resId)
+                            }
+                        }
                     }
                 }
-                .addOnFailureListener { e: Exception ->
-                    Toast.makeText(this, "Error cargando perfil: ${e.message}", Toast.LENGTH_LONG).show()
+                .addOnFailureListener {
+                    Toast.makeText(this, "Error al cargar datos", Toast.LENGTH_SHORT).show()
                 }
         }
     }
 
     private fun saveProfile() {
-        val username = etUsername.text.toString().trim()
-        val email = etEmail.text.toString().trim()
-        val password = etPassword.text.toString()
-        val confirm = etConfirm.text.toString()
+        val nuevoUser = binding.etEditUsername.text.toString().trim()
+        val nuevoEmail = binding.etEditEmail.text.toString().trim()
+        val pass = binding.etEditPassword.text.toString()
 
-        if (username.isEmpty()) {
-            etUsername.error = "Introduce un nombre"
-            etUsername.requestFocus()
+        if (nuevoUser.isEmpty()) {
+            binding.etEditUsername.error = "El nombre no puede estar vacío"
             return
         }
-        if (email.isEmpty()) {
-            etEmail.error = "Introduce un email"
-            etEmail.requestFocus()
-            return
-        }
-        if (password.isNotEmpty()) {
-            if (password.length < 6) {
-                etPassword.error = "La contraseña debe tener al menos 6 caracteres"
-                etPassword.requestFocus()
-                return
-            }
-            if (password != confirm) {
-                etConfirm.error = "Las contraseñas no coinciden"
-                etConfirm.requestFocus()
-                return
-            }
-        }
 
-        // Para pruebas temporales, no subimos avatar a Storage. Solo actualizamos campos en Firestore.
-        val updates = HashMap<String, Any>()
-        updates["username"] = username
-        updates["email"] = email
-        if (password.isNotEmpty()) {
-            updates["password"] = sha256(password)
+        val updates = mutableMapOf<String, Any>(
+            "username" to nuevoUser,
+            "email" to nuevoEmail
+        )
+
+        if (pass.isNotEmpty()) {
+            if (pass.length < 6) {
+                binding.etEditPassword.error = "Mínimo 6 caracteres"
+                return
+            }
+            updates["password"] = sha256(pass)
         }
 
         userId?.let { id ->
-            db.collection("Users").document(id)
-                .update(updates as Map<String, Any>)
+            db.collection("Users").document(id).update(updates)
                 .addOnSuccessListener {
-                    Toast.makeText(this, "Perfil actualizado", Toast.LENGTH_SHORT).show()
-                    etPassword.text.clear()
-                    etConfirm.text.clear()
-                    loadProfile()
+                    Toast.makeText(this, "¡Perfil actualizado!", Toast.LENGTH_SHORT).show()
+                    finish()
                 }
-                .addOnFailureListener { e: Exception ->
-                    Toast.makeText(this, "Error actualizando: ${e.message}", Toast.LENGTH_LONG).show()
+                .addOnFailureListener { e ->
+                    Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
         }
     }
 
-    companion object {
-        fun sha256(base: String): String {
-            try {
-                val digest = MessageDigest.getInstance("SHA-256")
-                val hash = digest.digest(base.toByteArray(charset("UTF-8")))
-                val hexString = StringBuilder()
-                for (b in hash) {
-                    val hex = Integer.toHexString(0xff and b.toInt())
-                    if (hex.length == 1) hexString.append('0')
-                    hexString.append(hex)
-                }
-                return hexString.toString()
-            } catch (ex: Exception) {
-                throw RuntimeException(ex)
-            }
-        }
+    private fun sha256(base: String): String {
+        val digest = MessageDigest.getInstance("SHA-256")
+        val hash = digest.digest(base.toByteArray(charset("UTF-8")))
+        return hash.joinToString("") { "%02x".format(it) }
     }
 }
