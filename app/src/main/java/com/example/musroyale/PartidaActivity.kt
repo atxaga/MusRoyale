@@ -69,11 +69,11 @@ class PartidaActivity : AppCompatActivity() {
             }
         }
     }
-    fun partidaHasi(){
-        val bottomCard1 = findViewById<android.widget.ImageView>(R.id.bottomCard1)
+    fun partidaHasi() {
         lifecycleScope.launch(Dispatchers.IO) {
             var socket: Socket? = null
             try {
+                // Conectar al servidor
                 socket = Socket()
                 socket.connect(InetSocketAddress(serverHost, serverPort), connectTimeoutMs)
 
@@ -81,45 +81,59 @@ class PartidaActivity : AppCompatActivity() {
                 val writer = socket.getOutputStream().bufferedWriter()
 
                 var turno = 0
-                repeat(4){
-                    turno++;
-                    val karta = reader.readLine()
-                    currentCards.add(karta)
-                    val resId = resources.getIdentifier(karta, "drawable", packageName)
-                    if (turno == 1){
-                        bottomCard1?.setImageResource(resId)
-                    }else if (turno == 2) {
-                        val bottomCard2 = findViewById<android.widget.ImageView>(R.id.bottomCard2)
-                        bottomCard2?.setImageResource(resId)
-                    }else if (turno == 3) {
-                        val bottomCard3 = findViewById<android.widget.ImageView>(R.id.bottomCard3)
-                        bottomCard3?.setImageResource(resId)
-                    }else if (turno == 4) {
-                        val bottomCard4 = findViewById<android.widget.ImageView>(R.id.bottomCard4)
-                        bottomCard4?.setImageResource(resId)
+                var partidaActiva = true
+
+                while (partidaActiva) {
+                    val serverMsg = reader.readLine() ?: break // cliente desconectado
+                    when (serverMsg) {
+                        "CARDS" -> {
+                            // Recibir las 4 cartas iniciales
+                            repeat(4) { i ->
+                                val karta = reader.readLine() ?: return@launch
+                                currentCards.add(karta)
+                                // Actualizar UI en el hilo principal
+                                withContext(Dispatchers.Main) {
+                                    val resId = resources.getIdentifier(karta, "drawable", packageName)
+                                    when(i){
+                                        0 -> bottomCard1.setImageResource(resId)
+                                        1 -> bottomCard2.setImageResource(resId)
+                                        2 -> bottomCard3.setImageResource(resId)
+                                        3 -> bottomCard4.setImageResource(resId)
+                                    }
+                                }
+                            }
+                        }
+
+                        "TURN" -> {
+                            // Es tu turno de decidir
+                            // Por ahora siempre hacemos "mus" (puedes cambiar según UI)
+                            val erabakia = "mus"
+                            writer.write("$erabakia\n")
+                            writer.flush()
+                        }
+
+                        "ALL_MUS" -> {
+                            // Todos dijeron mus, ahora descartes
+                            val discard = withContext(Dispatchers.Main) { buildDiscardString() }
+                            writer.write("$discard\n")
+                            writer.flush()
+                        }
+
+                        "END_GAME" -> {
+                            // Fin de la partida
+                            partidaActiva = false
+                        }
+
+                        else -> {
+                            // Mensajes inesperados
+                            withContext(Dispatchers.Main) {
+                                Toast.makeText(this@PartidaActivity, "Mensaje servidor: $serverMsg", Toast.LENGTH_SHORT).show()
+                            }
+                        }
                     }
                 }
 
-                //Lehenengo jokalariaren erabakia bidaltzen da
-                val erabakia = "mus"
-                writer.write("$erabakia\n")
-                writer.flush()
-
-                val aukeratuta = reader.readLine()
-                if(aukeratuta == "mus"){
-                    delay(10_000)
-
-                    val discard = withContext(Dispatchers.Main) {
-                        buildDiscardString()
-                    }
-
-                    // Enviar al servidor
-                    writer.write("$discard\n")
-                    writer.flush()
-
-                }
-
-            }catch (e: Exception) {
+            } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(this@PartidaActivity, "Error TCP: ${e.message}", Toast.LENGTH_LONG).show()
                 }
@@ -128,6 +142,7 @@ class PartidaActivity : AppCompatActivity() {
             }
         }
     }
+
     private fun buildDiscardString(): String {
         if (selectedIndices.isEmpty()) return "*" // solo marcador final
         val ordered = selectedIndices.sorted()
