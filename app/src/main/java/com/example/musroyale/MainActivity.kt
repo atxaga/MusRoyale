@@ -148,8 +148,8 @@ class MainActivity : AppCompatActivity() {
     private fun setupFooterListeners() {
         binding.tabAvatar.setOnClickListener {
             // Ahora que el avatar está arriba, este botón puede abrir el selector
-            // o simplemente marcar la pestaña
-            selectTab(binding.tabAvatar)
+            startActivity(Intent(this, EditProfileActivity::class.java))
+
         }
 
         binding.tabChat.setOnClickListener {
