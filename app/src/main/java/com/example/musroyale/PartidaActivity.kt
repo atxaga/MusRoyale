@@ -106,6 +106,9 @@ class PartidaActivity : AppCompatActivity() {
 
                         "TURN" -> {
                             // Es tu turno de decidir
+                            withContext(Dispatchers.Main) {
+                                Toast.makeText(this@PartidaActivity, "Zure Txanda da", Toast.LENGTH_LONG).show()
+                            }
                             // Por ahora siempre hacemos "mus" (puedes cambiar según UI)
                             val erabakia = "mus"
                             writer.write("$erabakia\n")
