@@ -1,117 +1,266 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:background="#FAF7F2">
 
-    <LinearLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        app:elevation="0dp">
 
-        <ImageView
-            android:id="@+id/ivAvatar"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_avatar3"
-            android:scaleType="centerCrop"
-            android:contentDescription="Avatar" />
-
-        <Button
-            android:id="@+id/btnChangeAvatar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Cambiar avatar"
-            android:layout_marginTop="8dp"
-            android:layout_gravity="center" />
-
-        <EditText
-            android:id="@+id/etEditUsername"
+        <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Nombre" />
+            android:layout_height="70dp"
+            android:background="@color/friends_beige_primary"
 
-        <EditText
-            android:id="@+id/etEditEmail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Email"
-            android:inputType="textEmailAddress" />
+            app:contentInsetStart="0dp">
 
-        <EditText
-            android:id="@+id/etEditPassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Nueva contraseña (opcional)"
-            android:inputType="textPassword" />
+            <RelativeLayout
+                android:layout_marginTop="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-        <EditText
-            android:id="@+id/etEditConfirm"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Confirmar contraseña"
-            android:inputType="textPassword" />
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/btnBackContainer"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="16dp"
+                    app:cardBackgroundColor="#FFFFFF"
+                    app:cardCornerRadius="21dp"
+                    app:cardElevation="2dp"
+                    app:strokeWidth="0dp">
 
-        <TextView
-            android:layout_width="match_parent"
+                    <ImageButton
+                        android:id="@+id/btnBack"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="?attr/selectableItemBackground"
+                        android:src="@android:drawable/ic_menu_revert"
+                        app:tint="#5D4037" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:id="@+id/tvHeaderTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="PROFILA"
+                    android:textColor="#5D4037"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.1" />
+
+            </RelativeLayout>
+        </androidx.appcompat.widget.Toolbar>
+
+        <View
             android:layout_height="wrap_content"
-            android:text="Estadísticas"
-            android:textStyle="bold"
-            android:layout_marginTop="16dp" />
+            android:layout_width="match_parent"
+            android:background="#F0EAE2" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="3"
-            android:paddingTop="8dp">
+            android:orientation="vertical"
+            android:paddingBottom="32dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="220dp">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:background="@color/friends_beige_primary" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="20dp"
+                    app:cardCornerRadius="60dp"
+                    app:cardElevation="6dp"
+                    app:strokeColor="#FFFFFF"
+                    app:strokeWidth="4dp">
+
+                    <ImageView
+                        android:id="@+id/ivAvatar"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:src="@android:drawable/ic_menu_gallery" />
+                </com.google.android.material.card.MaterialCardView>
+            </RelativeLayout>
 
             <LinearLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingHorizontal="20dp">
 
-                <TextView android:text="Jugadas" />
-                <TextView
-                    android:id="@+id/tvGamesPlayed"
-                    android:text="0"
-                    android:textStyle="bold" />
-            </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:weightSum="2">
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp"
+                        app:cardBackgroundColor="#FFFFFF"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="2dp">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp"
+                            android:gravity="center">
+                            <TextView
+                                android:id="@+id/tvGamesPlayed"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textColor="#5D4037"
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="PARTIDAK"
+                                android:textSize="11sp"
+                                android:textColor="#A1887F"
+                                android:letterSpacing="0.1" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
 
-                <TextView android:text="Ganadas" />
-                <TextView
-                    android:id="@+id/tvGamesWon"
-                    android:text="0"
-                    android:textStyle="bold" />
-            </LinearLayout>
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="8dp"
+                        app:cardBackgroundColor="#FFFFFF"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="2dp">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp"
+                            android:gravity="center">
+                            <TextView
+                                android:id="@+id/tvMoney"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0.00"
+                                android:textColor="#D4AF37"
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="DIRUA"
+                                android:textSize="11sp"
+                                android:textColor="#D4AF37"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    app:cardBackgroundColor="#FFFFFF"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="2dp">
 
-                <TextView android:text="Dinero" />
-                <TextView
-                    android:id="@+id/tvMoney"
-                    android:text="0"
-                    android:textStyle="bold" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:hint="Erabiltzaile Izena"
+                            app:boxStrokeColor="@color/friends_beige_primary"
+                            app:hintTextColor="@color/friends_beige_primary"
+                            app:startIconDrawable="@android:drawable/ic_menu_edit">
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etEditUsername"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textColor="#3E2723" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:hint="Email"
+                            app:boxStrokeColor="@color/friends_beige_primary"
+                            app:hintTextColor="@color/friends_beige_primary"
+                            app:startIconDrawable="@android:drawable/ic_dialog_email">
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etEditEmail"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textColor="#3E2723" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:hint="Pasahitza aldatu"
+                            app:passwordToggleEnabled="true"
+                            app:boxStrokeColor="@color/friends_beige_primary"
+                            app:hintTextColor="@color/friends_beige_primary"
+                            app:startIconDrawable="@android:drawable/ic_lock_idle_lock">
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etEditPassword"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textColor="#3E2723"
+                                android:inputType="textPassword" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <Button
+                    android:id="@+id/btnSaveProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="24dp"
+                    android:text="PROFILA EGUNERATU"
+                    android:backgroundTint="@color/friends_beige_primary"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    app:cornerRadius="16dp"
+                    app:elevation="4dp" />
+
+
+
             </LinearLayout>
         </LinearLayout>
-
-        <Button
-            android:id="@+id/btnSaveProfile"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Guardar cambios"
-            android:layout_marginTop="16dp" />
-    </LinearLayout>
-</ScrollView>
+    </ScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -9,6 +9,7 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
@@ -62,7 +63,24 @@ class LootboxFragment : Fragment() {
         setupClickListeners()
         generateCarouselItems() // Genera los items iniciales en el carrusel
     }
-
+    private fun setInteractionsEnabled(enabled: Boolean) {
+        if (enabled) {
+            // Desbloquea los toques en la pantalla
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            // Rehabilitar botones visualmente si es necesario
+            binding.btnOpenLootbox.isEnabled = true
+            binding.btnBack.isEnabled = true
+        } else {
+            // Bloquea cualquier toque en la pantalla
+            requireActivity().window.setFlags(
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+            )
+            // Deshabilitar el botón para que se vea gris
+            binding.btnOpenLootbox.isEnabled = false
+            binding.btnBack.isEnabled = false
+        }
+    }
     private fun setupPrizes() {
         // Avatares (50% de probabilidad total)
         for (avatarName in allAvatars) {
@@ -181,7 +199,7 @@ class LootboxFragment : Fragment() {
     private fun openLootbox() {
         binding.btnOpenLootbox.isEnabled = false
         binding.tvPrizeHint.text = "Zorte on! Kutxa irekitzen..."
-
+        setInteractionsEnabled(false)
         // 1. Elegimos el premio ganador REAL primero
         val winningPrize = getRandomPrizeByWeight()
 
@@ -233,6 +251,7 @@ class LootboxFragment : Fragment() {
             processPrize(winningPrize) // <--- Aquí pasamos el objeto EXACTO que creamos arriba
             binding.btnOpenLootbox.isEnabled = true
             binding.tvPrizeHint.text = "¡Zorionak! Saria lortu duzu."
+            setInteractionsEnabled(true)
         }, animator.duration + 500)
     }
     private fun showPrizeDialog(prize: Prize) {
