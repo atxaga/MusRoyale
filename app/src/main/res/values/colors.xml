@@ -14,7 +14,7 @@
     <color name="chip_text_inactive">#9E9E9E</color>     <!-- gris para texto inactivo -->
     <color name="light_grey">#E0E0E0</color>
     <color name="bg_beige">#FFBFA06A</color>
-
+    <color name="beige_stroke">#D2B48C</color>
     <!-- Colores para la card (según peticiones anteriores) -->
     <color name="card_bg_beige">#F5F5DC</color>
     <color name="card_border_brown">#8B4513</color>

@@ -1,5 +1,6 @@
 package com.example.musroyale
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -7,10 +8,13 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
 import com.example.musroyale.databinding.ActivityMainBinding
 import com.google.firebase.firestore.FirebaseFirestore
+import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -23,7 +27,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var tabs: List<TabItem>
     private var currentUserId: String? = null
-
+    private var userListener: com.google.firebase.firestore.ListenerRegistration? = null
+    private var chatNotificationsListener: com.google.firebase.firestore.ListenerRegistration? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,82 +38,121 @@ class MainActivity : AppCompatActivity() {
         val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
         currentUserId = prefs.getString("userRegistrado", null)
 
+        // 1. Listeners de los nuevos botones del Header (Avatar arriba)
+        binding.containerHeaderAvatar.setOnClickListener {
+            mostrarSelectorAvatares()
+        }
 
-        tabs = listOf(
-            TabItem(binding.tabAvatar, binding.imgAvatar, binding.txtAvatar),
-            TabItem(binding.tabChat, binding.imgChat, binding.txtChat),
-            TabItem(binding.tabPlay, binding.imgPlay, binding.txtPlay),
-            TabItem(binding.tabFriends, binding.imgFriends, binding.txtFriends),
-            TabItem(binding.tabStore, binding.imgStore, binding.txtStore)
-        )
+        // 2. Escucha de notificaciones de chat
+        if (currentUserId != null) {
+            escucharNotificacionesChat()
+        }
 
+        // 3. Setup de Tabs y Fragment inicial
+        setupTabs()
         if (savedInstanceState == null) {
             loadFragment(HomeFragment())
             selectTab(binding.tabPlay)
         }
+
+        // 4. Listeners de Botones de Cabecera
         binding.btnLogout.setOnClickListener { logout() }
+        binding.btnAddBalance.setOnClickListener {
+            startActivity(Intent(this, CryptoPaymentActivity::class.java))
+        }
 
         setupFooterListeners()
         cargarDatosUser()
-        binding.btnAddBalance.setOnClickListener {
-            var intent = Intent(this, AddBalanceActivity::class.java)
-            startActivity(intent)  }
     }
+
     override fun onResume() {
         super.onResume()
         cargarDatosUser()
     }
-    fun logout(){
-        val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
-        prefs.edit().remove("userRegistrado").apply()
-        currentUserId = null;
-        val intent = Intent(this, LoginActivity::class.java)
-        startActivity(intent)
+
+    private fun mostrarSelectorAvatares() {
+        val bottomSheet = com.google.android.material.bottomsheet.BottomSheetDialog(this)
+        val view = layoutInflater.inflate(R.layout.layout_avatar_selector, null)
+        bottomSheet.setContentView(view)
+
+        val rv = view.findViewById<RecyclerView>(R.id.rvAvatarList)
+        val userId = currentUserId ?: return
+
+        FirebaseFirestore.getInstance().collection("Users").document(userId).get()
+            .addOnSuccessListener { snapshot ->
+                val misAvatares = snapshot.get("avatares") as? List<String> ?: listOf("avatar_default")
+                val actual = snapshot.getString("avatarActual") ?: "avatar_default"
+
+                rv.layoutManager = GridLayoutManager(this, 3)
+                rv.adapter = AvatarAdapter(misAvatares, actual) { avatarSeleccionado ->
+                    actualizarAvatarActual(userId, avatarSeleccionado)
+                    bottomSheet.dismiss()
+                }
+            }
+        bottomSheet.show()
     }
-    private var userListener: com.google.firebase.firestore.ListenerRegistration? = null
+
+    private fun actualizarAvatarActual(userId: String, nuevoAvatar: String) {
+
+        FirebaseFirestore.getInstance().collection("Users").document(userId)
+            .update("avatarActual", nuevoAvatar)
+            .addOnSuccessListener {
+                // El SnapshotListener de cargarDatosUser se encargará de actualizar las imágenes
+                Toast.makeText(this, "Avatarra aldatuta!", Toast.LENGTH_SHORT).show()
+            }
+    }
 
     private fun cargarDatosUser() {
-        if (currentUserId != null) {
-            val db = FirebaseFirestore.getInstance()
-            val docRef = db.collection("Users").document(currentUserId!!)
+        if (currentUserId == null) return
 
-            userListener?.remove()
+        val db = FirebaseFirestore.getInstance()
+        val docRef = db.collection("Users").document(currentUserId!!)
 
-            // Iniciamos la escucha en tiempo real
-            userListener = docRef.addSnapshotListener { document, error ->
-                if (error != null) {
-                    return@addSnapshotListener
+        userListener?.remove()
+        userListener = docRef.addSnapshotListener { document, error ->
+            if (error != null) return@addSnapshotListener
+
+            if (document != null && document.exists()) {
+                binding.loadingOverlay.visibility = View.GONE
+
+                // Actualizar Textos
+                binding.txtUsername.text = document.getString("username") ?: "Usuario"
+                binding.txtBalance.text = document.get("dinero")?.toString() ?: "0"
+
+                // === CARGAR AVATAR ACTUAL (CORREGIDO) ===
+                val avatarActualStr = document.getString("avatarActual") // Ej: "rey.png"
+                val resId = getResIdFromName(this, avatarActualStr)
+
+                if (resId != 0) {
+                    binding.imgHeaderAvatar.setImageResource(resId)
+                    binding.imgAvatar.setImageResource(resId)
+                } else {
+                    // Imagen por defecto si el ID es 0 o no existe
+                    binding.imgHeaderAvatar.setImageResource(R.drawable.ic_avatar3)
+                    binding.imgAvatar.setImageResource(R.drawable.ic_avatar3)
                 }
 
-                if (document != null && document.exists()) {
-                    binding.loadingOverlay.visibility = View.GONE
-
-                    val username = document.getString("username") ?: "Usuario"
-                    // Importante: Si en Firebase es un número, usa getLong
-                    val balance = document.get("dinero")?.toString() ?: "0"
-
-                    binding.txtUsername.text = username
-                    binding.txtBalance.text = balance
+                // Lógica de Admin
+                if (currentUserId == "kHjrbXVjxZQzRHRvvqf7") {
+                    binding.btnAdminPanel.visibility = View.VISIBLE
+                    binding.btnAdminPanel.setOnClickListener {
+                        startActivity(Intent(this, AdminActivity::class.java))
+                    }
+                } else {
+                    binding.btnAdminPanel.visibility = View.GONE
                 }
             }
         }
     }
 
-    // Limpieza para evitar fugas de memoria
-    override fun onDestroy() {
-        super.onDestroy()
-        userListener?.remove()
-    }
-
     private fun setupFooterListeners() {
         binding.tabAvatar.setOnClickListener {
+            // Ahora que el avatar está arriba, este botón puede abrir el selector
+            // o simplemente marcar la pestaña
             selectTab(binding.tabAvatar)
-            loadFragment(EditProfileFragment())
-            binding.header.visibility = View.VISIBLE
         }
 
         binding.tabChat.setOnClickListener {
-            // Si el chat es otra activity, no necesitamos hacer selectTab aquí visualmente
             startActivity(Intent(this, ChatSplitActivity::class.java))
         }
 
@@ -131,50 +175,82 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // --- RESTO DE FUNCIONES (Iguales pero mantenidas para consistencia) ---
+
     private fun loadFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.mainContainer, fragment)
             .commit()
     }
 
+    private fun escucharNotificacionesChat() {
+        val uid = currentUserId ?: return
+        chatNotificationsListener = FirebaseFirestore.getInstance().collection("Chats")
+            .whereEqualTo("idreceptor", uid)
+            .whereEqualTo("leido", false)
+            .addSnapshotListener { snapshots, e ->
+                if (e != null) return@addSnapshotListener
+                val count = snapshots?.size() ?: 0
+                binding.badgeTotalChat.visibility = if (count > 0) View.VISIBLE else View.GONE
+                binding.badgeTotalChat.text = if (count > 99) "+99" else count.toString()
+            }
+    }
+
     private fun selectTab(selectedLayout: LinearLayout) {
         tabs.forEachIndexed { index, tab ->
+            // IMPORTANTE: Quitamos el filtro blanco para que el AVATAR se vea en COLOR
+            if (tab.layout != binding.tabAvatar) {
+                tab.icon.setColorFilter(Color.WHITE)
+            } else {
+                tab.icon.clearColorFilter()
+            }
 
-            // Aseguramos que el icono siempre sea BLANCO
-            tab.icon.setColorFilter(Color.WHITE)
-
-            // Aseguramos que el texto siempre sea BLANCO (por si acaso el XML tenía otro color)
             tab.text.setTextColor(Color.WHITE)
 
             if (tab.layout == selectedLayout) {
-                // === SELECCIONADO ===
-
-                // 1. Fondo marrón/rojizo (Según posición)
                 when (index) {
                     0 -> tab.layout.setBackgroundResource(R.drawable.bg_tab_selected_left)
                     tabs.size - 1 -> tab.layout.setBackgroundResource(R.drawable.bg_tab_selected_right)
                     else -> tab.layout.setBackgroundResource(R.drawable.bg_tab_selected_center)
                 }
-
-                // 2. Animación (Subir y mostrar texto)
                 if (tab.text.visibility != View.VISIBLE) {
                     tab.icon.animate().translationY(-8f).setDuration(200).start()
-
                     tab.text.visibility = View.VISIBLE
                     tab.text.alpha = 0f
                     tab.text.animate().alpha(1f).setDuration(200).start()
                 }
-
             } else {
-                // === NO SELECCIONADO ===
-
-                // 1. Quitar fondo
                 tab.layout.background = null
-
-                // 2. Resetear animación
                 tab.icon.animate().translationY(0f).setDuration(200).start()
                 tab.text.visibility = View.GONE
             }
         }
+    }
+    private fun getResIdFromName(context: Context, nameWithExtension: String?): Int {
+        if (nameWithExtension == null) return 0
+        // Limpiamos el ".png" si existe para que getIdentifier funcione
+        val cleanName = nameWithExtension.replace(".png", "")
+        return context.resources.getIdentifier(cleanName, "drawable", context.packageName)
+    }
+    private fun setupTabs() {
+        tabs = listOf(
+            TabItem(binding.tabAvatar, binding.imgAvatar, binding.txtAvatar),
+            TabItem(binding.tabChat, binding.imgChat, binding.txtChat),
+            TabItem(binding.tabPlay, binding.imgPlay, binding.txtPlay),
+            TabItem(binding.tabFriends, binding.imgFriends, binding.txtFriends),
+            TabItem(binding.tabStore, binding.imgStore, binding.txtStore)
+        )
+    }
+
+    fun logout(){
+        getSharedPreferences("UserPrefs", MODE_PRIVATE).edit().remove("userRegistrado").apply()
+        startActivity(Intent(this, LoginActivity::class.java))
+        finish()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        userListener?.remove()
+        chatNotificationsListener?.remove()
     }
 }

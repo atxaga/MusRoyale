@@ -60,7 +60,9 @@ class RequestsSentFragment : Fragment() {
                                 for (doc in querySnapshot.documents) {
                                     listaParaAdapter.add(mapOf(
                                         "id" to doc.id,
-                                        "username" to (doc.getString("username") ?: "Usuario")
+                                        "username" to (doc.getString("username") ?: "Usuario"),
+                                        "avatarActual" to (doc.getString("avatarActual") ?: "avatar_default.png")
+
                                     ))
                                 }
                                 adapter?.updateData(listaParaAdapter)
