@@ -124,11 +124,11 @@ class MainActivity : AppCompatActivity() {
 
                 if (resId != 0) {
                     binding.imgHeaderAvatar.setImageResource(resId)
-                    binding.imgAvatar.setImageResource(resId)
+                    //binding.imgAvatar.setImageResource(resId)
                 } else {
                     // Imagen por defecto si el ID es 0 o no existe
                     binding.imgHeaderAvatar.setImageResource(R.drawable.ic_avatar3)
-                    binding.imgAvatar.setImageResource(R.drawable.ic_avatar3)
+                   // binding.imgAvatar.setImageResource(R.drawable.ic_avatar3)
                 }
 
                 // Lógica de Admin
@@ -190,8 +190,8 @@ class MainActivity : AppCompatActivity() {
             .addSnapshotListener { snapshots, e ->
                 if (e != null) return@addSnapshotListener
                 val count = snapshots?.size() ?: 0
-                binding.badgeTotalChat.visibility = if (count > 0) View.VISIBLE else View.GONE
-                binding.badgeTotalChat.text = if (count > 99) "+99" else count.toString()
+               // binding.badgeTotalChat.visibility = if (count > 0) View.VISIBLE else View.GONE
+               // binding.badgeTotalChat.text = if (count > 99) "+99" else count.toString()
             }
     }
 
@@ -232,13 +232,58 @@ class MainActivity : AppCompatActivity() {
         return context.resources.getIdentifier(cleanName, "drawable", context.packageName)
     }
     private fun setupTabs() {
-        tabs = listOf(
-            //TabItem(binding.tabAvatar, binding.imgAvatar, binding.txtAvatar),
-            //TabItem(binding.tabChat, binding.imgChat, binding.txtChat),
-            //TabItem(binding.tabPlay, binding.imgPlay, binding.txtPlay),
-            //TabItem(binding.tabFriends, binding.imgFriends, binding.txtFriends),
-            //TabItem(binding.tabStore, binding.imgStore, binding.txtStore)
+        val tabMap = listOf(
+            binding.tabAvatar to binding.imgAvatar,
+            binding.tabChat to binding.imgChat,
+            binding.tabPlay to binding.imgPlay,
+            binding.tabFriends to binding.imgFriends,
+            binding.tabStore to binding.imgStore
         )
+
+        // Posicionar el círculo inicialmente en el botón Play (la casa) sin animación
+        binding.footer.post {
+            updateIndicator(binding.tabPlay, binding.imgPlay, animate = false)
+        }
+
+        tabMap.forEach { (layout, icon) ->
+            layout.setOnClickListener {
+                updateIndicator(layout, icon, animate = true)
+
+                // Tus acciones de fragmentos
+                when(layout.id) {
+                    R.id.tabAvatar -> { /* startActivity... */ }
+                    R.id.tabChat -> { /* startActivity... */ }
+                    R.id.tabPlay -> loadFragment(HomeFragment())
+                    R.id.tabFriends -> loadFragment(FriendsFragment())
+                    R.id.tabStore -> loadFragment(StoreFragment())
+                }
+            }
+        }
+    }
+
+    private fun updateIndicator(targetLayout: View, targetIcon: ImageView, animate: Boolean) {
+        val targetX = targetLayout.x + (targetLayout.width / 2f) - (binding.selectionIndicator.width / 2f)
+
+        // Movimiento del círculo
+        if (animate) {
+            binding.selectionIndicator.animate()
+                .x(targetX)
+                .setDuration(250)
+                .setInterpolator(android.view.animation.DecelerateInterpolator())
+                .start()
+        } else {
+            binding.selectionIndicator.x = targetX
+        }
+
+        // Cambiar colores de iconos: Negro el seleccionado, Blanco los demás
+        val icons = listOf(binding.imgAvatar, binding.imgChat, binding.imgPlay, binding.imgFriends, binding.imgStore)
+        icons.forEach { icon ->
+            if (icon == targetIcon) {
+                icon.setColorFilter(Color.BLACK) // Icono negro dentro del círculo
+            } else {
+                icon.setColorFilter(Color.WHITE) // Iconos blancos fuera
+            }
+        }
     }
 
     fun logout(){
