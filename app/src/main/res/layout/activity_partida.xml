@@ -501,6 +501,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/buttonDeskarteak"
+            android:text="Deskartatu"
+            app:layout_constraintTop_toBottomOf="@+id/infoBottom"
+            tools:ignore="MissingConstraints"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:visibility="invisible"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
