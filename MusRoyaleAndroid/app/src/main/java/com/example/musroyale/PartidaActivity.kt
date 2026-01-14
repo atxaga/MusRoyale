@@ -113,7 +113,8 @@ class PartidaActivity : AppCompatActivity() {
                             }
                             // Por ahora siempre hacemos "mus" (puedes cambiar según UI)
                             val erabakia = "mus"
-                            writer.write("$erabakia\n")
+                            writer.write(erabakia)
+                            writer.newLine()
                             writer.flush()
                         }
 
@@ -125,7 +126,8 @@ class PartidaActivity : AppCompatActivity() {
 
                             deskarteButton.setOnClickListener {
                                 val discard = buildDiscardString()
-                                writer.write("$discard\n")
+                                writer.write(discard)
+                                writer.newLine()
                                 writer.flush()
                                 deskarteButton.visibility = Button.GONE
                             }
@@ -137,10 +139,6 @@ class PartidaActivity : AppCompatActivity() {
                         }
 
                         else -> {
-                            // Mensajes inesperados
-                            withContext(Dispatchers.Main) {
-                                Toast.makeText(this@PartidaActivity, "Mensaje servidor: $serverMsg", Toast.LENGTH_SHORT).show()
-                            }
                         }
                     }
                 }
