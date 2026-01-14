@@ -1,0 +1,178 @@
+[
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\fragment_lootbox.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\fragment_lootbox.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\dialog_prize_winner.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\dialog_prize_winner.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\erregitro_activity.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\erregitro_activity.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\item_friend_chat.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\item_friend_chat.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\activity_partida.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\activity_partida.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\layout_avatar_selector.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\layout_avatar_selector.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\fragment_edit_profile.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\fragment_edit_profile.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\fragment_home.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\fragment_home.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\item_chat_message.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\item_chat_message.xml"
+    },
+    {
+        "merged": "com.example.musroyale.app-mergeDebugResources-64:/layout/activity_main.xml",
+        "source": "com.example.musroyale.app-main-67:/layout/activity_main.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\dialog_prize_alert.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\dialog_prize_alert.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\activity_main.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\activity_main.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\activity_chat_split.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\activity_chat_split.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\dialog_win_alert.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\dialog_win_alert.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\activity_add_balance.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\activity_add_balance.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\activity_login.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\activity_login.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\activity_match_setup.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\activity_match_setup.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\fragment_friends.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\fragment_friends.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\item_solicitud_pago.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\item_solicitud_pago.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\fragment_requests_received.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\fragment_requests_received.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\fragment_partida_actions.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\fragment_partida_actions.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\item_friend.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\item_friend.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\fragment_duo.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\fragment_duo.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\activity_register.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\activity_register.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\fragment_friends_list.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\fragment_friends_list.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\activity_crypto_payment.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\activity_crypto_payment.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\activity_duos.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\activity_duos.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\activity_admin_payments.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\activity_admin_payments.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\fragment_store.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\fragment_store.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\dialog_chat.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\dialog_chat.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\fragment_header.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\fragment_header.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\item_historial_pago.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\item_historial_pago.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\layout_dialog_revision.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\layout_dialog_revision.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\fragment_header_partida.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\fragment_header_partida.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\item_store_product.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\item_store_product.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\item_game_mode.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\item_game_mode.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\fragment_privada.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\fragment_privada.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\activity_edit_profile.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\activity_edit_profile.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\activity_pribatua.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\activity_pribatua.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\fragment_requests_sent.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\fragment_requests_sent.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\fragment_sortu.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\fragment_sortu.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\fragment_footer.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\fragment_footer.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\fragment_sartu.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\fragment_sartu.xml"
+    },
+    {
+        "merged": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-mergeDebugResources-64:\\layout\\item_avatar_circle.xml",
+        "source": "C:\\Users\\ik012982i18\\.gradle\\daemon\\8.13\\com.example.musroyale.app-main-67:\\layout\\item_avatar_circle.xml"
+    }
+]

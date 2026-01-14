@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="accent">#9C27B0</color>
+    <color name="action_button_beige">#FAF3E0</color>
+    <color name="action_button_mocha">#6D4C41</color>
+    <color name="action_button_red">#C62828</color>
+    <color name="beige">#FFBFA06A</color>
+    <color name="beige_overlay">#66000000</color>
+    <color name="beige_stroke">#D2B48C</color>
+    <color name="bg_beige">#FFBFA06A</color>
+    <color name="bg_page">#F6F0FB</color>
+    <color name="black">#FF000000</color>
+    <color name="brown_redish">#8D4034</color>
+    <color name="button_text">#FFFFFF</color>
+    <color name="card_bg_beige">#F5F5DC</color>
+    <color name="card_border_brown">#8B4513</color>
+    <color name="card_surface">#1AFFFFFF</color>
+    <color name="chip_background">#F5F5DC</color>
+    <color name="chip_background_active">#F5DEB3</color>
+    <color name="chip_stroke">#A0522D</color>
+    <color name="chip_stroke_active">#8B4513</color>
+    <color name="chip_text_inactive">#9E9E9E</color>
+    <color name="dark_card_border">#3E2723</color>
+    <color name="dark_green_text">#004d40</color>
+    <color name="dialog_background_color">#FFFFFF</color>
+    <color name="friends_background">#FFEEDFC7</color>
+    <color name="friends_beige_dark">#FF8E6A33</color>
+    <color name="friends_beige_light">#FFF4E2C7</color>
+    <color name="friends_beige_primary">#FFBFA06A</color>
+    <color name="friends_beige_primary_dark">#FF9F8B54</color>
+    <color name="friends_button_bg">#FFF8F1E6</color>
+    <color name="friends_button_pressed">#FFE3CBA5</color>
+    <color name="friends_button_tint">#8A734F</color>
+    <color name="friends_item_border">#B9874C</color>
+    <color name="friends_overlay_light">#1A000000</color>
+    <color name="friends_surface">#FFF6EAD6</color>
+    <color name="friends_surface_dark">#FFE3CBA5</color>
+    <color name="friends_text_dark">#3E2A19</color>
+    <color name="friends_text_medium">#8F795F</color>
+    <color name="friends_text_primary">#3A1E05</color>
+    <color name="friends_text_secondary">#6B4A20</color>
+    <color name="gold">#FFD700</color>
+    <color name="ic_launcher_background">#1B4D2E</color>
+    <color name="item_bg">#FFFFFFFF</color>
+    <color name="light_grey">#E0E0E0</color>
+    <color name="partida_border">#8B5E3C</color>
+    <color name="partida_chip_surface">#FFE8C7</color>
+    <color name="partida_icon_tint">#FFF5E6</color>
+    <color name="partida_overlay_end">#E6000000</color>
+    <color name="partida_overlay_start">#B2201406</color>
+    <color name="partida_panel_surface">#CC2E1A10</color>
+    <color name="partida_surface">#F4EEE1</color>
+    <color name="partida_text_primary">#2E1A12</color>
+    <color name="partida_text_secondary">#7B5A45</color>
+    <color name="primary">#8B4513</color>
+    <color name="primary_light">#7E57C2</color>
+    <color name="red_button">#B71C1C</color>
+    <color name="stroke">#E0D7EE</color>
+    <color name="text_hint">#80FFFFFF</color>
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#6B6B6B</color>
+    <color name="toggle_bg_selected">#FFF4D28F</color>
+    <color name="toggle_bg_unselected">#33FFFFFF</color>
+    <color name="toggle_stroke_selected">#FFF4D28F</color>
+    <color name="toggle_stroke_unselected">#80FFFFFF</color>
+    <color name="toggle_text_selected">#4B2C08</color>
+    <color name="toggle_text_unselected">#FFFFFFFF</color>
+    <color name="white">#FFFFFFFF</color>
+    <dimen name="bottom_navigation_height">96dp</dimen>
+    <dimen name="footer_height">72dp</dimen>
+    <string name="app_name">MusRoyale</string>
+    <string name="avatar_content_description">Avatar</string>
+    <string name="btn_change_avatar">Cambiar avatar</string>
+    <string name="default_user">Usuario</string>
+    <string name="desc_add_balance">Añadir saldo</string>
+    <string name="desc_camara">Cámara</string>
+    <string name="desc_chat">Chat</string>
+    <string name="desc_duosfondo">Fondo duo</string>
+    <string name="desc_privado">Privado</string>
+    <string name="enviado">Enviado</string>
+    <string name="friends_title">Amigos</string>
+    <string name="gcm_defaultSenderId" translatable="false">498565449322</string>
+    <string name="google_api_key" translatable="false">AIzaSyB_ku2aLOlKDNyzn2Br_PKOCTYCe7TzwcI</string>
+    <string name="google_app_id" translatable="false">1:498565449322:android:60ac214c01922a3d762c13</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyB_ku2aLOlKDNyzn2Br_PKOCTYCe7TzwcI</string>
+    <string name="google_storage_bucket" translatable="false">musroyale-488aa.firebasestorage.app</string>
+    <string name="header_username">Usuario</string>
+    <string name="hint_confirm_password">Confirmar contraseña</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_name">Nombre</string>
+    <string name="hint_new_password">Nueva contraseña (opcional)</string>
+    <string name="money">Dinero</string>
+    <string name="partida_pribatua">Partida privada</string>
+    <string name="played">Jugadas</string>
+    <string name="project_id" translatable="false">musroyale-488aa</string>
+    <string name="save_changes">Guardar cambios</string>
+    <string name="search_users_hint">Buscar usuarios</string>
+    <string name="stats_title">Estadísticas</string>
+    <string name="won">Ganadas</string>
+    <string name="zero">0</string>
+    <style name="Base.Theme.Musroyale" parent="Theme.Material3.DayNight.NoActionBar">
+        
+        
+    </style>
+    <style name="Theme.Musroyale" parent="Base.Theme.Musroyale"/>
+</resources>
