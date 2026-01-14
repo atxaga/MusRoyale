@@ -1,66 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FAF7F2">
+    android:background="#D2C5B3"> <com.google.android.material.appbar.AppBarLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent"
+    app:elevation="0dp">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:elevation="0dp">
+        android:layout_height="70dp">
 
-        <androidx.appcompat.widget.Toolbar
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:background="@color/friends_beige_primary"
+            android:layout_height="match_parent">
 
-            app:contentInsetStart="0dp">
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerVertical="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@android:drawable/ic_menu_revert"
+                app:tint="#3E3830" />
 
-            <RelativeLayout
-                android:layout_marginTop="20dp"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/btnBackContainer"
-                    android:layout_width="42dp"
-                    android:layout_height="42dp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="16dp"
-                    app:cardBackgroundColor="#FFFFFF"
-                    app:cardCornerRadius="21dp"
-                    app:cardElevation="2dp"
-                    app:strokeWidth="0dp">
-
-                    <ImageButton
-                        android:id="@+id/btnBack"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="?attr/selectableItemBackground"
-                        android:src="@android:drawable/ic_menu_revert"
-                        app:tint="#5D4037" />
-                </com.google.android.material.card.MaterialCardView>
-
-                <TextView
-                    android:id="@+id/tvHeaderTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:text="PROFILA"
-                    android:textColor="#5D4037"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:letterSpacing="0.1" />
-
-            </RelativeLayout>
-        </androidx.appcompat.widget.Toolbar>
-
-        <View
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:background="#F0EAE2" />
-    </com.google.android.material.appbar.AppBarLayout>
+            <TextView
+                android:id="@+id/tvHeaderTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="PROFILA"
+                android:textColor="#3E3830"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.2" />
+        </RelativeLayout>
+    </androidx.appcompat.widget.Toolbar>
+</com.google.android.material.appbar.AppBarLayout>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -72,195 +51,159 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="32dp">
+            android:padding="28dp">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="220dp">
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_gravity="center"
+                app:cardBackgroundColor="#C4B8A6"
+                app:cardCornerRadius="4dp"
+                app:cardElevation="0dp"
+                app:strokeColor="#3E3830"
+                app:strokeWidth="1.5dp">
 
-                <View
+                <ImageView
+                    android:id="@+id/ivAvatar"
                     android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                    android:background="@color/friends_beige_primary" />
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="20dp"
-                    app:cardCornerRadius="60dp"
-                    app:cardElevation="6dp"
-                    app:strokeColor="#FFFFFF"
-                    app:strokeWidth="4dp">
-
-                    <ImageView
-                        android:id="@+id/ivAvatar"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="centerCrop"
-                        android:src="@android:drawable/ic_menu_gallery" />
-                </com.google.android.material.card.MaterialCardView>
-            </RelativeLayout>
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:alpha="0.8"
+                    android:padding="4dp"
+                    android:src="@android:drawable/ic_menu_gallery" />
+            </com.google.android.material.card.MaterialCardView>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingHorizontal="20dp">
+                android:layout_marginTop="32dp"
+                android:orientation="horizontal"
+                android:background="#3E3830"
+                android:padding="1dp">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="10dp"
-                    android:weightSum="2">
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:background="#D2C5B3"
+                    android:padding="12dp"
+                    android:gravity="center">
 
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="8dp"
-                        app:cardBackgroundColor="#FFFFFF"
-                        app:cardCornerRadius="16dp"
-                        app:cardElevation="2dp">
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:padding="16dp"
-                            android:gravity="center">
-                            <TextView
-                                android:id="@+id/tvGamesPlayed"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="0"
-                                android:textColor="#5D4037"
-                                android:textSize="22sp"
-                                android:textStyle="bold" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="PARTIDAK"
-                                android:textSize="11sp"
-                                android:textColor="#A1887F"
-                                android:letterSpacing="0.1" />
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="0dp"
+                        android:text="JOKATUTAKOAK"
+                        android:textColor="#7A7164"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/tvGamesPlayed"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="8dp"
-                        app:cardBackgroundColor="#FFFFFF"
-                        app:cardCornerRadius="16dp"
-                        app:cardElevation="2dp">
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:padding="16dp"
-                            android:gravity="center">
-                            <TextView
-                                android:id="@+id/tvMoney"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="0.00"
-                                android:textColor="#D4AF37"
-                                android:textSize="22sp"
-                                android:textStyle="bold" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="DIRUA"
-                                android:textSize="11sp"
-                                android:textColor="#D4AF37"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
+                        android:text="142"
+                        android:textColor="#3E3830"
+                        android:textSize="20sp"
+                        android:fontFamily="serif" />
                 </LinearLayout>
 
-                <com.google.android.material.card.MaterialCardView
+                <View android:layout_width="1dp" android:layout_height="match_parent" android:background="#3E3830" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:background="#D2C5B3"
+                    android:padding="12dp"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="DIRUA"
+                        android:textColor="#7A7164"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/tvMoney"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="2,500€"
+                        android:textColor="#3E3830"
+                        android:textSize="20sp"
+                        android:fontFamily="serif" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:orientation="vertical">
+
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    app:cardBackgroundColor="#FFFFFF"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="2dp">
-
-                    <LinearLayout
+                    android:hint="Izena"
+                    app:hintTextColor="#7A7164"
+                    app:boxStrokeColor="#3E3830"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etEditUsername"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="20dp">
+                        android:textColor="#3E3830"
+                        android:fontFamily="serif" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                            android:hint="Erabiltzaile Izena"
-                            app:boxStrokeColor="@color/friends_beige_primary"
-                            app:hintTextColor="@color/friends_beige_primary"
-                            app:startIconDrawable="@android:drawable/ic_menu_edit">
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/etEditUsername"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:textColor="#3E2723" />
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
-                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                            android:hint="Email"
-                            app:boxStrokeColor="@color/friends_beige_primary"
-                            app:hintTextColor="@color/friends_beige_primary"
-                            app:startIconDrawable="@android:drawable/ic_dialog_email">
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/etEditEmail"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:textColor="#3E2723" />
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
-                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                            android:hint="Pasahitza aldatu"
-                            app:passwordToggleEnabled="true"
-                            app:boxStrokeColor="@color/friends_beige_primary"
-                            app:hintTextColor="@color/friends_beige_primary"
-                            app:startIconDrawable="@android:drawable/ic_lock_idle_lock">
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/etEditPassword"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:textColor="#3E2723"
-                                android:inputType="textPassword" />
-                        </com.google.android.material.textfield.TextInputLayout>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <Button
-                    android:id="@+id/btnSaveProfile"
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:layout_marginTop="24dp"
-                    android:text="PROFILA EGUNERATU"
-                    android:backgroundTint="@color/friends_beige_primary"
-                    android:textColor="#FFFFFF"
-                    android:textStyle="bold"
-                    android:textSize="16sp"
-                    app:cornerRadius="16dp"
-                    app:elevation="4dp" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:hint="Email"
+                    app:hintTextColor="#7A7164"
+                    app:boxStrokeColor="#3E3830"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etEditEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="#3E3830"
+                        android:fontFamily="serif" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-
-
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:hint="Pasahitza aldatu"
+                    app:hintTextColor="#7A7164"
+                    app:boxStrokeColor="#3E3830"
+                    app:passwordToggleEnabled="true"
+                    app:passwordToggleTint="#3E3830"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etEditPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="#3E3830"
+                        android:inputType="textPassword" />
+                </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
+
+            <Button
+                android:id="@+id/btnSaveProfile"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="40dp"
+                android:text="GORDE"
+                android:backgroundTint="#3E3830"
+                android:textColor="#D2C5B3"
+                android:textStyle="bold"
+                android:letterSpacing="0.1"
+                app:cornerRadius="2dp" />
+
         </LinearLayout>
     </ScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

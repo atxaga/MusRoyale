@@ -25,7 +25,8 @@
         <activity android:name=".PartidaActivity" />
         <activity android:name=".DuoActivity"/>
         <activity android:name=".RegistroActivity"/>
-        <activity android:name=".MainActivity"/>
+        <activity android:name=".MainActivity"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".ChatSplitActivity"
             android:screenOrientation="portrait"
