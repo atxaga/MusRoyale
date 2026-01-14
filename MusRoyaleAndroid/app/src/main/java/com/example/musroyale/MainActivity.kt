@@ -232,7 +232,7 @@ class MainActivity : AppCompatActivity() {
         return context.resources.getIdentifier(cleanName, "drawable", context.packageName)
     }
     private fun setupTabs() {
-        val tabMap = listOf(
+        val tabs = listOf(
             binding.tabAvatar to binding.imgAvatar,
             binding.tabChat to binding.imgChat,
             binding.tabPlay to binding.imgPlay,
@@ -240,22 +240,32 @@ class MainActivity : AppCompatActivity() {
             binding.tabStore to binding.imgStore
         )
 
-        // Posicionar el círculo inicialmente en el botón Play (la casa) sin animación
+        // Posición inicial en la casa (Home)
         binding.footer.post {
-            updateIndicator(binding.tabPlay, binding.imgPlay, animate = false)
+            val homeTab = binding.tabPlay
+            binding.selectionIndicator.x = homeTab.x + (homeTab.width / 2f) - (binding.selectionIndicator.width / 2f)
         }
 
-        tabMap.forEach { (layout, icon) ->
+        tabs.forEach { (layout, icon) ->
             layout.setOnClickListener {
-                updateIndicator(layout, icon, animate = true)
+                // Animación tipo Switch
+                val targetX = layout.x + (layout.width / 2f) - (binding.selectionIndicator.width / 2f)
+                binding.selectionIndicator.animate()
+                    .x(targetX)
+                    .setDuration(300)
+                    .setInterpolator(android.view.animation.OvershootInterpolator(1.2f)) // Un pequeño efecto elástico
+                    .start()
 
-                // Tus acciones de fragmentos
+                // Cambio de color de iconos: El seleccionado Negro, el resto Blanco
+                tabs.forEach { it.second.setColorFilter(Color.WHITE) }
+                icon.setColorFilter(Color.BLACK)
+
+                // Lógica de Fragmentos
                 when(layout.id) {
-                    R.id.tabAvatar -> { /* startActivity... */ }
-                    R.id.tabChat -> { /* startActivity... */ }
                     R.id.tabPlay -> loadFragment(HomeFragment())
                     R.id.tabFriends -> loadFragment(FriendsFragment())
                     R.id.tabStore -> loadFragment(StoreFragment())
+                    // ... tus otros fragmentos
                 }
             }
         }
