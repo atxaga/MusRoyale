@@ -119,18 +119,23 @@ class PartidaActivity : AppCompatActivity() {
                         }
 
                         "ALL_MUS" -> {
-                            // Todos dijeron mus, ahora descartes
-                            deskarteButton = findViewById(R.id.buttonDeskarteak)
-
+                            // Mostrar botón en el hilo principal
                             withContext(Dispatchers.Main) {
                                 deskarteButton.visibility = Button.VISIBLE
 
                                 deskarteButton.setOnClickListener {
-                                    val discard = buildDiscardString()
-                                    writer.write(discard)
-                                    writer.newLine()
-                                    writer.flush()
-                                    deskarteButton.visibility = Button.GONE
+                                    // Ejecutar la escritura en IO
+                                    lifecycleScope.launch(Dispatchers.IO) {
+                                        val discard = buildDiscardString()
+                                        writer.write(discard)
+                                        writer.newLine()
+                                        writer.flush()
+
+                                        // Ocultar botón en hilo principal
+                                        withContext(Dispatchers.Main) {
+                                            deskarteButton.visibility = Button.GONE
+                                        }
+                                    }
                                 }
                             }
                         }
