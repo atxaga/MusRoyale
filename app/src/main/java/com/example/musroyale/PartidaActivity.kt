@@ -1,6 +1,7 @@
 package com.example.musroyale
 
 import android.os.Bundle
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Toast
@@ -27,6 +28,7 @@ class PartidaActivity : AppCompatActivity() {
     private lateinit var bottomCard2: ImageView
     private lateinit var bottomCard3: ImageView
     private lateinit var bottomCard4: ImageView
+    private lateinit var deskarteButton: Button
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_partida)
@@ -117,9 +119,16 @@ class PartidaActivity : AppCompatActivity() {
 
                         "ALL_MUS" -> {
                             // Todos dijeron mus, ahora descartes
-                            val discard = withContext(Dispatchers.Main) { buildDiscardString() }
-                            writer.write("$discard\n")
-                            writer.flush()
+                            deskarteButton = findViewById(R.id.buttonDeskarteak)
+
+                            deskarteButton.visibility = Button.VISIBLE
+
+                            deskarteButton.setOnClickListener {
+                                val discard = buildDiscardString()
+                                writer.write("$discard\n")
+                                writer.flush()
+                            }
+                            deskarteButton.visibility = Button.GONE
                         }
 
                         "END_GAME" -> {
