@@ -127,8 +127,8 @@ class PartidaActivity : AppCompatActivity() {
                                 val discard = buildDiscardString()
                                 writer.write("$discard\n")
                                 writer.flush()
+                                deskarteButton.visibility = Button.GONE
                             }
-                            deskarteButton.visibility = Button.GONE
                         }
 
                         "END_GAME" -> {
