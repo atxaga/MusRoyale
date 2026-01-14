@@ -114,6 +114,7 @@ class PartidaActivity : AppCompatActivity() {
                             // Por ahora siempre hacemos "mus" (puedes cambiar según UI)
                             val erabakia = "mus"
                             writer.write(erabakia)
+                            writer.newLine()
                             writer.flush()
                         }
 
@@ -121,13 +122,16 @@ class PartidaActivity : AppCompatActivity() {
                             // Todos dijeron mus, ahora descartes
                             deskarteButton = findViewById(R.id.buttonDeskarteak)
 
-                            deskarteButton.visibility = Button.VISIBLE
+                            withContext(Dispatchers.Main) {
+                                deskarteButton.visibility = Button.VISIBLE
 
-                            deskarteButton.setOnClickListener {
-                                val discard = buildDiscardString()
-                                writer.write(discard)
-                                writer.flush()
-                                deskarteButton.visibility = Button.GONE
+                                deskarteButton.setOnClickListener {
+                                    val discard = buildDiscardString()
+                                    writer.write(discard)
+                                    writer.newLine()
+                                    writer.flush()
+                                    deskarteButton.visibility = Button.GONE
+                                }
                             }
                         }
 
