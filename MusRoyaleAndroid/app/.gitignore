@@ -1,1 +1,11 @@
-/build
+# Android
+**/build/
+**/.gradle/
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
+
+# Local
+local.properties
