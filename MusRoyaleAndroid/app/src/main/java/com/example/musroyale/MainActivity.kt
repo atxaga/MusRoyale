@@ -18,14 +18,6 @@ import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-
-    data class TabItem(
-        val layout: LinearLayout,
-        val icon: ImageView,
-        val text: TextView
-    )
-
-    private lateinit var tabs: List<TabItem>
     private var currentUserId: String? = null
     private var userListener: com.google.firebase.firestore.ListenerRegistration? = null
     private var chatNotificationsListener: com.google.firebase.firestore.ListenerRegistration? = null
@@ -34,46 +26,182 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        binding.selectionIndicator.bringToFront()
+        binding.footerIcons.bringToFront() // Suponiendo que le pusiste este ID al LinearLayout
         val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
         currentUserId = prefs.getString("userRegistrado", null)
 
-        // 1. Listeners de los nuevos botones del Header (Avatar arriba)
-        binding.containerHeaderAvatar.setOnClickListener {
-            mostrarSelectorAvatares()
-        }
-
-        // 2. Escucha de notificaciones de chat
-        if (currentUserId != null) {
-            escucharNotificacionesChat()
-        }
-
-        // 3. Setup de Tabs y Fragment inicial
+        // 1. Inicializar Tabs (Movimiento del círculo y clics)
         setupTabs()
+
+        // 2. Cargar Fragmento inicial (Home)
         if (savedInstanceState == null) {
             loadFragment(HomeFragment())
         }
 
-        // 4. Listeners de Botones de Cabecera
+        // 3. Listeners de Cabecera
+        binding.containerHeaderAvatar.setOnClickListener { mostrarSelectorAvatares() }
         binding.btnLogout.setOnClickListener { logout() }
         binding.btnAddBalance.setOnClickListener {
             startActivity(Intent(this, CryptoPaymentActivity::class.java))
         }
 
-        setupFooterListeners()
+        if (currentUserId != null) escucharNotificacionesChat()
         cargarDatosUser()
     }
 
-    override fun onResume() {
-        super.onResume()
-        cargarDatosUser()
+    private fun setupTabs() {
+        binding.selectionIndicator.translationZ = 10f
+        binding.footer.translationZ = 5f
+
+        // Pestañas de navegación central
+        binding.tabPlay.setOnClickListener {
+            navegarAFuncion(binding.tabPlay, binding.imgPlay, "HOME")
+        }
+
+        binding.tabFriends.setOnClickListener {
+            navegarAFuncion(binding.tabFriends, binding.imgFriends, "FRIENDS")
+        }
+
+        binding.tabStore.setOnClickListener {
+            navegarAFuncion(binding.tabStore, binding.imgStore, "STORE")
+        }
+
+        // Pestañas laterales (Sin movimiento de círculo)
+        binding.tabAvatar.setOnClickListener {
+            startActivity(Intent(this, EditProfileActivity::class.java))
+        }
+
+        binding.tabChat.setOnClickListener {
+            startActivity(Intent(this, ChatSplitActivity::class.java))
+        }
+
+        // Posición inicial
+        binding.footer.post {
+            updateTabUI(binding.tabPlay, binding.imgPlay, animate = false)
+        }
+    }
+
+    // Nueva función de ayuda para evitar crear fragmentos por duplicado
+    private fun navegarAFuncion(layout: View, icon: ImageView, destino: String) {
+        updateTabUI(layout, icon, animate = true)
+
+        val fragment = when (destino) {
+            "HOME" -> HomeFragment()
+            "FRIENDS" -> FriendsFragment()
+            "STORE" -> StoreFragment()
+            else -> HomeFragment()
+        }
+
+        loadFragment(fragment)
+        binding.header.visibility = if (destino == "HOME") View.VISIBLE else View.GONE
+    }
+
+    private fun updateTabUI(targetLayout: View, targetIcon: ImageView, animate: Boolean) {
+        // 1. Mover el círculo indicador
+        val targetX = targetLayout.left + (targetLayout.width / 2f) - (binding.selectionIndicator.width / 2f) + binding.footer.left
+
+        if (animate) {
+            binding.selectionIndicator.animate()
+                .x(targetX)
+                .setDuration(400)
+                .setInterpolator(android.view.animation.OvershootInterpolator(1.2f))
+                .start()
+        } else {
+            binding.selectionIndicator.x = targetX
+        }
+
+        // 2. Animación de los iconos (Color y Tamaño)
+        val tabs = listOf(
+            binding.imgAvatar,
+            binding.imgChat,
+            binding.imgPlay,
+            binding.imgFriends,
+            binding.imgStore
+        )
+
+        tabs.forEach { icon ->
+            if (icon == targetIcon) {
+                // ICONO SELECCIONADO: Negro y se agranda
+                icon.setColorFilter(Color.BLACK)
+                icon.animate()
+                    .scaleX(1.4f) // Crece un 40%
+                    .scaleY(1.4f)
+                    .setDuration(300)
+                    .setInterpolator(android.view.animation.AnticipateOvershootInterpolator())
+                    .start()
+            } else {
+                // ICONOS NO SELECCIONADOS: Blancos y tamaño normal
+                icon.setColorFilter(Color.WHITE)
+                icon.animate()
+                    .scaleX(1.0f) // Vuelve a su tamaño original
+                    .scaleY(1.0f)
+                    .setDuration(200)
+                    .start()
+            }
+        }
+    }
+
+    // --- Funciones de utilidad y Firebase ---
+
+    private fun loadFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.mainContainer, fragment) // <--- ESTE ID DEBE SER IGUAL AL DEL XML
+            .setTransition(androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+            .commit()
+    }
+
+    private fun cargarDatosUser() {
+        if (currentUserId == null) return
+        val docRef = FirebaseFirestore.getInstance().collection("Users").document(currentUserId!!)
+        userListener = docRef.addSnapshotListener { document, _ ->
+            if (document != null && document.exists()) {
+                binding.loadingOverlay.visibility = View.GONE
+                binding.txtUsername.text = document.getString("username") ?: "Usuario"
+                binding.txtBalance.text = document.get("dinero")?.toString() ?: "0"
+
+                val avatarResId = getResIdFromName(this, document.getString("avatarActual"))
+                binding.imgHeaderAvatar.setImageResource(if (avatarResId != 0) avatarResId else R.drawable.ic_avatar3)
+
+                binding.btnAdminPanel.visibility = if (currentUserId == "kHjrbXVjxZQzRHRvvqf7") View.VISIBLE else View.GONE
+                if (currentUserId == "kHjrbXVjxZQzRHRvvqf7") {
+                    binding.btnAdminPanel.setOnClickListener { startActivity(Intent(this, AdminActivity::class.java)) }
+                }
+            }
+        }
+    }
+
+    private fun getResIdFromName(context: Context, name: String?): Int {
+        if (name == null) return 0
+        return context.resources.getIdentifier(name.replace(".png", ""), "drawable", context.packageName)
+    }
+
+    private fun escucharNotificacionesChat() {
+        val uid = currentUserId ?: return
+        val badgeChat = findViewById<TextView>(R.id.badgeChat)
+
+        chatNotificationsListener = FirebaseFirestore.getInstance().collection("Chats")
+            .whereEqualTo("idreceptor", uid)
+            .whereEqualTo("leido", false)
+            .addSnapshotListener { snapshots, error ->
+                if (error != null) return@addSnapshotListener
+
+                if (snapshots != null && !snapshots.isEmpty) {
+                    // Hay mensajes no leídos
+                    val numMensajes = snapshots.size()
+                    badgeChat.text = if (numMensajes > 9) "+9" else numMensajes.toString()
+                    badgeChat.visibility = View.VISIBLE
+                } else {
+                    // No hay mensajes nuevos
+                    badgeChat.visibility = View.GONE
+                }
+            }
     }
 
     private fun mostrarSelectorAvatares() {
         val bottomSheet = com.google.android.material.bottomsheet.BottomSheetDialog(this)
         val view = layoutInflater.inflate(R.layout.layout_avatar_selector, null)
         bottomSheet.setContentView(view)
-
         val rv = view.findViewById<RecyclerView>(R.id.rvAvatarList)
         val userId = currentUserId ?: return
 
@@ -81,222 +209,16 @@ class MainActivity : AppCompatActivity() {
             .addOnSuccessListener { snapshot ->
                 val misAvatares = snapshot.get("avatares") as? List<String> ?: listOf("avatar_default")
                 val actual = snapshot.getString("avatarActual") ?: "avatar_default"
-
                 rv.layoutManager = GridLayoutManager(this, 3)
-                rv.adapter = AvatarAdapter(misAvatares, actual) { avatarSeleccionado ->
-                    actualizarAvatarActual(userId, avatarSeleccionado)
+                rv.adapter = AvatarAdapter(misAvatares, actual) { avatar ->
+                    FirebaseFirestore.getInstance().collection("Users").document(userId).update("avatarActual", avatar)
                     bottomSheet.dismiss()
                 }
             }
         bottomSheet.show()
     }
 
-    private fun actualizarAvatarActual(userId: String, nuevoAvatar: String) {
-
-        FirebaseFirestore.getInstance().collection("Users").document(userId)
-            .update("avatarActual", nuevoAvatar)
-            .addOnSuccessListener {
-                // El SnapshotListener de cargarDatosUser se encargará de actualizar las imágenes
-                Toast.makeText(this, "Avatarra aldatuta!", Toast.LENGTH_SHORT).show()
-            }
-    }
-
-    private fun cargarDatosUser() {
-        if (currentUserId == null) return
-
-        val db = FirebaseFirestore.getInstance()
-        val docRef = db.collection("Users").document(currentUserId!!)
-
-        userListener?.remove()
-        userListener = docRef.addSnapshotListener { document, error ->
-            if (error != null) return@addSnapshotListener
-
-            if (document != null && document.exists()) {
-                binding.loadingOverlay.visibility = View.GONE
-
-                // Actualizar Textos
-                binding.txtUsername.text = document.getString("username") ?: "Usuario"
-                binding.txtBalance.text = document.get("dinero")?.toString() ?: "0"
-
-                // === CARGAR AVATAR ACTUAL (CORREGIDO) ===
-                val avatarActualStr = document.getString("avatarActual") // Ej: "rey.png"
-                val resId = getResIdFromName(this, avatarActualStr)
-
-                if (resId != 0) {
-                    binding.imgHeaderAvatar.setImageResource(resId)
-                    //binding.imgAvatar.setImageResource(resId)
-                } else {
-                    // Imagen por defecto si el ID es 0 o no existe
-                    binding.imgHeaderAvatar.setImageResource(R.drawable.ic_avatar3)
-                   // binding.imgAvatar.setImageResource(R.drawable.ic_avatar3)
-                }
-
-                // Lógica de Admin
-                if (currentUserId == "kHjrbXVjxZQzRHRvvqf7") {
-                    binding.btnAdminPanel.visibility = View.VISIBLE
-                    binding.btnAdminPanel.setOnClickListener {
-                        startActivity(Intent(this, AdminActivity::class.java))
-                    }
-                } else {
-                    binding.btnAdminPanel.visibility = View.GONE
-                }
-            }
-        }
-    }
-
-    private fun setupFooterListeners() {
-        binding.tabAvatar.setOnClickListener {
-            // Ahora que el avatar está arriba, este botón puede abrir el selector
-            startActivity(Intent(this, EditProfileActivity::class.java))
-
-        }
-
-        binding.tabChat.setOnClickListener {
-            startActivity(Intent(this, ChatSplitActivity::class.java))
-        }
-
-        binding.tabPlay.setOnClickListener {
-            //selectTab(binding.tabPlay)
-            loadFragment(HomeFragment())
-            binding.header.visibility = View.VISIBLE
-        }
-
-        binding.tabFriends.setOnClickListener {
-            //selectTab(binding.tabFriends)
-            loadFragment(FriendsFragment())
-            binding.header.visibility = View.GONE
-        }
-
-        binding.tabStore.setOnClickListener {
-            //selectTab(binding.tabStore)
-            loadFragment(StoreFragment())
-            binding.header.visibility = View.GONE
-        }
-    }
-
-    // --- RESTO DE FUNCIONES (Iguales pero mantenidas para consistencia) ---
-
-    private fun loadFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.mainContainer, fragment)
-            .commit()
-    }
-
-    private fun escucharNotificacionesChat() {
-        val uid = currentUserId ?: return
-        chatNotificationsListener = FirebaseFirestore.getInstance().collection("Chats")
-            .whereEqualTo("idreceptor", uid)
-            .whereEqualTo("leido", false)
-            .addSnapshotListener { snapshots, e ->
-                if (e != null) return@addSnapshotListener
-                val count = snapshots?.size() ?: 0
-               // binding.badgeTotalChat.visibility = if (count > 0) View.VISIBLE else View.GONE
-               // binding.badgeTotalChat.text = if (count > 99) "+99" else count.toString()
-            }
-    }
-
-    private fun selectTab(selectedLayout: LinearLayout) {
-        tabs.forEachIndexed { index, tab ->
-            // IMPORTANTE: Quitamos el filtro blanco para que el AVATAR se vea en COLOR
-            if (tab.layout != binding.tabAvatar) {
-                tab.icon.setColorFilter(Color.WHITE)
-            } else {
-                tab.icon.clearColorFilter()
-            }
-
-            tab.text.setTextColor(Color.WHITE)
-
-            if (tab.layout == selectedLayout) {
-                when (index) {
-                    0 -> tab.layout.setBackgroundResource(R.drawable.bg_tab_selected_left)
-                    tabs.size - 1 -> tab.layout.setBackgroundResource(R.drawable.bg_tab_selected_right)
-                    else -> tab.layout.setBackgroundResource(R.drawable.bg_tab_selected_center)
-                }
-                if (tab.text.visibility != View.VISIBLE) {
-                    tab.icon.animate().translationY(-8f).setDuration(200).start()
-                    tab.text.visibility = View.VISIBLE
-                    tab.text.alpha = 0f
-                    tab.text.animate().alpha(1f).setDuration(200).start()
-                }
-            } else {
-                tab.layout.background = null
-                tab.icon.animate().translationY(0f).setDuration(200).start()
-                tab.text.visibility = View.GONE
-            }
-        }
-    }
-    private fun getResIdFromName(context: Context, nameWithExtension: String?): Int {
-        if (nameWithExtension == null) return 0
-        // Limpiamos el ".png" si existe para que getIdentifier funcione
-        val cleanName = nameWithExtension.replace(".png", "")
-        return context.resources.getIdentifier(cleanName, "drawable", context.packageName)
-    }
-    private fun setupTabs() {
-        val tabs = listOf(
-            binding.tabAvatar to binding.imgAvatar,
-            binding.tabChat to binding.imgChat,
-            binding.tabPlay to binding.imgPlay,
-            binding.tabFriends to binding.imgFriends,
-            binding.tabStore to binding.imgStore
-        )
-
-        // Posición inicial en la casa (Home)
-        binding.footer.post {
-            val homeTab = binding.tabPlay
-            binding.selectionIndicator.x = homeTab.x + (homeTab.width / 2f) - (binding.selectionIndicator.width / 2f)
-        }
-
-        tabs.forEach { (layout, icon) ->
-            layout.setOnClickListener {
-                // Animación tipo Switch
-                val targetX = layout.x + (layout.width / 2f) - (binding.selectionIndicator.width / 2f)
-                binding.selectionIndicator.animate()
-                    .x(targetX)
-                    .setDuration(300)
-                    .setInterpolator(android.view.animation.OvershootInterpolator(1.2f)) // Un pequeño efecto elástico
-                    .start()
-
-                // Cambio de color de iconos: El seleccionado Negro, el resto Blanco
-                tabs.forEach { it.second.setColorFilter(Color.WHITE) }
-                icon.setColorFilter(Color.BLACK)
-
-                // Lógica de Fragmentos
-                when(layout.id) {
-                    R.id.tabPlay -> loadFragment(HomeFragment())
-                    R.id.tabFriends -> loadFragment(FriendsFragment())
-                    R.id.tabStore -> loadFragment(StoreFragment())
-                    // ... tus otros fragmentos
-                }
-            }
-        }
-    }
-
-    private fun updateIndicator(targetLayout: View, targetIcon: ImageView, animate: Boolean) {
-        val targetX = targetLayout.x + (targetLayout.width / 2f) - (binding.selectionIndicator.width / 2f)
-
-        // Movimiento del círculo
-        if (animate) {
-            binding.selectionIndicator.animate()
-                .x(targetX)
-                .setDuration(250)
-                .setInterpolator(android.view.animation.DecelerateInterpolator())
-                .start()
-        } else {
-            binding.selectionIndicator.x = targetX
-        }
-
-        // Cambiar colores de iconos: Negro el seleccionado, Blanco los demás
-        val icons = listOf(binding.imgAvatar, binding.imgChat, binding.imgPlay, binding.imgFriends, binding.imgStore)
-        icons.forEach { icon ->
-            if (icon == targetIcon) {
-                icon.setColorFilter(Color.BLACK) // Icono negro dentro del círculo
-            } else {
-                icon.setColorFilter(Color.WHITE) // Iconos blancos fuera
-            }
-        }
-    }
-
-    fun logout(){
+    fun logout() {
         getSharedPreferences("UserPrefs", MODE_PRIVATE).edit().remove("userRegistrado").apply()
         startActivity(Intent(this, LoginActivity::class.java))
         finish()

@@ -29,4 +29,24 @@
         <item name="android:textSize">10sp</item>
         <item name="android:layout_marginTop">2dp</item>
     </style>
+    <style name="CircleAppearance">
+        <item name="cornerSize">50%</item>
+    </style>
+    <style name="CircleImage">
+        <item name="cornerSize">50%</item>
+    </style>
+    <style name="EsquinasInferioresRedondas" parent="">
+        <item name="cornerSizeTopLeft">0dp</item>
+        <item name="cornerSizeTopRight">0dp</item>
+        <item name="cornerSizeBottomLeft">32dp</item>
+        <item name="cornerSizeBottomRight">32dp</item>
+    </style>
+    <style name="DialogRedondeado" parent="Theme.MaterialComponents.Light.Dialog.Alert">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.MaterialComponents.MediumComponent</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="ShapeAppearance.MaterialComponents.MediumComponent" parent="">
+        <item name="cornerSize">20dp</item>
+    </style>
 </resources>

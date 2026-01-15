@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#D2C5B3"> <com.google.android.material.appbar.AppBarLayout
+    android:background="#F5F5F0"> <com.google.android.material.appbar.AppBarLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/transparent"
@@ -24,7 +24,7 @@
                 android:layout_height="40dp"
                 android:layout_centerVertical="true"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@android:drawable/ic_menu_revert"
+                android:src="@drawable/ic_arrow_back"
                 app:tint="#3E3830" />
 
             <TextView
@@ -34,9 +34,9 @@
                 android:layout_centerInParent="true"
                 android:text="PROFILA"
                 android:textColor="#3E3830"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.2" />
+                android:textSize="18sp"
+                android:fontFamily="sans-serif-black"
+                android:letterSpacing="0.1" />
         </RelativeLayout>
     </androidx.appcompat.widget.Toolbar>
 </com.google.android.material.appbar.AppBarLayout>
@@ -54,92 +54,96 @@
             android:padding="28dp">
 
             <com.google.android.material.card.MaterialCardView
-                android:layout_width="120dp"
-                android:layout_height="120dp"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
                 android:layout_gravity="center"
-                app:cardBackgroundColor="#C4B8A6"
-                app:cardCornerRadius="4dp"
-                app:cardElevation="0dp"
-                app:strokeColor="#3E3830"
-                app:strokeWidth="1.5dp">
+                app:cardBackgroundColor="@android:color/white"
+                app:cardCornerRadius="65dp"
+                app:cardElevation="6dp"
+                app:strokeColor="#FFD700"
+                app:strokeWidth="3dp">
 
                 <ImageView
                     android:id="@+id/ivAvatar"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
-                    android:alpha="0.8"
-                    android:padding="4dp"
-                    android:src="@android:drawable/ic_menu_gallery" />
+                    android:src="@drawable/ic_avatar3" />
             </com.google.android.material.card.MaterialCardView>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:orientation="horizontal"
-                android:background="#3E3830"
-                android:padding="1dp">
+                android:orientation="horizontal">
 
-                <LinearLayout
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:background="#D2C5B3"
-                    android:padding="12dp"
-                    android:gravity="center">
-
-                    <TextView
-                        android:layout_width="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="4dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="JOKATUTAKOAK"
-                        android:textColor="#7A7164"
-                        android:textSize="10sp"
-                        android:textStyle="bold" />
-                    <TextView
-                        android:id="@+id/tvGamesPlayed"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="142"
-                        android:textColor="#3E3830"
-                        android:textSize="20sp"
-                        android:fontFamily="serif" />
-                </LinearLayout>
+                        android:orientation="vertical"
+                        android:padding="16dp"
+                        android:gravity="center">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="JOKATUTAKOAK"
+                            android:textColor="#7A7164"
+                            android:textSize="10sp"
+                            android:fontFamily="sans-serif-black" />
+                        <TextView
+                            android:id="@+id/tvGamesPlayed"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="142"
+                            android:textColor="#3E3830"
+                            android:textSize="22sp"
+                            android:fontFamily="sans-serif-medium" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
-                <View android:layout_width="1dp" android:layout_height="match_parent" android:background="#3E3830" />
-
-                <LinearLayout
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:background="#D2C5B3"
-                    android:padding="12dp"
-                    android:gravity="center">
-
-                    <TextView
-                        android:layout_width="wrap_content"
+                    android:layout_marginStart="8dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="4dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="DIRUA"
-                        android:textColor="#7A7164"
-                        android:textSize="10sp"
-                        android:textStyle="bold" />
-                    <TextView
-                        android:id="@+id/tvMoney"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="2,500€"
-                        android:textColor="#3E3830"
-                        android:textSize="20sp"
-                        android:fontFamily="serif" />
-                </LinearLayout>
+                        android:orientation="vertical"
+                        android:padding="16dp"
+                        android:gravity="center">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="DIRUA"
+                            android:textColor="#7A7164"
+                            android:textSize="10sp"
+                            android:fontFamily="sans-serif-black" />
+                        <TextView
+                            android:id="@+id/tvMoney"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="2,500€"
+                            android:textColor="#B8860B"
+                            android:textStyle="bold"
+                            android:textSize="22sp"
+                            android:fontFamily="sans-serif-medium" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="32dp"
                 android:orientation="vertical">
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -148,13 +152,17 @@
                     android:hint="Izena"
                     app:hintTextColor="#7A7164"
                     app:boxStrokeColor="#3E3830"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etEditUsername"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="#3E3830"
-                        android:fontFamily="serif" />
+                        android:fontFamily="sans-serif" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -162,15 +170,17 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:hint="Email"
-                    app:hintTextColor="#7A7164"
-                    app:boxStrokeColor="#3E3830"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etEditEmail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="#3E3830"
-                        android:fontFamily="serif" />
+                        android:fontFamily="sans-serif" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -178,10 +188,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:hint="Pasahitza aldatu"
-                    app:hintTextColor="#7A7164"
-                    app:boxStrokeColor="#3E3830"
                     app:passwordToggleEnabled="true"
-                    app:passwordToggleTint="#3E3830"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etEditPassword"
@@ -192,17 +203,18 @@
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSaveProfile"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginTop="40dp"
-                android:text="GORDE"
+                android:text="GORDE PROFILA"
                 android:backgroundTint="#3E3830"
-                android:textColor="#D2C5B3"
-                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:fontFamily="sans-serif-black"
                 android:letterSpacing="0.1"
-                app:cornerRadius="2dp" />
+                app:cornerRadius="16dp"
+                app:elevation="4dp" />
 
         </LinearLayout>
     </ScrollView>
