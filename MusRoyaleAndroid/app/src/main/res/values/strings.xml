@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MusRoyale</string>
+    <string name="avatar_content_description">Avatar</string>
+    <string name="btn_change_avatar">Cambiar avatar</string>
+    <string name="hint_name">Nombre</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_new_password">Nueva contraseña (opcional)</string>
+    <string name="hint_confirm_password">Confirmar contraseña</string>
+    <string name="stats_title">Estadísticas</string>
+    <string name="played">Jugadas</string>
+    <string name="won">Ganadas</string>
+    <string name="money">Dinero</string>
+    <string name="save_changes">Guardar cambios</string>
+    <string name="zero">0</string>
+
+    <!-- Strings añadidas para resolver referencias en layouts -->
+    <string name="desc_chat">Chat</string>
+    <string name="desc_camara">Cámara</string>
+    <string name="desc_duosfondo">Fondo duo</string>
+    <string name="friends_title">Amigos</string>
+    <string name="search_users_hint">Buscar usuarios</string>
+    <string name="header_username">Usuario</string>
+    <string name="desc_add_balance">Añadir saldo</string>
+    <string name="desc_privado">Privado</string>
+    <string name="partida_pribatua">Partida privada</string>
+    <string name="enviado">Enviado</string>
+
+    <!-- String usado en MainActivity como fallback -->
+    <string name="default_user">Usuario</string>
+</resources>

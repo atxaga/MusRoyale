@@ -1,0 +1,667 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootPartida"
+    android:layout_width="match_parent"
+
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/backgroundImage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/fondo1"
+        android:alpha="0.9"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+    <ImageView
+        android:id="@+id/tapete"
+        android:layout_width="600dp"
+        android:layout_height="1000dp"
+        android:src="@drawable/tapete"
+        android:alpha="0.9"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <fragment
+        android:id="@+id/headerFragment"
+        android:name="com.example.musroyale.HeaderPartidaFragment"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/txtPartidaUtzi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Partida utzi"
+        android:textColor="#333333"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:elevation="6dp"
+        android:background="@drawable/bg_utzi_blanco"
+        android:visibility="gone"
+        android:layout_marginEnd="12dp"
+        app:layout_constraintTop_toTopOf="@id/salir"
+        app:layout_constraintBottom_toBottomOf="@id/salir"
+        app:layout_constraintEnd_toStartOf="@id/salir" />
+
+    <ImageView
+        android:id="@+id/salir"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="140dp"
+        android:layout_marginEnd="36dp"
+        android:src="@drawable/ajustes"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/playerTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/headerFragment"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:id="@+id/infoTop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <TextView
+                android:id="@+id/nameTop"
+                android:text="Jugador 2"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:shadowColor="#000000"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="3"
+                android:textSize="14sp"
+                android:layout_marginEnd="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ImageView
+                android:id="@+id/avatarTop"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/avarat_circle_bg"
+                android:padding="2dp"
+                android:src="@drawable/avarat_circle_bg" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="200dp"
+            android:layout_height="120dp"
+            app:layout_constraintTop_toBottomOf="@id/infoTop"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+            <TextView
+                android:id="@+id/statusTop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MUS!"
+                android:textColor="#FFEB3B"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:letterSpacing="0.1"
+                android:gravity="center"
+                android:background="@drawable/bg_status_bubble"
+                android:elevation="15dp"
+                android:translationZ="20dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@id/infoTop"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginBottom="8dp" />
+
+            <ImageView
+                android:id="@+id/upCard1"
+                android:layout_width="130dp"
+                android:layout_height="110dp"
+                android:layout_gravity="center"
+                android:translationX="-35dp"
+                android:translationY="3dp"
+                android:rotation="10"
+                android:elevation="2dp"
+                android:src="@drawable/karta" />
+
+            <ImageView
+                android:id="@+id/upCard2"
+                android:layout_width="130dp"
+                android:layout_height="110dp"
+                android:layout_gravity="center"
+                android:translationX="-9dp"
+                android:translationY="8dp"
+                android:rotation="6"
+                android:elevation="3dp"
+                android:src="@drawable/karta" />
+
+            <ImageView
+                android:id="@+id/upCard3"
+                android:layout_width="130dp"
+                android:layout_height="110dp"
+                android:layout_gravity="center"
+                android:translationX="15dp"
+                android:translationY="8dp"
+                android:rotation="-5"
+                android:elevation="4dp"
+                android:src="@drawable/karta" />
+
+            <ImageView
+                android:id="@+id/upCard4"
+                android:layout_width="130dp"
+                android:layout_height="110dp"
+                android:layout_gravity="center"
+                android:translationX="35dp"
+                android:translationY="5dp"
+                android:rotation="-9"
+                android:elevation="5dp"
+                android:src="@drawable/karta" />
+        </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/playerLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:id="@+id/infoLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/avatarLeft"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/avarat_circle_bg"
+                android:padding="2dp"
+                android:src="@drawable/avarat_circle_bg" />
+
+            <TextView
+                android:id="@+id/nameLeft"
+                android:text="Jugador 3"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:shadowColor="#000000"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="3"
+                android:textSize="12sp"
+                android:layout_marginStart="6dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="150dp"
+            android:layout_height="220dp"
+            app:layout_constraintTop_toBottomOf="@id/infoLeft"
+            app:layout_constraintStart_toStartOf="parent">
+            <TextView
+                android:id="@+id/statusLeft"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MUS!"
+                android:textColor="#FFEB3B"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:letterSpacing="0.1"
+                android:gravity="center"
+                android:background="@drawable/bg_status_bubble"
+                android:elevation="15dp"
+                android:translationZ="20dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@id/infoTop"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginBottom="8dp" />
+
+            <ImageView
+                android:id="@+id/leftCard1"
+                android:layout_width="130dp"
+                android:layout_height="110dp"
+                android:layout_gravity="center"
+                android:translationY="-45dp"
+                android:translationX="-15dp"
+                android:rotation="70"
+                android:elevation="2dp"
+                android:src="@drawable/karta" />
+
+            <ImageView
+                android:id="@+id/leftCard2"
+                android:layout_width="130dp"
+                android:layout_height="110dp"
+                android:layout_gravity="center"
+                android:translationY="-20dp"
+                android:translationX="-9dp"
+                android:rotation="82"
+                android:elevation="3dp"
+                android:src="@drawable/karta" />
+
+            <ImageView
+                android:id="@+id/leftCard3"
+                android:layout_width="110dp"
+                android:layout_height="90dp"
+                android:layout_gravity="center"
+                android:translationY="5dp"
+                android:translationX="-5dp"
+                android:rotation="98"
+                android:elevation="4dp"
+                android:src="@drawable/karta" />
+
+            <ImageView
+                android:id="@+id/leftCard4"
+                android:layout_width="110dp"
+                android:layout_height="90dp"
+                android:layout_gravity="center"
+                android:translationY="30dp"
+                android:translationX="-15dp"
+                android:rotation="110"
+                android:elevation="5dp"
+                android:src="@drawable/karta" />
+        </FrameLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/playerRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:id="@+id/infoRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/nameRight"
+                android:text="Jugador 4"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:shadowColor="#000000"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="3"
+                android:textSize="12sp"
+                android:layout_marginEnd="6dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ImageView
+                android:id="@+id/avatarRight"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/avarat_circle_bg"
+                android:padding="2dp"
+                android:src="@drawable/avarat_circle_bg" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="150dp"
+            android:layout_height="200dp"
+            app:layout_constraintTop_toBottomOf="@id/infoRight"
+            app:layout_constraintEnd_toEndOf="parent">
+            <TextView
+                android:id="@+id/statusRight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MUS!"
+                android:textColor="#FFEB3B"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:letterSpacing="0.1"
+                android:gravity="center"
+                android:background="@drawable/bg_status_bubble"
+                android:elevation="15dp"
+                android:translationZ="20dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@id/infoTop"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginBottom="8dp" />
+
+            <ImageView
+                android:id="@+id/rightCard1"
+                android:layout_width="110dp"
+                android:layout_height="90dp"
+                android:layout_gravity="center"
+                android:translationY="-50dp"
+                android:translationX="14dp"
+                android:rotation="-70"
+                android:elevation="2dp"
+                android:src="@drawable/karta" />
+
+            <ImageView
+                android:id="@+id/rightCard2"
+                android:layout_width="110dp"
+                android:layout_height="90dp"
+                android:layout_gravity="center"
+                android:translationY="-20dp"
+                android:translationX="5dp"
+                android:rotation="-82"
+                android:elevation="3dp"
+                android:src="@drawable/karta" />
+
+            <ImageView
+                android:id="@+id/rightCard3"
+                android:layout_width="110dp"
+                android:layout_height="90dp"
+                android:layout_gravity="center"
+                android:translationY="5dp"
+                android:translationX="5dp"
+                android:rotation="-98"
+                android:elevation="4dp"
+                android:src="@drawable/karta" />
+
+            <ImageView
+                android:id="@+id/rightCard4"
+                android:layout_width="110dp"
+                android:layout_height="90dp"
+                android:layout_gravity="center"
+                android:translationY="30dp"
+                android:translationX="14dp"
+                android:rotation="-110"
+                android:elevation="5dp"
+                android:src="@drawable/karta" />
+        </FrameLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/bottomLeftIcons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginBottom="80dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageButton
+            android:id="@+id/buttonChat"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/chat"
+            android:background="@drawable/avarat_circle_bg"
+            android:padding="10dp"
+            android:layout_marginBottom="8dp"
+            android:elevation="4dp"
+            android:scaleType="centerCrop"
+
+            android:contentDescription="@string/desc_chat" />
+
+        <ImageButton
+            android:id="@+id/buttonCamara"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/camara"
+            android:background="@drawable/avarat_circle_bg"
+            android:padding="10dp"
+            android:scaleType="centerCrop"
+            android:elevation="4dp"
+            app:tint="#FFFFFF"
+            android:contentDescription="@string/desc_camara" />
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/playerBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="56dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <FrameLayout
+            android:paddingBottom="30dp"
+            android:id="@+id/cardsBottomFrame"
+            android:layout_width="350dp"
+            android:layout_height="200dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+            <TextView
+                android:id="@+id/statusBottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MUS!"
+                android:textColor="#FFEB3B"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:letterSpacing="0.1"
+                android:gravity="center"
+                android:background="@drawable/bg_status_bubble"
+                android:elevation="15dp"
+                android:translationZ="20dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@id/infoTop"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginBottom="8dp" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardContainer1"
+                android:layout_width="86dp"
+                android:layout_height="130dp"
+                android:layout_gravity="center"
+                android:translationX="-90dp"
+                android:translationY="15dp"
+                android:rotation="-12"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="4dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#D3D3D3"
+                app:cardBackgroundColor="@android:color/white">
+
+                <ImageView
+                    android:id="@+id/bottomCard1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/basto12"
+                    android:scaleType="fitXY"
+                    android:adjustViewBounds="true" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardContainer2"
+                android:layout_width="86dp"
+                android:layout_height="130dp"
+                android:layout_gravity="center"
+                android:translationX="-30dp"
+                android:translationY="5dp"
+                android:rotation="-4"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="8dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#D3D3D3"
+                app:cardBackgroundColor="@android:color/white">
+
+                <ImageView
+                    android:id="@+id/bottomCard2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/copa12"
+                    android:scaleType="fitXY"
+                    android:adjustViewBounds="true" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardContainer3"
+                android:layout_width="86dp"
+                android:layout_height="130dp"
+                android:layout_gravity="center"
+                android:translationX="30dp"
+                android:translationY="5dp"
+                android:rotation="4"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="12dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#D3D3D3"
+                app:cardBackgroundColor="@android:color/white">
+
+                <ImageView
+                    android:id="@+id/bottomCard3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/espada12"
+                    android:scaleType="fitXY"
+                    android:adjustViewBounds="true" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardContainer4"
+                android:layout_width="86dp"
+                android:layout_height="130dp"
+                android:layout_gravity="center"
+                android:translationX="90dp"
+                android:translationY="15dp"
+                android:rotation="12"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="16dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#D3D3D3"
+                app:cardBackgroundColor="@android:color/white">
+
+                <ImageView
+                    android:id="@+id/bottomCard4"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/basto1"
+                    android:scaleType="fitXY"
+                    android:adjustViewBounds="true" />
+            </com.google.android.material.card.MaterialCardView>
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/infoBottom"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/cardsBottomFrame"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageView
+                android:id="@+id/avatarBottom"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:background="@drawable/avarat_circle_bg"
+                android:padding="2dp"
+                android:src="@drawable/avarat_circle_bg" />
+
+            <TextView
+                android:id="@+id/nameBottom"
+                android:text="Jugador 1"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:shadowColor="#000000"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="3"
+                android:layout_marginStart="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/buttonDeskarteak"
+            android:text="Deskartatu"
+            app:layout_constraintTop_toBottomOf="@+id/infoBottom"
+            tools:ignore="MissingConstraints"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:visibility="invisible"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+    <LinearLayout
+        android:id="@+id/actionsRow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="16dp"
+        android:translationZ="100dp"
+        android:elevation="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnMus"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Mus"
+            android:backgroundTint="#4CAF50"
+            android:layout_margin="4dp"
+            android:visibility="gone"
+            app:cornerRadius="8dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnPasar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Paso"
+            android:backgroundTint="#F44336"
+            android:visibility="gone"
+            android:layout_margin="4dp"
+            app:cornerRadius="8dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnDeskartea"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Deskartatu"
+            android:visibility="gone"
+            android:backgroundTint="#FF9800"
+            android:layout_margin="4dp"
+            app:cornerRadius="8dp" />
+    </LinearLayout>
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
