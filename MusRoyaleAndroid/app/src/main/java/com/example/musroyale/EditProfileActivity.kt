@@ -50,7 +50,7 @@ class EditProfileActivity : AppCompatActivity() {
                         binding.etEditEmail.setText(doc.getString("email") ?: "")
 
                         val saldo = doc.getString("dinero") ?: "0.00"
-                        binding.tvMoney.text = "$saldo USDT"
+                        binding.tvMoney.text = "$saldo €"
 
                         // Carga de avatar
                         val nombreImagen = doc.getString("avatarActual")

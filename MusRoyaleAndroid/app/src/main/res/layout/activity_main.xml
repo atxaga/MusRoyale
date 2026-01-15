@@ -170,203 +170,107 @@
     </FrameLayout>
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/mainContainer"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@+id/header"
-        app:layout_constraintBottom_toTopOf="@+id/footer"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/header"
+        app:layout_constraintBottom_toTopOf="@id/footerWrapper" />
 
-    <FrameLayout
-        android:id="@+id/footer"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/footerWrapper"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:clipChildren="false"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:layout_marginBottom="20dp"
+        android:clipToPadding="false"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-        <ImageView
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/footer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            android:scaleType="centerCrop"/>
+            android:layout_height="64dp"
+            android:layout_marginHorizontal="32dp"
+            android:layout_marginBottom="16dp"
+            android:translationZ="1dp"
+            app:cardBackgroundColor="@android:color/transparent"
+            app:cardCornerRadius="32dp"
+            app:layout_constraintBottom_toBottomOf="parent">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/bg_footer"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/footermadera"
+                android:backgroundTintMode="src_over" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/selectionIndicator"
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            android:translationZ="2dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/footermadera"
+            app:shapeAppearanceOverlay="@style/CircleAppearance"
+            app:strokeColor="#000000"
+            app:strokeWidth="3dp"
+            app:layout_constraintTop_toTopOf="@+id/footer"
+            app:layout_constraintBottom_toBottomOf="@+id/footer"
+            app:layout_constraintStart_toStartOf="@+id/footer" />
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:id="@+id/footerIcons"
+            android:layout_width="0dp"
+            android:layout_height="64dp"
             android:orientation="horizontal"
-            android:gravity="center"
             android:weightSum="5"
-            android:clipChildren="false">
+            android:translationZ="10dp"
+            android:outlineProvider="none"
+            app:layout_constraintStart_toStartOf="@+id/footer"
+            app:layout_constraintEnd_toEndOf="@+id/footer"
+            app:layout_constraintBottom_toBottomOf="@+id/footer">
+            <FrameLayout android:id="@+id/tabAvatar" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1">
+                <ImageView android:id="@+id/imgAvatar" android:layout_width="26dp" android:layout_height="26dp" android:layout_gravity="center" android:src="@drawable/ic_avatar3" app:tint="#FFFFFF" />
+            </FrameLayout>
 
-            <LinearLayout
-                android:id="@+id/tabAvatar"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:clickable="true"
-                android:focusable="true">
-
-                <ImageView
-                    android:id="@+id/imgAvatar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="32dp"
-                    android:src="@drawable/ic_avatar3"/>
-
-                <TextView
-                    android:id="@+id/txtAvatar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Profila"
-                    android:textColor="#FFD700"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:visibility="gone"
-                    android:layout_marginTop="4dp"/>
-            </LinearLayout>
-
-
-
-            <LinearLayout
+            <FrameLayout
                 android:id="@+id/tabChat"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:clickable="true"
-                android:focusable="true"
-                android:clipChildren="false"> <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clipChildren="false">
+                android:layout_weight="1">
 
                 <ImageView
                     android:id="@+id/imgChat"
-                    android:layout_width="wrap_content"
-                    android:layout_height="32dp"
-                    android:src="@drawable/ic_chat2"/>
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_chat2"
+                    app:tint="#FFFFFF" />
 
                 <TextView
-                    android:id="@+id/badgeTotalChat"
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:layout_gravity="top|end"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginTop="-4dp"
-                    android:background="@drawable/bg_notification_badge"
+                    android:id="@+id/badgeChat"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/bg_circle_red"
                     android:gravity="center"
                     android:text="1"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@android:color/white"
                     android:textSize="10sp"
                     android:textStyle="bold"
-                    android:visibility="gone" />
+                    android:visibility="gone" /> </FrameLayout>
+
+            <FrameLayout android:id="@+id/tabPlay" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1">
+                <ImageView android:id="@+id/imgPlay" android:layout_width="28dp" android:layout_height="28dp" android:layout_gravity="center" android:src="@drawable/ic_home3" app:tint="#000000" />
             </FrameLayout>
 
-                <TextView
-                    android:id="@+id/txtChat"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Txat"
-                    android:textColor="#FFD700"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:visibility="gone"
-                    android:layout_marginTop="4dp"/>
-            </LinearLayout>
+            <FrameLayout android:id="@+id/tabFriends" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1">
+                <ImageView android:id="@+id/imgFriends" android:layout_width="26dp" android:layout_height="26dp" android:layout_gravity="center" android:src="@drawable/ic_friends3" app:tint="#FFFFFF" />
+            </FrameLayout>
 
-            <LinearLayout
-                android:id="@+id/tabPlay"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:clickable="true"
-                android:focusable="true">
-
-                <ImageView
-                    android:id="@+id/imgPlay"
-                    android:layout_width="wrap_content"
-                    android:layout_height="48dp"
-                    android:src="@drawable/ic_home3"/>
-
-                <TextView
-                    android:id="@+id/txtPlay"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Nagusia"
-                    android:textColor="#FFD700"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:visibility="gone"
-                    android:layout_marginTop="4dp"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/tabFriends"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:clickable="true"
-                android:focusable="true">
-
-                <ImageView
-                    android:id="@+id/imgFriends"
-                    android:layout_width="wrap_content"
-                    android:layout_height="32dp"
-                    android:src="@drawable/ic_friends3"/>
-
-                <TextView
-                    android:id="@+id/txtFriends"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Lagunak"
-                    android:textColor="#FFD700"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:visibility="gone"
-                    android:layout_marginTop="4dp"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/tabStore"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:clickable="true"
-                android:focusable="true">
-
-                <ImageView
-                    android:id="@+id/imgStore"
-                    android:layout_width="wrap_content"
-                    android:layout_height="32dp"
-                    android:src="@drawable/ic_shop3"/>
-
-                <TextView
-                    android:id="@+id/txtStore"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Denda"
-                    android:textColor="#FFD700"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:visibility="gone"
-                    android:layout_marginTop="4dp"/>
-            </LinearLayout>
-
+            <FrameLayout android:id="@+id/tabStore" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1">
+                <ImageView android:id="@+id/imgStore" android:layout_width="26dp" android:layout_height="26dp" android:layout_gravity="center" android:src="@drawable/ic_shop3" app:tint="#FFFFFF" />
+            </FrameLayout>
         </LinearLayout>
-    </FrameLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout></androidx.constraintlayout.widget.ConstraintLayout>

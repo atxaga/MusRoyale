@@ -1,0 +1,27 @@
+Index: app/src/main/java/com/example/musroyale/PartidaActionsFragment.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.musroyale\r\n\r\nimport android.os.Bundle\r\nimport android.view.LayoutInflater\r\nimport android.view.View\r\nimport android.view.ViewGroup\r\nimport androidx.fragment.app.Fragment\r\nimport com.example.musroyale.databinding.FragmentPartidaActionsBinding\r\n\r\nclass PartidaActionsFragment : Fragment() {\r\n    private var _binding: FragmentPartidaActionsBinding? = null\r\n    private val binding get() = _binding!!\r\n\r\n    override fun onCreateView(\r\n        inflater: LayoutInflater,\r\n        container: ViewGroup?,\r\n        savedInstanceState: Bundle?\r\n    ): View {\r\n        _binding = FragmentPartidaActionsBinding.inflate(inflater, container, false)\r\n\r\n        binding.buttonRaise.setOnClickListener {\r\n            // TODO: conectar con lógica de subir apuesta\r\n        }\r\n\r\n        binding.buttonCall.setOnClickListener {\r\n            // TODO: continuar con la jugada\r\n        }\r\n\r\n        binding.buttonFold.setOnClickListener {\r\n            // TODO: abandonar mano actual\r\n        }\r\n\r\n        return binding.root\r\n    }\r\n\r\n    override fun onDestroyView() {\r\n        super.onDestroyView()\r\n        _binding = null\r\n    }\r\n}\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/musroyale/PartidaActionsFragment.kt b/app/src/main/java/com/example/musroyale/PartidaActionsFragment.kt
+--- a/app/src/main/java/com/example/musroyale/PartidaActionsFragment.kt	(revision 013cbc313b8f98ed7aaf502e5f8ed09cd9fc1a1c)
++++ b/app/src/main/java/com/example/musroyale/PartidaActionsFragment.kt	(date 1767951889035)
+@@ -4,6 +4,7 @@
+ import android.view.LayoutInflater
+ import android.view.View
+ import android.view.ViewGroup
++import android.widget.Toast
+ import androidx.fragment.app.Fragment
+ import com.example.musroyale.databinding.FragmentPartidaActionsBinding
+ 
+@@ -19,7 +20,7 @@
+         _binding = FragmentPartidaActionsBinding.inflate(inflater, container, false)
+ 
+         binding.buttonRaise.setOnClickListener {
+-            // TODO: conectar con lógica de subir apuesta
++
+         }
+ 
+         binding.buttonCall.setOnClickListener {
