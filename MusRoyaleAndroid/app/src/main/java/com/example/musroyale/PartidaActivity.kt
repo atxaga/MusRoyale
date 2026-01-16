@@ -1,6 +1,7 @@
 package com.example.musroyale
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -23,41 +24,40 @@ class PartidaActivity : AppCompatActivity() {
     private val connectTimeoutMs = 20000
     private val currentCards = mutableListOf<String>()
     private val selectedIndices = mutableSetOf<Int>()
-
     private lateinit var bottomCard1: ImageView
     private lateinit var bottomCard2: ImageView
     private lateinit var bottomCard3: ImageView
     private lateinit var bottomCard4: ImageView
-    private lateinit var deskarteButton: Button
+    // Referencia para pausar/reanudar la lectura del servidor
+    private var decisionContinuation: kotlinx.coroutines.CancellableContinuation<String>? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_partida)
 
-        // Listeners para iconos de chat y camara
-        val btnChat = findViewById<ImageButton>(R.id.buttonChat)
-        val btnCam = findViewById<ImageButton>(R.id.buttonCamara)
-
+        // Inicializar vistas de cartas
         bottomCard1 = findViewById(R.id.bottomCard1)
         bottomCard2 = findViewById(R.id.bottomCard2)
         bottomCard3 = findViewById(R.id.bottomCard3)
         bottomCard4 = findViewById(R.id.bottomCard4)
-
-        // Inicial alphas y listeners de selección (toggle)
-        bottomCard1.alpha = 1f
-        bottomCard2.alpha = 1f
-        bottomCard3.alpha = 1f
-        bottomCard4.alpha = 1f
 
         setupCardClick(bottomCard1, 0)
         setupCardClick(bottomCard2, 1)
         setupCardClick(bottomCard3, 2)
         setupCardClick(bottomCard4, 3)
 
-
-        btnCam?.setOnClickListener {
-            Toast.makeText(this, "Abrir cámara (placeholder)", Toast.LENGTH_SHORT).show()
-            // TODO: abrir cámara / compartir vídeo
+        // --- LISTENERS DE LOS BOTONES (FUERA DEL BUCLE) ---
+        findViewById<Button>(R.id.btnMus).setOnClickListener {
+            decisionContinuation?.resume("mus", null)
         }
+        findViewById<Button>(R.id.btnPasar).setOnClickListener {
+            decisionContinuation?.resume("paso", null)
+        }
+        findViewById<Button>(R.id.btnDeskartea).setOnClickListener {
+            val discardString = buildDiscardString()
+            decisionContinuation?.resume(discardString, null)
+        }
+
         partidaHasi()
     }
     private fun setupCardClick(view: ImageView, index: Int) {
@@ -75,95 +75,179 @@ class PartidaActivity : AppCompatActivity() {
         lifecycleScope.launch(Dispatchers.IO) {
             var socket: Socket? = null
             try {
-                // Conectar al servidor
                 socket = Socket()
                 socket.connect(InetSocketAddress(serverHost, serverPort), connectTimeoutMs)
 
                 val reader = BufferedReader(InputStreamReader(socket.getInputStream()))
                 val writer = socket.getOutputStream().bufferedWriter()
 
-                var turno = 0
                 var partidaActiva = true
 
                 while (partidaActiva) {
-                    val serverMsg = reader.readLine() ?: break // cliente desconectado
-                    when (serverMsg) {
-                        "CARDS" -> {
-                            // Recibir las 4 cartas iniciales
-                            repeat(4) { i ->
-                                val karta = reader.readLine() ?: return@launch
-                                currentCards.add(karta)
-                                // Actualizar UI en el hilo principal
+                    val serverMsg = reader.readLine() ?: break
+
+                    // CORRECCIÓN: Usamos when sin argumento para poder usar serverMsg.startsWith
+                    when {
+                        serverMsg.startsWith("DECISION:") -> {
+                            val partes = serverMsg.split(":")
+                            if (partes.size >= 3) {
+                                val pId = partes[1].toInt()
+                                val decision = partes[2]
                                 withContext(Dispatchers.Main) {
-                                    val resId = resources.getIdentifier(karta, "drawable", packageName)
-                                    when(i){
-                                        0 -> bottomCard1.setImageResource(resId)
-                                        1 -> bottomCard2.setImageResource(resId)
-                                        2 -> bottomCard3.setImageResource(resId)
-                                        3 -> bottomCard4.setImageResource(resId)
-                                    }
+                                    mostrarDecision(pId, decision)
                                 }
                             }
                         }
 
-                        "TURN" -> {
-                            // Es tu turno de decidir
+                        serverMsg == "CARDS" -> {
+                            recibirCartas(reader, 4)
+                        }
+
+                        serverMsg == "TURN" -> {
                             withContext(Dispatchers.Main) {
-                                Toast.makeText(this@PartidaActivity, "Zure Txanda da", Toast.LENGTH_LONG).show()
+                                toggleDecisionButtons(visible = true)
+                                Toast.makeText(this@PartidaActivity, "Zure txanda!", Toast.LENGTH_SHORT).show()
                             }
-                            // Por ahora siempre hacemos "mus" (puedes cambiar según UI)
-                            val erabakia = "mus"
-                            writer.write(erabakia)
+
+                            val respuesta = kotlinx.coroutines.suspendCancellableCoroutine<String> { cont ->
+                                decisionContinuation = cont
+                            }
+
+                            writer.write(respuesta)
                             writer.newLine()
                             writer.flush()
-                        }
 
-                        "ALL_MUS" -> {
-                            // Mostrar botón en el hilo principal
                             withContext(Dispatchers.Main) {
-                                deskarteButton.visibility = Button.VISIBLE
-
-                                deskarteButton.setOnClickListener {
-                                    // Ejecutar la escritura en IO
-                                    lifecycleScope.launch(Dispatchers.IO) {
-                                        val discard = buildDiscardString()
-                                        writer.write(discard)
-                                        writer.newLine()
-                                        writer.flush()
-
-                                        // Ocultar botón en hilo principal
-                                        withContext(Dispatchers.Main) {
-                                            deskarteButton.visibility = Button.GONE
-                                        }
-                                    }
-                                }
+                                toggleDecisionButtons(visible = false)
                             }
                         }
 
-                        "END_GAME" -> {
-                            // Fin de la partida
-                            partidaActiva = false
-                        }
+                        serverMsg == "ALL_MUS" -> {
+                            withContext(Dispatchers.Main) {
+                                findViewById<Button>(R.id.btnDeskartea).visibility = View.VISIBLE
+                            }
 
-                        else -> {
+                            val deskarteRespuesta = kotlinx.coroutines.suspendCancellableCoroutine<String> { cont ->
+                                decisionContinuation = cont
+                            }
+
+                            writer.write(deskarteRespuesta)
+                            writer.newLine()
+                            writer.flush()
+
+                            withContext(Dispatchers.Main) {
+                                limpiarCartasDescartadas()
+                                findViewById<Button>(R.id.btnDeskartea).visibility = View.GONE
+                            }
+                            recibirCartas(reader, 4)
                         }
                     }
                 }
-
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(this@PartidaActivity, "Error TCP: ${e.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@PartidaActivity, "Konexio errorea: ${e.message}", Toast.LENGTH_LONG).show()
                 }
             } finally {
-                try { socket?.close() } catch (_: Exception) {}
+                socket?.close()
             }
         }
     }
 
+    // FUNCIÓN DE DECISIÓN MEJORADA (MÁS BONITA Y CON ANIMACIÓN)
+    private fun mostrarDecision(playerZnb: Int, mensaje: String) {
+        val statusView = when (playerZnb) {
+            0 -> findViewById<android.widget.TextView>(R.id.statusBottom)
+            1 -> findViewById<android.widget.TextView>(R.id.statusLeft)
+            2 -> findViewById<android.widget.TextView>(R.id.statusTop)
+            3 -> findViewById<android.widget.TextView>(R.id.statusRight)
+            else -> null
+        }
+
+        statusView?.let { tv ->
+            tv.text = mensaje.uppercase()
+            tv.visibility = View.VISIBLE
+
+            // Estilo visual dinámico
+            if (mensaje.lowercase() == "mus") {
+                tv.setTextColor(android.graphics.Color.parseColor("#FFEB3B")) // Amarillo Mus
+            } else {
+                tv.setTextColor(android.graphics.Color.parseColor("#FF5252")) // Rojo Paso
+            }
+
+            // Animación de aparición (Pop-up)
+            tv.alpha = 0f
+            tv.scaleX = 0.5f
+            tv.scaleY = 0.5f
+            tv.animate()
+                .alpha(1f)
+                .scaleX(1.2f)
+                .scaleY(1.2f)
+                .setDuration(300)
+                .withEndAction {
+                    tv.animate().scaleX(1.0f).scaleY(1.0f).setDuration(100)
+                }
+
+            // Desvanecer y ocultar tras 2.5 segundos
+            tv.postDelayed({
+                tv.animate().alpha(0f).setDuration(500).withEndAction {
+                    tv.visibility = View.GONE
+                }
+            }, 2500)
+        }
+    }
+
+    private suspend fun recibirCartas(reader: BufferedReader, cantidad: Int) {
+        currentCards.clear()
+        val views = listOf(bottomCard1, bottomCard2, bottomCard3, bottomCard4)
+
+        repeat(cantidad) { i ->
+            val karta = reader.readLine() ?: return@repeat
+            currentCards.add(karta)
+            withContext(Dispatchers.Main) {
+                val resId = resources.getIdentifier(karta, "drawable", packageName)
+                views[i].setImageResource(resId)
+                views[i].visibility = View.VISIBLE // Por si acaso estaban ocultas
+                views[i].alpha = 1f
+            }
+        }
+
+        // Limpiamos los índices seleccionados para la siguiente ronda
+        withContext(Dispatchers.Main) {
+            selectedIndices.clear()
+        }
+    }
+    private fun limpiarCartasDescartadas() {
+        val views = listOf(bottomCard1, bottomCard2, bottomCard3, bottomCard4)
+
+        // Para cada índice seleccionado (0, 1, 2 o 3)
+        for (index in selectedIndices) {
+            views[index].setImageResource(0) // Borra la imagen de la carta
+            views[index].alpha = 1f          // Reseteamos el alpha para cuando llegue la nueva
+        }
+
+        // IMPORTANTE: No borres selectedIndices aquí,
+        // se borran dentro de resetCardSelection() después de recibir las nuevas.
+    }
+    private fun toggleDecisionButtons(visible: Boolean) {
+        val estado = if (visible) android.view.View.VISIBLE else android.view.View.GONE
+        findViewById<Button>(R.id.btnMus).visibility = estado
+        findViewById<Button>(R.id.btnPasar).visibility = estado
+    }
+
+
+
+    private fun resetCardSelection() {
+        selectedIndices.clear()
+        listOf(bottomCard1, bottomCard2, bottomCard3, bottomCard4).forEach { it.alpha = 1f }
+    }
     private fun buildDiscardString(): String {
-        if (selectedIndices.isEmpty()) return "*" // solo marcador final
-        val ordered = selectedIndices.sorted()
-        val parts = ordered.mapNotNull { idx -> currentCards.getOrNull(idx) }
-        return parts.joinToString("-") + "*"
+        // Si no hay cartas seleccionadas, enviamos solo el asterisco (o vacío según C#)
+        if (selectedIndices.isEmpty()) return "*"
+
+        // Cogemos los nombres de las cartas seleccionadas
+        val seleccionadas = selectedIndices.map { currentCards[it] }
+
+        // Resultado: "oro1-copa12*"
+        return seleccionadas.joinToString("-") + "*"
     }
 }
