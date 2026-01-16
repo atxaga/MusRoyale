@@ -9,7 +9,9 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.card.MaterialCardView
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -22,12 +24,10 @@ class FriendsAdapter(
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
     class VH(view: View) : RecyclerView.ViewHolder(view) {
-        // Vinculamos la Card con su ID
-        val card: com.google.android.material.card.MaterialCardView = view.findViewById(R.id.friend_card)
-        // Vinculamos el ConstraintLayout con su ID
-        val layout: androidx.constraintlayout.widget.ConstraintLayout = view.findViewById(R.id.friend_layout)
-
+        val card: MaterialCardView = view.findViewById(R.id.friend_card)
+        val layout: ConstraintLayout = view.findViewById(R.id.friend_layout)
         val name: TextView = view.findViewById(R.id.name)
+        val statusText: TextView = view.findViewById(R.id.status_text) // <-- Nuevo
         val action: Button = view.findViewById(R.id.btn_action)
         val avatar: ImageView = view.findViewById(R.id.avatar)
     }
@@ -43,6 +43,25 @@ class FriendsAdapter(
         val relacion = user["relacion"] ?: "EXPLORAR" // Recuperamos la relación
         val esPremium = user["premium"] == "true"
         holder.name.text = user["username"] ?: "Sin nombre"
+
+        val estadoRef = com.google.firebase.database.FirebaseDatabase
+            .getInstance("https://musroyale-488aa-default-rtdb.europe-west1.firebasedatabase.app/")
+            .getReference("estado_usuarios")
+            .child(userId)
+
+        estadoRef.addValueEventListener(object : com.google.firebase.database.ValueEventListener {
+            override fun onDataChange(snapshot: com.google.firebase.database.DataSnapshot) {
+                val estado = snapshot.getValue(String::class.java) ?: "offline"
+                if (estado == "online") {
+                    holder.statusText.text = "● Online"
+                    holder.statusText.setTextColor(Color.parseColor("#2ECC71"))
+                } else {
+                    holder.statusText.text = "○ Offline"
+                    holder.statusText.setTextColor(Color.GRAY)
+                }
+            }
+            override fun onCancelled(error: com.google.firebase.database.DatabaseError) {}
+        })
         // 1. RESETEO POR DEFECTO (Importante para el reciclaje de celdas)
         holder.layout.setBackgroundResource(R.drawable.bg_gold_card_gradient)
         holder.card.strokeColor = Color.parseColor("#E0C9A6")
@@ -64,7 +83,6 @@ class FriendsAdapter(
             holder.card.strokeWidth = 3
 
             holder.name.setTextColor(Color.WHITE)
-            holder.name.setCompoundDrawablesWithIntrinsicBounds(0, 0, android.R.drawable.btn_star_big_on, 0)
             holder.name.compoundDrawablePadding = 8
             holder.name.compoundDrawables[2]?.setTint(Color.parseColor("#FFD700"))
 

@@ -3,6 +3,7 @@ package com.example.musroyale
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -39,6 +40,7 @@ class ChatSplitActivity : AppCompatActivity() {
         binding.btnCloseDrawer.setOnClickListener { binding.drawerLayout.closeDrawer(GravityCompat.START) }
         binding.btnExit.setOnClickListener { finish() }
 
+
         // 2. Botón enviar ahora usa la base de datos real
         binding.btnSend.setOnClickListener { sendMessage() }
     }
@@ -52,11 +54,28 @@ class ChatSplitActivity : AppCompatActivity() {
         binding.recyclerFriends.layoutManager = LinearLayoutManager(this)
         binding.recyclerFriends.adapter = friendsAdapter
     }
-
+    private var friendStatusListener: com.google.firebase.database.ValueEventListener? = null
+    private var friendStatusRef: com.google.firebase.database.DatabaseReference? = null
     private fun escucharChatReal(friend: Friend) {
         binding.chatTitleName.text = friend.name
         chatListener?.remove()
+// --- NUEVO: Escuchar estado del amigo seleccionado ---
+        friendStatusListener?.let { friendStatusRef?.removeEventListener(it) } // Limpiar anterior
 
+        friendStatusRef = com.google.firebase.database.FirebaseDatabase
+            .getInstance("https://musroyale-488aa-default-rtdb.europe-west1.firebasedatabase.app/")
+            .getReference("estado_usuarios")
+            .child(friend.id)
+
+        friendStatusListener = object : com.google.firebase.database.ValueEventListener {
+            override fun onDataChange(snapshot: com.google.firebase.database.DataSnapshot) {
+                val estado = snapshot.getValue(String::class.java) ?: "offline"
+                // Si está online, mostramos el indicador en la cabecera del chat
+                binding.chatTitleStatus.visibility = if (estado == "online") View.VISIBLE else View.GONE
+            }
+            override fun onCancelled(error: com.google.firebase.database.DatabaseError) {}
+        }
+        friendStatusRef?.addValueEventListener(friendStatusListener!!)
         chatListener = db.collection("Chats")
             .orderBy("timestamp", com.google.firebase.firestore.Query.Direction.ASCENDING)
             .addSnapshotListener { snapshot, e ->

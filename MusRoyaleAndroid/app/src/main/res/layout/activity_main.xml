@@ -80,7 +80,6 @@
                 app:layout_constraintTop_toTopOf="@id/containerHeaderAvatar"
                 app:layout_constraintStart_toEndOf="@id/containerHeaderAvatar"
                 app:layout_constraintEnd_toStartOf="@id/btnSettings">
-
                 <TextView
                     android:id="@+id/txtUsername"
                     android:layout_width="wrap_content"
@@ -99,6 +98,7 @@
                     android:src="@android:drawable/btn_star_big_on"
                     android:visibility="gone"
                     app:tint="#FFD700" />
+
             </LinearLayout>
 
             <ImageButton

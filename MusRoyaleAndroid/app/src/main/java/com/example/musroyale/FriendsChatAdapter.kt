@@ -1,5 +1,6 @@
 package com.example.musroyale
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,10 +26,28 @@ class FriendsChatAdapter(
 
     override fun onBindViewHolder(holder: FriendVH, position: Int) {
         val friend = friends[position]
+        val userId = friend.id // Recuperamos el ID
+
         val context = holder.itemView.context
 
         holder.binding.txtName.text = friend.name
+        val estadoRef = com.google.firebase.database.FirebaseDatabase
+            .getInstance("https://musroyale-488aa-default-rtdb.europe-west1.firebasedatabase.app/")
+            .getReference("estado_usuarios")
+            .child(userId)
 
+        estadoRef.addValueEventListener(object : com.google.firebase.database.ValueEventListener {
+            override fun onDataChange(snapshot: com.google.firebase.database.DataSnapshot) {
+                val estado = snapshot.getValue(String::class.java) ?: "offline"
+                if (estado == "online") {
+                    holder.binding.onlineIndicator.visibility = View.VISIBLE
+                } else {
+                    holder.binding.onlineIndicator.visibility = View.GONE
+
+                }
+            }
+            override fun onCancelled(error: com.google.firebase.database.DatabaseError) {}
+        })
         // --- LÓGICA DEL AVATAR ---
         // 1. Limpiamos el nombre (ej: "ava1.png" -> "ava1")
         val cleanName = friend.avatar.replace(".png", "")

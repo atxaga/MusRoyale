@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.musroyale.databinding.ActivityMainBinding
 import com.google.firebase.firestore.FirebaseFirestore
 import androidx.recyclerview.widget.RecyclerView
-
+import com.google.firebase.database.FirebaseDatabase
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var currentUserId: String? = null
@@ -50,8 +50,33 @@ class MainActivity : AppCompatActivity() {
 
         if (currentUserId != null) escucharNotificacionesChat()
         cargarDatosUser()
+        configurarSistemaPresencia(currentUserId.toString())
     }
 
+
+    fun configurarSistemaPresencia(uid: String) {
+        // 1. Referencia a Realtime Database (la base de datos rápida)
+        val database = FirebaseDatabase.getInstance("https://musroyale-488aa-default-rtdb.europe-west1.firebasedatabase.app/")
+        val miEstadoRef = database.getReference("estado_usuarios/$uid")
+
+        // 2. Escuchar la conexión del sistema
+        val connectedRef = database.getReference(".info/connected")
+
+        connectedRef.addValueEventListener(object : com.google.firebase.database.ValueEventListener {
+            override fun onDataChange(snapshot: com.google.firebase.database.DataSnapshot) {
+                val conectado = snapshot.getValue(Boolean::class.java) ?: false
+
+                if (conectado) {
+                    // Si el servidor detecta que pierdo internet, me pone offline automáticamente
+                    miEstadoRef.onDisconnect().setValue("offline")
+
+                    // Ahora mismo estoy online
+                    miEstadoRef.setValue("online")
+                }
+            }
+            override fun onCancelled(error: com.google.firebase.database.DatabaseError) {}
+        })
+    }
     private fun setupTabs() {
         binding.selectionIndicator.translationZ = 10f
         binding.footer.translationZ = 5f
