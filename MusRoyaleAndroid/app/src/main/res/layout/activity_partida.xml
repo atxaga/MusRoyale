@@ -659,6 +659,16 @@
             android:backgroundTint="#FF9800"
             android:layout_margin="4dp"
             app:cornerRadius="8dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnEnvido"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Envido"
+            android:visibility="gone"
+            android:backgroundTint="#FF9800"
+            android:layout_margin="4dp"
+            app:cornerRadius="8dp" />
     </LinearLayout>
 
 

@@ -99,6 +99,9 @@ class PartidaActivity : AppCompatActivity() {
             val discardString = buildDiscardString()
             decisionContinuation?.resume(discardString, null)
         }
+        findViewById<Button>(R.id.btnEnvido).setOnClickListener {
+            decisionContinuation?.resume("2", null)
+        }
 
         partidaHasi()
     }
@@ -182,6 +185,26 @@ class PartidaActivity : AppCompatActivity() {
                                 findViewById<Button>(R.id.btnDeskartea).visibility = View.GONE
                             }
                             recibirCartas(reader, 4)
+                        }
+
+                        serverMsg == "GRANDES" -> {
+                            withContext(Dispatchers.Main) {
+                                toggleEnvidoButtons(visible = true)
+                                Toast.makeText(this@PartidaActivity, "Grandes jolasten, zure txanda da!", Toast.LENGTH_SHORT).show()
+                            }
+
+                            val respuesta = kotlinx.coroutines.suspendCancellableCoroutine<String> { cont ->
+                                decisionContinuation = cont
+                            }
+
+                            writer.write(respuesta)
+                            writer.newLine()
+                            writer.flush()
+
+                            withContext(Dispatchers.Main) {
+                                limpiarCartasDescartadas()
+                                findViewById<Button>(R.id.btnDeskartea).visibility = View.GONE
+                            }
                         }
                     }
                 }
@@ -273,6 +296,11 @@ class PartidaActivity : AppCompatActivity() {
     private fun toggleDecisionButtons(visible: Boolean) {
         val estado = if (visible) android.view.View.VISIBLE else android.view.View.GONE
         findViewById<Button>(R.id.btnMus).visibility = estado
+        findViewById<Button>(R.id.btnPasar).visibility = estado
+    }
+    private fun toggleEnvidoButtons(visible: Boolean) {
+        val estado = if (visible) android.view.View.VISIBLE else android.view.View.GONE
+        findViewById<Button>(R.id.btnEnvido).visibility = estado
         findViewById<Button>(R.id.btnPasar).visibility = estado
     }
 
