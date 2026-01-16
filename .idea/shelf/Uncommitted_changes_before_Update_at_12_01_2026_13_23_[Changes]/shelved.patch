@@ -1,0 +1,209 @@
+Index: app/src/main/java/com/example/musroyale/PartidaActivity.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.musroyale\r\n\r\nimport android.os.Bundle\r\nimport android.widget.ImageButton\r\nimport android.widget.Toast\r\nimport androidx.appcompat.app.AppCompatActivity\r\nimport androidx.lifecycle.lifecycleScope\r\nimport kotlinx.coroutines.Dispatchers\r\nimport kotlinx.coroutines.launch\r\nimport kotlinx.coroutines.withContext\r\nimport java.io.BufferedReader\r\nimport java.io.InputStreamReader\r\nimport java.net.InetSocketAddress\r\nimport java.net.Socket\r\n\r\nclass PartidaActivity : AppCompatActivity() {\r\n    private val serverHost = \"10.0.2.2\"\r\n    private val serverPort = 13000\r\n    private val connectTimeoutMs = 20000\r\n    override fun onCreate(savedInstanceState: Bundle?) {\r\n        super.onCreate(savedInstanceState)\r\n        setContentView(R.layout.activity_partida)\r\n\r\n        // Listeners para iconos de chat y camara\r\n        val btnChat = findViewById<ImageButton>(R.id.buttonChat)\r\n        val btnCam = findViewById<ImageButton>(R.id.buttonCamara)\r\n\r\n        btnChat?.setOnClickListener {\r\n            val chatDialog = ChatDialogFragment()\r\n            chatDialog.show(supportFragmentManager, \"ChatPopup\")\r\n        }\r\n\r\n\r\n        btnCam?.setOnClickListener {\r\n            Toast.makeText(this, \"Abrir cámara (placeholder)\", Toast.LENGTH_SHORT).show()\r\n            // TODO: abrir cámara / compartir vídeo\r\n        }\r\n        partidaHasi()\r\n    }\r\n    fun partidaHasi(){\r\n        val bottomCard1 = findViewById<android.widget.ImageView>(R.id.bottomCard1)\r\n        lifecycleScope.launch(Dispatchers.IO) {\r\n            var socket: Socket? = null\r\n            try {\r\n                socket = Socket()\r\n                socket.connect(InetSocketAddress(serverHost, serverPort), connectTimeoutMs)\r\n\r\n                val reader = BufferedReader(InputStreamReader(socket.getInputStream()))\r\n\r\n                var turno = 0\r\n                repeat(4){\r\n                    turno++;\r\n                    val karta = reader.readLine()\r\n                    val resId = resources.getIdentifier(karta, \"drawable\", packageName)\r\n                    if (turno == 1){\r\n                        bottomCard1?.setImageResource(resId)\r\n                    }else if (turno == 2) {\r\n                        val bottomCard2 = findViewById<android.widget.ImageView>(R.id.bottomCard2)\r\n                        bottomCard2?.setImageResource(resId)\r\n                    }else if (turno == 3) {\r\n                        val bottomCard3 = findViewById<android.widget.ImageView>(R.id.bottomCard3)\r\n                        bottomCard3?.setImageResource(resId)\r\n                    }else if (turno == 4) {\r\n                        val bottomCard4 = findViewById<android.widget.ImageView>(R.id.bottomCard4)\r\n                        bottomCard4?.setImageResource(resId)\r\n                    }\r\n                }\r\n\r\n            }catch (e: Exception) {\r\n                withContext(Dispatchers.Main) {\r\n                    Toast.makeText(this@PartidaActivity, \"Error TCP: ${e.message}\", Toast.LENGTH_LONG).show()\r\n                }\r\n            } finally {\r\n                try { socket?.close() } catch (_: Exception) {}\r\n            }\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/musroyale/PartidaActivity.kt b/app/src/main/java/com/example/musroyale/PartidaActivity.kt
+--- a/app/src/main/java/com/example/musroyale/PartidaActivity.kt	(revision 013cbc313b8f98ed7aaf502e5f8ed09cd9fc1a1c)
++++ b/app/src/main/java/com/example/musroyale/PartidaActivity.kt	(date 1768220299093)
+@@ -2,21 +2,31 @@
+ 
+ import android.os.Bundle
+ import android.widget.ImageButton
++import android.widget.ImageView
+ import android.widget.Toast
+ import androidx.appcompat.app.AppCompatActivity
+ import androidx.lifecycle.lifecycleScope
+ import kotlinx.coroutines.Dispatchers
++import kotlinx.coroutines.delay
+ import kotlinx.coroutines.launch
+ import kotlinx.coroutines.withContext
+ import java.io.BufferedReader
+ import java.io.InputStreamReader
++import java.net.InetAddress
+ import java.net.InetSocketAddress
+ import java.net.Socket
++import kotlin.collections.set
++import kotlin.text.get
++import kotlin.text.set
+ 
+ class PartidaActivity : AppCompatActivity() {
+-    private val serverHost = "10.0.2.2"
++    private val addr = InetAddress.getByName("54.90.254.16");
+     private val serverPort = 13000
+-    private val connectTimeoutMs = 20000
++    private val connectTimeoutMs = 10000
++
++    private val selected = BooleanArray(4) { false }
++    private val currentCards = arrayOfNulls<String>(4)
++
+     override fun onCreate(savedInstanceState: Bundle?) {
+         super.onCreate(savedInstanceState)
+         setContentView(R.layout.activity_partida)
+@@ -35,38 +45,101 @@
+             Toast.makeText(this, "Abrir cámara (placeholder)", Toast.LENGTH_SHORT).show()
+             // TODO: abrir cámara / compartir vídeo
+         }
++
++        val bottomCard1 = findViewById<ImageView>(R.id.bottomCard1)
++        val bottomCard2 = findViewById<ImageView>(R.id.bottomCard2)
++        val bottomCard3 = findViewById<ImageView>(R.id.bottomCard3)
++        val bottomCard4 = findViewById<ImageView>(R.id.bottomCard4)
++        val cardViews = arrayOf(bottomCard1, bottomCard2, bottomCard3, bottomCard4)
++        cardViews.forEachIndexed { index, img ->
++            img?.setOnClickListener {
++                selected[index] = !selected[index]
++                img.alpha = if (selected[index]) 0.5f else 1.0f
++            }
++        }
++
+         partidaHasi()
+     }
+     fun partidaHasi(){
+-        val bottomCard1 = findViewById<android.widget.ImageView>(R.id.bottomCard1)
++        val bottomCard1 = findViewById<ImageView>(R.id.bottomCard1)
++        val bottomCard2 = findViewById<ImageView>(R.id.bottomCard2)
++        val bottomCard3 = findViewById<ImageView>(R.id.bottomCard3)
++        val bottomCard4 = findViewById<ImageView>(R.id.bottomCard4)
++
+         lifecycleScope.launch(Dispatchers.IO) {
+             var socket: Socket? = null
+             try {
+                 socket = Socket()
+-                socket.connect(InetSocketAddress(serverHost, serverPort), connectTimeoutMs)
++                socket.connect(InetSocketAddress(addr, serverPort), connectTimeoutMs)
+ 
+                 val reader = BufferedReader(InputStreamReader(socket.getInputStream()))
++                val writer = socket.getOutputStream().bufferedWriter()
+ 
+-                var turno = 0
+-                repeat(4){
+-                    turno++;
+-                    val karta = reader.readLine()
+-                    val resId = resources.getIdentifier(karta, "drawable", packageName)
+-                    if (turno == 1){
+-                        bottomCard1?.setImageResource(resId)
+-                    }else if (turno == 2) {
+-                        val bottomCard2 = findViewById<android.widget.ImageView>(R.id.bottomCard2)
+-                        bottomCard2?.setImageResource(resId)
+-                    }else if (turno == 3) {
+-                        val bottomCard3 = findViewById<android.widget.ImageView>(R.id.bottomCard3)
+-                        bottomCard3?.setImageResource(resId)
+-                    }else if (turno == 4) {
+-                        val bottomCard4 = findViewById<android.widget.ImageView>(R.id.bottomCard4)
+-                        bottomCard4?.setImageResource(resId)
++                var jarraitu = true
++                while (jarraitu){
++                    var turno = 0
++                    repeat(4){
++                        turno++
++                        val karta = reader.readLine()?.trim() ?: ""
++
++                        // Guardar el nombre de la carta
++                        currentCards[turno - 1] = karta
++
++                        val resId = resources.getIdentifier(karta, "drawable", packageName)
++
++                        // Actualizar UI en el hilo principal
++                        withContext(Dispatchers.Main) {
++                            when (turno) {
++                                1 -> if (resId != 0) bottomCard1?.setImageResource(resId)
++                                2 -> if (resId != 0) bottomCard2?.setImageResource(resId)
++                                3 -> if (resId != 0) bottomCard3?.setImageResource(resId)
++                                4 -> if (resId != 0) bottomCard4?.setImageResource(resId)
++                            }
++                            if (resId == 0) {
++                                Toast.makeText(this@PartidaActivity, "Drawable no encontrado: $karta", Toast.LENGTH_SHORT).show()
++                            }
++                        }
+                     }
+-                }
++
++                    val erabakia = "mus"
++                    writer.write(erabakia + "\n")
++                    writer.flush()
++
++                    val aukeratuta = reader.readLine()
++                    if (aukeratuta == "mus"){
++                        withContext(Dispatchers.Main) {
++                            Toast.makeText(this@PartidaActivity, "Tienes 10 segundos para elegir", Toast.LENGTH_SHORT).show()
++                        }
++
++                        delay(10000)
++
++                        val selectedNames = selected.withIndex()
++                            .filter { it.value }
++                            .mapNotNull { currentCards[it.index] }
++
++                        val sendStr = if (selectedNames.isEmpty()) {
++                            "*"
++                        } else {
++                            selectedNames.joinToString(separator = "-") + "*"
++                        }
+ 
+-            }catch (e: Exception) {
++                        writer.write(sendStr + "\n")
++                        writer.flush()
++
++                        // Limpiar selección
++                        for (i in selected.indices) selected[i] = false
++                        withContext(Dispatchers.Main) {
++                            bottomCard1?.alpha = 1.0f
++                            bottomCard2?.alpha = 1.0f
++                            bottomCard3?.alpha = 1.0f
++                            bottomCard4?.alpha = 1.0f
++                        }
++                        jarraitu = false
++                    } else {
++                        jarraitu = false
++                    }
++                }
++            } catch (e: Exception) {
+                 withContext(Dispatchers.Main) {
+                     Toast.makeText(this@PartidaActivity, "Error TCP: ${e.message}", Toast.LENGTH_LONG).show()
+                 }
+Index: .idea/deploymentTargetSelector.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"deploymentTargetSelector\">\r\n    <selectionStates>\r\n      <SelectionState runConfigName=\"app\">\r\n        <option name=\"selectionMode\" value=\"DROPDOWN\" />\r\n      </SelectionState>\r\n    </selectionStates>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/deploymentTargetSelector.xml b/.idea/deploymentTargetSelector.xml
+--- a/.idea/deploymentTargetSelector.xml	(revision 013cbc313b8f98ed7aaf502e5f8ed09cd9fc1a1c)
++++ b/.idea/deploymentTargetSelector.xml	(date 1768220604126)
+@@ -4,6 +4,14 @@
+     <selectionStates>
+       <SelectionState runConfigName="app">
+         <option name="selectionMode" value="DROPDOWN" />
++        <DropdownSelection timestamp="2026-01-12T12:19:01.577048100Z">
++          <Target type="DEFAULT_BOOT">
++            <handle>
++              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\ik012982i18\.android\avd\Medium_Phone.avd" />
++            </handle>
++          </Target>
++        </DropdownSelection>
++        <DialogSelection />
+       </SelectionState>
+     </selectionStates>
+   </component>
+Index: .idea/gradle.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"GradleMigrationSettings\" migrationVersion=\"1\" />\r\n  <component name=\"GradleSettings\">\r\n    <option name=\"linkedExternalProjectsSettings\">\r\n      <GradleProjectSettings>\r\n        <option name=\"testRunner\" value=\"CHOOSE_PER_TEST\" />\r\n        <option name=\"externalProjectPath\" value=\"$PROJECT_DIR$\" />\r\n        <option name=\"gradleJvm\" value=\"#GRADLE_LOCAL_JAVA_HOME\" />\r\n        <option name=\"modules\">\r\n          <set>\r\n            <option value=\"$PROJECT_DIR$\" />\r\n            <option value=\"$PROJECT_DIR$/app\" />\r\n          </set>\r\n        </option>\r\n      </GradleProjectSettings>\r\n    </option>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/gradle.xml b/.idea/gradle.xml
+--- a/.idea/gradle.xml	(revision 013cbc313b8f98ed7aaf502e5f8ed09cd9fc1a1c)
++++ b/.idea/gradle.xml	(date 1767876935170)
+@@ -15,5 +15,6 @@
+         </option>
+       </GradleProjectSettings>
+     </option>
++    <option name="offlineMode" value="true" />
+   </component>
+ </project>
+\ No newline at end of file
