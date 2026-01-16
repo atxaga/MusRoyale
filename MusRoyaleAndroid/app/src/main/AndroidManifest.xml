@@ -9,6 +9,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
         android:theme="@style/Theme.Musroyale">
         <activity
             android:name=".LoginActivity"
@@ -24,7 +25,8 @@
         <activity android:name=".PartidaActivity" />
         <activity android:name=".DuoActivity"/>
         <activity android:name=".RegistroActivity"/>
-        <activity android:name=".MainActivity"/>
+        <activity android:name=".MainActivity"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".ChatSplitActivity"
             android:screenOrientation="portrait"

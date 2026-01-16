@@ -34,16 +34,19 @@ class FriendsListFragment : Fragment(), Searchable {
         val prefs = requireActivity().getSharedPreferences("UserPrefs", MODE_PRIVATE)
         val currentUserEmail = prefs.getString("userRegistrado", null) ?: return
 
-        // 1. Escuchamos mi propio documento (para saber quiénes son mis amigos y mis enviadas)
+        // Obtenemos la referencia al overlay de carga que está en el XML de la Activity
+        val loadingOverlay = requireActivity().findViewById<View>(R.id.loadingOverlay)
+
         listenerRegistration = db.collection("Users").document(currentUserEmail)
             .addSnapshotListener { myDoc, error ->
-                if (error != null || myDoc == null) return@addSnapshotListener
+                if (error != null || myDoc == null) {
+                    loadingOverlay?.visibility = View.GONE
+                    return@addSnapshotListener
+                }
 
                 val misAmigosIds = myDoc.get("amigos") as? List<String> ?: listOf()
                 val misSolicitudesIds = myDoc.get("solicitudMandada") as? List<String> ?: listOf()
 
-                // 2. Cada vez que mis listas cambien, refrescamos la lista global de usuarios
-                // Nota: También puedes poner un listener en la colección entera si quieres ver nuevos usuarios al instante
                 db.collection("Users").get().addOnSuccessListener { allUsersQuery ->
                     val listaAmigos = mutableListOf<Map<String, String>>()
                     val listaResto = mutableListOf<Map<String, String>>()
@@ -56,7 +59,6 @@ class FriendsListFragment : Fragment(), Searchable {
                             "id" to id,
                             "username" to (doc.getString("username") ?: "Sin nombre"),
                             "avatarActual" to (doc.getString("avatarActual") ?: "avatar_default.png")
-
                         )
 
                         when {
@@ -79,13 +81,18 @@ class FriendsListFragment : Fragment(), Searchable {
                     listaFinal.addAll(listaAmigos)
                     listaFinal.addAll(listaResto)
 
-                    // 3. Actualizamos el adapter
                     if (::adapter.isInitialized) {
                         adapter.updateData(listaFinal)
                     } else {
                         adapter = FriendsAdapter(listaFinal, "BUSCAR")
                         recyclerView.adapter = adapter
                     }
+
+                    // --- AQUÍ SE OCULTA ---
+                    loadingOverlay?.visibility = View.GONE
+
+                }.addOnFailureListener {
+                    loadingOverlay?.visibility = View.GONE
                 }
             }
     }

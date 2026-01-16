@@ -76,13 +76,13 @@ class StoreFragment : Fragment() {
         }
 
         // 4. Buscador
-        binding.etStoreSearch.doAfterTextChanged { text ->
+        /*binding.etStoreSearch.doAfterTextChanged { text ->
             val query = text?.toString()?.trim()?.lowercase().orEmpty()
             val filtered = if (query.isEmpty()) catalog else catalog.filter {
                 it.name.lowercase().contains(query) || it.description.lowercase().contains(query)
             }
             storeAdapter.submitList(filtered)
-        }
+        }*/
     }
 
     // --- LÓGICA DE DINERO (FIREBASE) ---

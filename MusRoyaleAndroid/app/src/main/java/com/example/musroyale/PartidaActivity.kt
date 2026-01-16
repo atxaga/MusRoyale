@@ -17,6 +17,7 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.InetSocketAddress
 import java.net.Socket
+import android.widget.TextView
 
 class PartidaActivity : AppCompatActivity() {
     private val serverHost = "34.233.112.247"
@@ -34,7 +35,48 @@ class PartidaActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_partida)
+        val iconoAjustes = findViewById<ImageView>(R.id.salir)
 
+        val txtUtzi = findViewById<TextView>(R.id.txtPartidaUtzi)
+
+        iconoAjustes.setOnClickListener {
+            // Si está oculto lo muestra, si está visible lo oculta
+            if (txtUtzi.visibility == View.GONE) {
+                txtUtzi.visibility = View.VISIBLE
+
+                // Opcional: Que se oculte solo después de 3 segundos
+                txtUtzi.postDelayed({
+                    txtUtzi.visibility = View.GONE
+                }, 3000)
+            } else {
+                txtUtzi.visibility = View.GONE
+            }
+        }
+
+        txtUtzi.setOnClickListener {
+            // Inflar el layout personalizado
+            val view = layoutInflater.inflate(R.layout.dialog_custom_exit, null)
+
+            val dialog = android.app.Dialog(this)
+            dialog.setContentView(view)
+
+            // Hacer el fondo transparente para que se vean las esquinas redondeadas del CardView
+            dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+            val btnSi = view.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnSi)
+            val btnNo = view.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnNo)
+
+            btnSi.setOnClickListener {
+                dialog.dismiss()
+                finish() // Salir de la partida
+            }
+
+            btnNo.setOnClickListener {
+                dialog.dismiss() // Cerrar el diálogo y seguir jugando
+            }
+
+            dialog.show()
+        }
         // Inicializar vistas de cartas
         bottomCard1 = findViewById(R.id.bottomCard1)
         bottomCard2 = findViewById(R.id.bottomCard2)
