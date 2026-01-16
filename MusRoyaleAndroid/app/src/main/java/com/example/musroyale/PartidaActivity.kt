@@ -102,6 +102,9 @@ class PartidaActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnEnvido).setOnClickListener {
             decisionContinuation?.resume("2", null)
         }
+        findViewById<Button>(R.id.btnQuiero).setOnClickListener {
+            decisionContinuation?.resume("quiero", null)
+        }
 
         partidaHasi()
     }
@@ -302,6 +305,7 @@ class PartidaActivity : AppCompatActivity() {
         val estado = if (visible) android.view.View.VISIBLE else android.view.View.GONE
         findViewById<Button>(R.id.btnEnvido).visibility = estado
         findViewById<Button>(R.id.btnPasar).visibility = estado
+        findViewById<Button>(R.id.btnQuiero).visibility = estado
     }
 
 
