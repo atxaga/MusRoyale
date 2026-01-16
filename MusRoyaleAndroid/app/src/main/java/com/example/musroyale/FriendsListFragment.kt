@@ -51,6 +51,7 @@ class FriendsListFragment : Fragment(), Searchable {
                     val listaAmigos = mutableListOf<Map<String, String>>()
                     val listaResto = mutableListOf<Map<String, String>>()
 
+                    // ... dentro de escucharCambiosAmigos, en el addOnSuccessListener:
                     for (doc in allUsersQuery.documents) {
                         val id = doc.id
                         if (id == currentUserEmail) continue
@@ -58,7 +59,8 @@ class FriendsListFragment : Fragment(), Searchable {
                         val userData = mutableMapOf(
                             "id" to id,
                             "username" to (doc.getString("username") ?: "Sin nombre"),
-                            "avatarActual" to (doc.getString("avatarActual") ?: "avatar_default.png")
+                            "avatarActual" to (doc.getString("avatarActual") ?: "avatar_default.png"),
+                            "premium" to (doc.getBoolean("premium") ?: false).toString() // Incluimos premium
                         )
 
                         when {
@@ -77,15 +79,20 @@ class FriendsListFragment : Fragment(), Searchable {
                         }
                     }
 
-                    val listaFinal = mutableListOf<Map<String, String>>()
-                    listaFinal.addAll(listaAmigos)
-                    listaFinal.addAll(listaResto)
+// Lista total que guardará el adaptador internamente
+                    val listaTotal = mutableListOf<Map<String, String>>()
+                    listaTotal.addAll(listaAmigos)
+                    listaTotal.addAll(listaResto)
 
                     if (::adapter.isInitialized) {
-                        adapter.updateData(listaFinal)
+                        adapter.updateData(listaTotal)
                     } else {
-                        adapter = FriendsAdapter(listaFinal, "BUSCAR")
+                        // Al crear el adaptador por primera vez, le pasamos la lista total
+                        adapter = FriendsAdapter(listaTotal, "BUSCAR")
                         recyclerView.adapter = adapter
+
+                        // IMPORTANTE: Llamamos al filtro vacío para que aplique la lógica de "ocultar no-amigos" al inicio
+                        adapter.filter("")
                     }
 
                     // --- AQUÍ SE OCULTA ---
