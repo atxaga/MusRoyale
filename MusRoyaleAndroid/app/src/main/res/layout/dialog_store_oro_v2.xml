@@ -16,7 +16,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="OBTENER ORO"
+        android:text="URREA LORTU"
         android:textColor="@android:color/white"
         android:textSize="20sp"
         android:layout_gravity="center"
@@ -25,10 +25,37 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Mejora tu juego con estos packs"
+        android:text="Aukeratu behean zure paketea"
         android:textColor="#64748B"
         android:layout_gravity="center"
         android:layout_marginBottom="24dp" />
+    <LinearLayout
+        android:id="@+id/btnFreeGold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:clickable="true"
+        android:focusable="true">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="¡1.000 ORO DOHAINIK!"
+            android:textColor="#FFD700"
+            android:textStyle="bold"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="IKUSI IRAGARKIA 📺"
+            android:textColor="#FFD700"
+            android:textSize="12sp" />
+    </LinearLayout>
+
 
     <ScrollView
         android:layout_width="match_parent"
@@ -39,5 +66,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
         </LinearLayout>
+
     </ScrollView>
+
 </LinearLayout>

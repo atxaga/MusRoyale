@@ -11,6 +11,10 @@
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.Musroyale">
+
+        <meta-data
+            android:name="com.google.android.gms.ads.ca-app-pub-7535752014226086/8493404319"
+            android:value="ca-app-pub-7535752014226086~8872484741"/>
         <activity
             android:name=".LoginActivity"
             android:exported="true">
