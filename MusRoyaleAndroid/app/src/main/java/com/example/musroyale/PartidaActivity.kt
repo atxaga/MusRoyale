@@ -284,6 +284,7 @@ class PartidaActivity : AppCompatActivity() {
         repeat(cantidad) { i ->
             val karta = reader.readLine() ?: return@repeat
             currentCards.add(karta)
+
             withContext(Dispatchers.Main) {
                 val resId = resources.getIdentifier(karta, "drawable", packageName)
                 views[i].setImageResource(resId)

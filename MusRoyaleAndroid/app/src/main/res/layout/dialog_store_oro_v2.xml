@@ -1,47 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#070B14"
     android:orientation="vertical"
-    android:padding="24dp">
+    android:padding="20dp">
 
     <View
         android:layout_width="40dp"
         android:layout_height="4dp"
-        android:background="#334155"
         android:layout_gravity="center"
-        android:layout_marginBottom="20dp" />
+        android:layout_marginBottom="20dp"
+        android:background="#334155" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:fontFamily="sans-serif-black"
         android:text="URREA LORTU"
         android:textColor="@android:color/white"
-        android:textSize="20sp"
-        android:layout_gravity="center"
-        android:textStyle="bold" />
+        android:textSize="22sp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Aukeratu behean zure paketea"
-        android:textColor="#64748B"
         android:layout_gravity="center"
-        android:layout_marginBottom="24dp" />
+        android:layout_marginBottom="24dp"
+        android:text="Aukeratu zure paketea"
+        android:textColor="#64748B" />
+
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/btnFreeGold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:layout_marginBottom="24dp"
         android:clickable="true"
         android:focusable="true"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="8dp"
-        app:strokeWidth="2dp"
+        app:cardBackgroundColor="@android:color/transparent"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="12dp"
+        app:rippleColor="#40FFD700"
         app:strokeColor="#FFD700"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+        app:strokeWidth="2.5dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -49,63 +51,66 @@
             android:background="@drawable/bg_free_gold_gradient"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:padding="20dp">
+            android:padding="12dp">
 
             <ImageView
                 android:id="@+id/imgPack"
-                android:layout_width="55dp"
-                android:layout_height="55dp"
-                android:src="@drawable/oro"
-                android:elevation="2dp" />
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:elevation="6dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/addreward" />
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
                 android:layout_weight="1"
-                android:layout_marginStart="16dp"
                 android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="¡1.000 URRE DOHAINIK!"
-                    android:textColor="@android:color/white"
-                    android:textStyle="bold"
-                    android:textSize="17sp" />
+                    android:fontFamily="sans-serif-black"
+                    android:lineSpacingExtra="-2dp"
+                    android:text="1.000 URRE\nDOHAINIK!"
+                    android:textColor="#FFD700"
+                    android:textSize="18sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Iragarki bat ikusi eta irabazi"
-                    android:textColor="#E0E0E0"
+                    android:layout_marginTop="4dp"
+                    android:text="Iragarkia ikusi"
+                    android:textColor="#B0BEC5"
                     android:textSize="12sp" />
             </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:background="@drawable/bg_tag_gold"
-                android:paddingHorizontal="12dp"
-                android:paddingVertical="6dp"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp"
                 android:text="IKUSI"
                 android:textColor="#070B14"
-                android:textStyle="bold"
-                android:textSize="12sp" />
+                android:textSize="13sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
-
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="400dp">
+        android:layout_height="400dp"
+        android:fadeScrollbars="true">
+
         <LinearLayout
             android:id="@+id/containerPacks"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-        </LinearLayout>
-
-    </ScrollView>
+            android:orientation="vertical" />
+    </androidx.core.widget.NestedScrollView>
 
 </LinearLayout>
