@@ -29,6 +29,7 @@ class PartidaActivity : AppCompatActivity() {
     private lateinit var bottomCard2: ImageView
     private lateinit var bottomCard3: ImageView
     private lateinit var bottomCard4: ImageView
+    private lateinit var headerPartidaFragment: HeaderPartidaFragment
     // Referencia para pausar/reanudar la lectura del servidor
     private var decisionContinuation: kotlinx.coroutines.CancellableContinuation<String>? = null
 
@@ -207,6 +208,17 @@ class PartidaActivity : AppCompatActivity() {
                             withContext(Dispatchers.Main) {
                                 limpiarCartasDescartadas()
                                 findViewById<Button>(R.id.btnDeskartea).visibility = View.GONE
+                            }
+                        }
+                        serverMsg == "PUNTUAKJASO" -> {
+                            withContext(Dispatchers.Main){
+                                val ezkerrekoTaldea1 = reader.readLine()
+                                val ezkerrekoTaldea2 = reader.readLine()
+                                headerPartidaFragment.setLeftScoreBoxes(ezkerrekoTaldea1, ezkerrekoTaldea2)
+
+                                val eskuinekoTaldea1 = reader.readLine()
+                                val eskuinekoTaldea2 = reader.readLine()
+                                headerPartidaFragment.setRightScoreBoxes(eskuinekoTaldea1, eskuinekoTaldea2)
                             }
                         }
                     }
