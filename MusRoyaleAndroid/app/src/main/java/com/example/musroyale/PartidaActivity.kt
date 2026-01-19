@@ -206,8 +206,9 @@ class PartidaActivity : AppCompatActivity() {
                             writer.flush()
 
                             withContext(Dispatchers.Main) {
-                                limpiarCartasDescartadas()
-                                findViewById<Button>(R.id.btnDeskartea).visibility = View.GONE
+                                findViewById<Button>(R.id.btnEnvido).visibility = View.GONE
+                                findViewById<Button>(R.id.btnQuiero).visibility = View.GONE
+                                findViewById<Button>(R.id.btnPasar).visibility = View.GONE
                             }
                         }
                         serverMsg == "PUNTUAKJASO" -> {
