@@ -16,12 +16,17 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.musroyale.databinding.ActivityMainBinding
 import com.google.firebase.firestore.FirebaseFirestore
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.rewarded.RewardedAd
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.google.firebase.database.FirebaseDatabase
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var currentUserId: String? = null
-    private val AD_UNIT_ID = "ca-app-pub-7535752014226086/8493404319"
-    //private var rewardedAd: RewardedAd? = null
+    private val AD_UNIT_ID = "ca-app-pub-3940256099942544/5224354917"
+    private var rewardedAd: RewardedAd? = null
     private var userListener: com.google.firebase.firestore.ListenerRegistration? = null
     private var chatNotificationsListener: com.google.firebase.firestore.ListenerRegistration? = null
 
@@ -36,10 +41,10 @@ class MainActivity : AppCompatActivity() {
 
         // 1. Inicializar Tabs (Movimiento del círculo y clics)
         setupTabs()
-        /*MobileAds.initialize(this) { status ->
+        MobileAds.initialize(this) { status ->
             // Una vez inicializado, cargamos el primer anuncio
             cargarAnuncioRecompensa()
-        }*/
+        }
         // 2. Cargar Fragmento inicial (Home)
         if (savedInstanceState == null) {
             loadFragment(HomeFragment())
@@ -57,7 +62,7 @@ class MainActivity : AppCompatActivity() {
         cargarDatosUser()
         configurarSistemaPresencia(currentUserId.toString())
     }
-    /*private fun cargarAnuncioRecompensa() {
+    private fun cargarAnuncioRecompensa() {
         val adRequest = AdRequest.Builder().build()
         RewardedAd.load(this, AD_UNIT_ID, adRequest, object : RewardedAdLoadCallback() {
             override fun onAdFailedToLoad(adError: LoadAdError) {
@@ -67,7 +72,7 @@ class MainActivity : AppCompatActivity() {
                 rewardedAd = ad
             }
         })
-    }*/
+    }
 
     fun configurarSistemaPresencia(uid: String) {
         // 1. Referencia a Realtime Database (la base de datos rápida)
@@ -242,7 +247,7 @@ class MainActivity : AppCompatActivity() {
         val container = view.findViewById<LinearLayout>(R.id.containerPacks)
 
         // --- NUEVA LÓGICA PARA EL ANUNCIO ---
-        /*val btnFreeGold = view.findViewById<LinearLayout>(R.id.btnFreeGold)
+        val btnFreeGold = view.findViewById<com.google.android.material.card.MaterialCardView>(R.id.btnFreeGold)
         btnFreeGold.addClickScaleAnimation() // Usamos tu extensión de animación
 
         btnFreeGold.setOnClickListener {
@@ -256,7 +261,7 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Iragarkia kargatzen... Saiatu berriro", Toast.LENGTH_SHORT).show()
                 cargarAnuncioRecompensa() // Reintentar carga
             }
-        }*/
+        }
         // -------------------------------------
 
         // Tu lógica actual de los packs pagados
@@ -274,7 +279,7 @@ class MainActivity : AppCompatActivity() {
         }
         dialog.show()
     }
-   /* private fun otorgarRecompensaAnuncio(cantidad: Int) {
+    private fun otorgarRecompensaAnuncio(cantidad: Int) {
         val uid = currentUserId ?: return
         val userRef = FirebaseFirestore.getInstance().collection("Users").document(uid)
 
@@ -289,7 +294,7 @@ class MainActivity : AppCompatActivity() {
                     cargarAnuncioRecompensa() // Cargamos el siguiente para la próxima vez
                 }
         }
-    }*/
+    }
     private fun procesarCompra(cantidadOro: Int, costoDinero: Double) {
         val uid = currentUserId ?: return
         val db = FirebaseFirestore.getInstance()

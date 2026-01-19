@@ -29,32 +29,71 @@
         android:textColor="#64748B"
         android:layout_gravity="center"
         android:layout_marginBottom="24dp" />
-    <LinearLayout
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/btnFreeGold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:orientation="horizontal"
-        android:padding="16dp"
+        android:layout_marginBottom="24dp"
         android:clickable="true"
-        android:focusable="true">
+        android:focusable="true"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
+        app:strokeWidth="2dp"
+        app:strokeColor="#FFD700"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
 
-        <TextView
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="¡1.000 ORO DOHAINIK!"
-            android:textColor="#FFD700"
-            android:textStyle="bold"
-            android:textSize="16sp" />
+            android:background="@drawable/bg_free_gold_gradient"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="20dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="IKUSI IRAGARKIA 📺"
-            android:textColor="#FFD700"
-            android:textSize="12sp" />
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/imgPack"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:src="@drawable/oro"
+                android:elevation="2dp" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="16dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="¡1.000 URRE DOHAINIK!"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Iragarki bat ikusi eta irabazi"
+                    android:textColor="#E0E0E0"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_tag_gold"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="6dp"
+                android:text="IKUSI"
+                android:textColor="#070B14"
+                android:textStyle="bold"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
 
     <ScrollView

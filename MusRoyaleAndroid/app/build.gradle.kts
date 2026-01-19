@@ -57,7 +57,7 @@ dependencies {
     implementation("com.google.firebase:firebase-database")
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-auth")
-    //implementation("com.google.android.gms:play-services-ads:24.9.0")
+    implementation("com.google.android.gms:play-services-ads:23.0.0")
 // Verifica la última versión
     // Otras dependencias
     implementation("com.android.volley:volley:1.2.1")
