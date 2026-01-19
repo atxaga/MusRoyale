@@ -37,9 +37,9 @@ class HeaderPartidaFragment : Fragment() {
     }
 
     // Establece las dos casillas de puntuación del equipo izquierdo (p.ej. "1" y "4")
-    fun setLeftScoreBoxes(first: Int, second: Int) {
-        binding.leftScoreBox1.text = first.toString()
-        binding.leftScoreBox2.text = second.toString()
+    fun setLeftScoreBoxes(first: String, second: String) {
+        binding.leftScoreBox1.text = first
+        binding.leftScoreBox2.text = second
     }
 
     fun setRightTeam(name: String) {
@@ -47,9 +47,9 @@ class HeaderPartidaFragment : Fragment() {
     }
 
     // Establece las dos casillas de puntuación del equipo derecho
-    fun setRightScoreBoxes(first: Int, second: Int) {
-        binding.rightScoreBox1.text = first.toString()
-        binding.rightScoreBox2.text = second.toString()
+    fun setRightScoreBoxes(first: String, second: String) {
+        binding.rightScoreBox1.text = first
+        binding.rightScoreBox2.text = second
     }
 
 
