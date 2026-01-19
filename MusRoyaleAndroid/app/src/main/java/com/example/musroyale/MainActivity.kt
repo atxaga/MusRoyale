@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -15,7 +16,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.musroyale.databinding.ActivityMainBinding
 import com.google.firebase.firestore.FirebaseFirestore
 import androidx.recyclerview.widget.RecyclerView
-
+import com.google.firebase.database.FirebaseDatabase
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var currentUserId: String? = null
@@ -45,11 +46,37 @@ class MainActivity : AppCompatActivity() {
         binding.btnAddBalance.setOnClickListener {
             startActivity(Intent(this, CryptoPaymentActivity::class.java))
         }
+        binding.btnAddOro.setOnClickListener { mostrarDialogoCompraOro() }
 
         if (currentUserId != null) escucharNotificacionesChat()
         cargarDatosUser()
+        configurarSistemaPresencia(currentUserId.toString())
     }
 
+
+    fun configurarSistemaPresencia(uid: String) {
+        // 1. Referencia a Realtime Database (la base de datos rápida)
+        val database = FirebaseDatabase.getInstance("https://musroyale-488aa-default-rtdb.europe-west1.firebasedatabase.app/")
+        val miEstadoRef = database.getReference("estado_usuarios/$uid")
+
+        // 2. Escuchar la conexión del sistema
+        val connectedRef = database.getReference(".info/connected")
+
+        connectedRef.addValueEventListener(object : com.google.firebase.database.ValueEventListener {
+            override fun onDataChange(snapshot: com.google.firebase.database.DataSnapshot) {
+                val conectado = snapshot.getValue(Boolean::class.java) ?: false
+
+                if (conectado) {
+                    // Si el servidor detecta que pierdo internet, me pone offline automáticamente
+                    miEstadoRef.onDisconnect().setValue("offline")
+
+                    // Ahora mismo estoy online
+                    miEstadoRef.setValue("online")
+                }
+            }
+            override fun onCancelled(error: com.google.firebase.database.DatabaseError) {}
+        })
+    }
     private fun setupTabs() {
         binding.selectionIndicator.translationZ = 10f
         binding.footer.translationZ = 5f
@@ -142,7 +169,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // --- Funciones de utilidad y Firebase ---
 
     private fun loadFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
@@ -154,19 +180,120 @@ class MainActivity : AppCompatActivity() {
     private fun cargarDatosUser() {
         if (currentUserId == null) return
         val docRef = FirebaseFirestore.getInstance().collection("Users").document(currentUserId!!)
+
         userListener = docRef.addSnapshotListener { document, _ ->
             if (document != null && document.exists()) {
                 binding.loadingOverlay.visibility = View.GONE
-                binding.txtUsername.text = document.getString("username") ?: "Usuario"
+
+                // 1. Datos básicos
+                val username = document.getString("username") ?: "Usuario"
+                binding.txtUsername.text = username
                 binding.txtBalance.text = document.get("dinero")?.toString() ?: "0"
+                binding.txtOro.text = document.get("oro")?.toString() ?: "0"
+
+                // --- LÓGICA PREMIUM EN TIEMPO REAL ---
+                val esPremium = document.getBoolean("premium") ?: false
+
+                if (esPremium) {
+                    binding.imgPremiumBadge.visibility = View.VISIBLE
+                    binding.txtUsername.setTextColor(Color.parseColor("#FFD700"))
+
+                    // CORRECCIÓN AQUÍ: Usamos ColorStateList.valueOf para el borde
+                } else {
+                    binding.imgPremiumBadge.visibility = View.GONE
+                    binding.txtUsername.setTextColor(Color.WHITE)
+
+                    // CORRECCIÓN AQUÍ: Borde transparente o gris normal
+                }
+                // -------------------------------------
 
                 val avatarResId = getResIdFromName(this, document.getString("avatarActual"))
                 binding.imgHeaderAvatar.setImageResource(if (avatarResId != 0) avatarResId else R.drawable.ic_avatar3)
 
+                // Panel de Admin
                 binding.btnAdminPanel.visibility = if (currentUserId == "kHjrbXVjxZQzRHRvvqf7") View.VISIBLE else View.GONE
                 if (currentUserId == "kHjrbXVjxZQzRHRvvqf7") {
                     binding.btnAdminPanel.setOnClickListener { startActivity(Intent(this, AdminActivity::class.java)) }
                 }
+            }
+        }
+    }
+    private fun mostrarDialogoCompraOro() {
+        val dialog = com.google.android.material.bottomsheet.BottomSheetDialog(this)
+        val view = layoutInflater.inflate(R.layout.dialog_store_oro_v2, null)
+        dialog.setContentView(view)
+
+        val container = view.findViewById<LinearLayout>(R.id.containerPacks)
+
+        val packs = listOf(
+            Pair(1000, 1.0),
+            Pair(5000, 4.0),
+            Pair(15000, 10.0),
+            Pair(50000, 30.0)
+        )
+
+        packs.forEach { pack ->
+            val itemView = layoutInflater.inflate(R.layout.item_pack_oro_row, container, false)
+
+            // 1. APLICAR ANIMACIÓN DE ESCALA (HOVER)
+            itemView.addClickScaleAnimation()
+
+            itemView.findViewById<TextView>(R.id.txtCantidadOro).text = "${String.format("%,d", pack.first)} ORO"
+            itemView.findViewById<TextView>(R.id.txtPrecioBtn).text = "$${pack.second}"
+
+            itemView.setOnClickListener {
+                procesarCompra(pack.first, pack.second)
+                dialog.dismiss()
+            }
+
+            container.addView(itemView)
+        }
+
+        dialog.show()
+    }
+    private fun procesarCompra(cantidadOro: Int, costoDinero: Double) {
+        val uid = currentUserId ?: return
+        val db = FirebaseFirestore.getInstance()
+        val userRef = db.collection("Users").document(uid)
+
+        binding.loadingOverlay.visibility = View.VISIBLE
+
+        db.runTransaction { transaction ->
+            val snapshot = transaction.get(userRef)
+
+            // 1. Obtener Strings y convertirlos a decimales (Double)
+            val dineroString = snapshot.getString("dinero") ?: "0.00"
+            val oroString = snapshot.getString("oro") ?: "0"
+
+            // Reemplazamos coma por punto por seguridad si el sistema está en español
+            val dineroActual = dineroString.replace(",", ".").toDoubleOrNull() ?: 0.0
+            val oroActual = oroString.toIntOrNull() ?: 0
+
+            // 2. Verificar saldo
+            if (dineroActual >= costoDinero) {
+                val nuevoDinero = dineroActual - costoDinero
+                val nuevoOro = oroActual + cantidadOro
+
+                // 3. Guardar de nuevo como String con formato de 2 decimales
+                // El "%.2f" asegura que se guarde algo como "14.99" y no "14.990000001"
+                val nuevoDineroString = String.format("%.2f", nuevoDinero).replace(",", ".")
+
+                transaction.update(userRef, "dinero", nuevoDineroString)
+                transaction.update(userRef, "oro", nuevoOro.toString())
+
+                true
+            } else {
+                throw Exception("SALDO_INSUFICIENTE")
+            }
+        }.addOnSuccessListener {
+            binding.loadingOverlay.visibility = View.GONE
+            Toast.makeText(this, "¡Compra realizada con éxito!", Toast.LENGTH_SHORT).show()
+        }.addOnFailureListener { e ->
+            binding.loadingOverlay.visibility = View.GONE
+            if (e.message == "SALDO_INSUFICIENTE") {
+                Toast.makeText(this, "No tienes dinero suficiente", Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -228,5 +355,18 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
         userListener?.remove()
         chatNotificationsListener?.remove()
+    }
+}
+private fun View.addClickScaleAnimation() {
+    this.setOnTouchListener { v, event ->
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+                v.animate().scaleX(0.97f).scaleY(0.97f).setDuration(100).start()
+            }
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                v.animate().scaleX(1f).scaleY(1f).setDuration(100).start()
+            }
+        }
+        false // Importante: false para que el OnClickListener de arriba siga funcionando
     }
 }

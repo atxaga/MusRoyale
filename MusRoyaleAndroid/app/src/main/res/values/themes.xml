@@ -35,11 +35,11 @@
     <style name="CircleImage">
         <item name="cornerSize">50%</item>
     </style>
-    <style name="EsquinasInferioresRedondas" parent="">
-        <item name="cornerSizeTopLeft">0dp</item>
-        <item name="cornerSizeTopRight">0dp</item>
+    <style name="EsquinasInferioresRedondas">
         <item name="cornerSizeBottomLeft">32dp</item>
         <item name="cornerSizeBottomRight">32dp</item>
+        <item name="cornerSizeTopLeft">0dp</item>
+        <item name="cornerSizeTopRight">0dp</item>
     </style>
     <style name="DialogRedondeado" parent="Theme.MaterialComponents.Light.Dialog.Alert">
         <item name="shapeAppearanceOverlay">@style/ShapeAppearance.MaterialComponents.MediumComponent</item>

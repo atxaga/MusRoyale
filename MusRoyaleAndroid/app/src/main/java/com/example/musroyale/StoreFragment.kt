@@ -27,15 +27,19 @@ import com.example.musroyale.databinding.FragmentStoreBinding
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.firestore.FirebaseFirestore
 
+import android.widget.LinearLayout
+
 class StoreFragment : Fragment() {
 
     private var _binding: FragmentStoreBinding? = null
     private val binding get() = _binding!!
     private val db = FirebaseFirestore.getInstance()
 
-    private val storeAdapter by lazy { StoreProductAdapter(StoreProductDiffCallback) { showPurchaseFeedback(it) } }
     private val catalog by lazy { createCatalog() }
-
+    private val currentUserId: String? by lazy {
+        requireActivity().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+            .getString("userRegistrado", null)
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -50,7 +54,7 @@ class StoreFragment : Fragment() {
         shake.duration = 1200 // Un poco más de un segundo por ciclo
         shake.repeatCount = ObjectAnimator.INFINITE // No para nunca
         shake.start()
-
+        cargarAvataresTienda(view)
         // 2. Configurar el clic para abrir el LootboxFragment
         binding.btnOpenLootboxView.setOnClickListener {
             val lootboxFragment = LootboxFragment()
@@ -62,7 +66,6 @@ class StoreFragment : Fragment() {
         }
         // 1. Configurar RecyclerView de Productos
 
-        storeAdapter.submitList(catalog)
 
         // 2. Click Ruleta (Dinero)
         binding.btnSpinWheel.setOnClickListener {
@@ -280,26 +283,105 @@ class StoreFragment : Fragment() {
     // --- CLASES DEL ADAPTER ---
     data class StoreProduct(val id: String, val name: String, val description: String, val priceLabel: String, @DrawableRes val imageRes: Int)
 
-    private inner class StoreProductAdapter(
-        diffCallback: DiffUtil.ItemCallback<StoreProduct>,
-        private val onBuyClick: (StoreProduct) -> Unit
-    ) : ListAdapter<StoreProduct, StoreProductViewHolder>(diffCallback) {
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-            StoreProductViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_store_product, parent, false), onBuyClick)
-        override fun onBindViewHolder(holder: StoreProductViewHolder, position: Int) = holder.bind(getItem(position))
-    }
+    private fun cargarAvataresTienda(view: View) {
+        val gridContainer = view.findViewById<android.widget.GridLayout>(R.id.containerAvataresTienda) ?: return
+        gridContainer.removeAllViews()
 
-    private class StoreProductViewHolder(view: View, val onBuyClick: (StoreProduct) -> Unit) : RecyclerView.ViewHolder(view) {
-        fun bind(product: StoreProduct) {
-            itemView.findViewById<TextView>(R.id.tvProductName).text = product.name
-            itemView.findViewById<TextView>(R.id.tvProductPrice).text = product.priceLabel
-            itemView.findViewById<ImageView>(R.id.ivProductImage).setImageResource(product.imageRes)
-            itemView.findViewById<MaterialButton>(R.id.btnBuy).setOnClickListener { onBuyClick(product) }
+        val listaAvatares = listOf(
+            Pair("ava1", 1500),
+            Pair("ava2", 3000),
+            Pair("ava3", 10000),
+            Pair("ava4", 5000) // Añadimos uno más para que sean 4 (2x2)
+        )
+
+        listaAvatares.forEach { data ->
+            val item = layoutInflater.inflate(R.layout.item_store_product, gridContainer, false)
+
+            item.addClickScaleAnimation()
+
+            val img = item.findViewById<ImageView>(R.id.imgAvatar)
+            val txtPrecio = item.findViewById<TextView>(R.id.txtPrecioAvatar)
+            val txtNombre = item.findViewById<TextView>(R.id.txtNombreAvatar)
+
+            val resId = resources.getIdentifier(data.first, "drawable", requireContext().packageName)
+            img.setImageResource(if(resId != 0) resId else R.drawable.ic_avatar3)
+
+            txtNombre.text = data.first.replace("avatar_", "").uppercase()
+            txtPrecio.text = data.second.toString()
+
+            item.setOnClickListener {
+                confirmarCompraAvatar(data.first, data.second)
+            }
+
+            gridContainer.addView(item)
         }
     }
+
+    private fun confirmarCompraAvatar(nombreAvatar: String, precioOro: Int) {
+        val uid = currentUserId ?: return
+        val userRef = db.collection("Users").document(uid)
+
+        // Mostrar loading si tienes uno en el fragment o un Toast de "Procesando"
+        Toast.makeText(requireContext(), "Erosketa prozesatzen...", Toast.LENGTH_SHORT).show()
+
+        db.runTransaction { transaction ->
+            val snapshot = transaction.get(userRef)
+
+            // IMPORTANTE: Leemos como String porque así lo tienes en tu DB
+            val oroString = snapshot.getString("oro") ?: "0"
+            val oroActual = oroString.toIntOrNull() ?: 0
+
+            val misAvatares = snapshot.get("avatares") as? MutableList<String> ?: mutableListOf()
+
+            // Comprobamos si ya tiene el avatar (con .png o sin él según lo guardes)
+            val nombreConExtension = "$nombreAvatar.png"
+            if (misAvatares.contains(nombreConExtension)) {
+                throw Exception("YA_LO_TIENES")
+            }
+
+            if (oroActual >= precioOro) {
+                val nuevoOro = oroActual - precioOro
+                misAvatares.add(nombreConExtension)
+
+                transaction.update(userRef, "oro", nuevoOro.toString())
+                transaction.update(userRef, "avatares", misAvatares)
+                true
+            } else {
+                throw Exception("ORO_INSUFICIENTE")
+            }
+        }.addOnSuccessListener {
+            Toast.makeText(requireContext(), "¡Erosketa eginda! 🏆", Toast.LENGTH_SHORT).show()
+        }.addOnFailureListener { e ->
+            val msg = when(e.message) {
+                "YA_LO_TIENES" -> "Dagoeneko baduzu avatar hau!"
+                "ORO_INSUFICIENTE" -> "Ez duzu nahikoa urre!"
+                else -> "Errorea: ${e.message}"
+            }
+            Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
+// Extension function para la animación (asegúrate de que esté fuera de la clase)
+
+
+
 
     private object StoreProductDiffCallback : DiffUtil.ItemCallback<StoreProduct>() {
         override fun areItemsTheSame(old: StoreProduct, new: StoreProduct) = old.id == new.id
         override fun areContentsTheSame(old: StoreProduct, new: StoreProduct) = old == new
+    }
+}
+private fun View.addClickScaleAnimation() {
+    this.setOnTouchListener { v, event ->
+        when (event.action) {
+            android.view.MotionEvent.ACTION_DOWN -> {
+                v.animate().scaleX(0.95f).scaleY(0.95f).setDuration(100).start()
+            }
+            android.view.MotionEvent.ACTION_UP, android.view.MotionEvent.ACTION_CANCEL -> {
+                v.animate().scaleX(1f).scaleY(1f).setDuration(100).start()
+            }
+        }
+        false
     }
 }

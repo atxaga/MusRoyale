@@ -18,6 +18,7 @@ class ChatAdapter(private val messages: List<ChatMessage>) :
 
     override fun onBindViewHolder(holder: ChatViewHolder, position: Int) {
         holder.bind(messages[position])
+
     }
 
     inner class ChatViewHolder(private val binding: ItemChatMessageBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -34,5 +35,6 @@ class ChatAdapter(private val messages: List<ChatMessage>) :
                 binding.textSent.visibility = View.GONE
             }
         }
+
     }
 }

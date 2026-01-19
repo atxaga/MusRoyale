@@ -215,6 +215,32 @@
                 android:letterSpacing="0.1"
                 app:cornerRadius="16dp"
                 app:elevation="4dp" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSubscribe"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="16dp"
+                android:text="HARPIDETU"
+                android:textColor="@color/white"
+                android:fontFamily="sans-serif-black"
+                android:letterSpacing="0.1"
+                app:icon="@android:drawable/btn_star_big_on"
+                app:backgroundTint="@null"
+                android:background="@drawable/bg_subscription_gold"
+                app:cornerRadius="16dp"
+                app:elevation="8dp" />
+            <TextView
+                android:id="@+id/btnUnsubscribe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp"
+                android:text="Utzi harpidetza (Kendu Premium)"
+                android:textColor="#FF5252"
+                android:textSize="12sp"
+                android:visibility="gone"
+                android:padding="8dp"
+                android:fontFamily="sans-serif-medium" />
 
         </LinearLayout>
     </ScrollView>

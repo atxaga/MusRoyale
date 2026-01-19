@@ -2,13 +2,16 @@ package com.example.musroyale
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.card.MaterialCardView
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -21,9 +24,12 @@ class FriendsAdapter(
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
     class VH(view: View) : RecyclerView.ViewHolder(view) {
+        val card: MaterialCardView = view.findViewById(R.id.friend_card)
+        val layout: ConstraintLayout = view.findViewById(R.id.friend_layout)
         val name: TextView = view.findViewById(R.id.name)
+        val statusText: TextView = view.findViewById(R.id.status_text) // <-- Nuevo
         val action: Button = view.findViewById(R.id.btn_action)
-        val avatar: ImageView = view.findViewById(R.id.avatar) // Añadida esta línea
+        val avatar: ImageView = view.findViewById(R.id.avatar)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
@@ -33,42 +39,78 @@ class FriendsAdapter(
 
     override fun onBindViewHolder(holder: VH, position: Int) {
         val user = items[position]
+        val userId = user["id"].toString() // Recuperamos el ID
+        val relacion = user["relacion"] ?: "EXPLORAR" // Recuperamos la relación
+        val esPremium = user["premium"] == "true"
+        holder.name.text = user["username"] ?: "Sin nombre"
 
-        val userId = user["id"].toString()
-        val relacion = user["relacion"] ?: "EXPLORAR"
-        holder.name.text = user["username"]
+        val estadoRef = com.google.firebase.database.FirebaseDatabase
+            .getInstance("https://musroyale-488aa-default-rtdb.europe-west1.firebasedatabase.app/")
+            .getReference("estado_usuarios")
+            .child(userId)
+
+        estadoRef.addValueEventListener(object : com.google.firebase.database.ValueEventListener {
+            override fun onDataChange(snapshot: com.google.firebase.database.DataSnapshot) {
+                val estado = snapshot.getValue(String::class.java) ?: "offline"
+                if (estado == "online") {
+                    holder.statusText.text = "● Online"
+                    holder.statusText.setTextColor(Color.parseColor("#2ECC71"))
+                } else {
+                    holder.statusText.text = "○ Offline"
+                    holder.statusText.setTextColor(Color.GRAY)
+                }
+            }
+            override fun onCancelled(error: com.google.firebase.database.DatabaseError) {}
+        })
+        // 1. RESETEO POR DEFECTO (Importante para el reciclaje de celdas)
+        holder.layout.setBackgroundResource(R.drawable.bg_gold_card_gradient)
+        holder.card.strokeColor = Color.parseColor("#E0C9A6")
+        holder.card.strokeWidth = 1
+        holder.name.setTextColor(Color.parseColor("#5D4037"))
+        holder.name.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0) // Quitar estrella
+        holder.action.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#BFA06A")))
+        holder.action.setTextColor(Color.WHITE)
+
+        val avatarImg = holder.avatar as com.google.android.material.imageview.ShapeableImageView
+        avatarImg.strokeColor = android.content.res.ColorStateList.valueOf(Color.parseColor("#BFA06A"))
+
+        // 2. APLICAR ESTILO PREMIUM
+        if (esPremium) {
+            // Usamos el fondo azul que mencionaste (asegúrate de que el nombre sea correcto)
+            holder.layout.setBackgroundResource(R.drawable.bg_subscription_gold)
+
+            holder.card.strokeColor = Color.parseColor("#FFD700")
+            holder.card.strokeWidth = 3
+
+            holder.name.setTextColor(Color.WHITE)
+            holder.name.compoundDrawablePadding = 8
+            holder.name.compoundDrawables[2]?.setTint(Color.parseColor("#FFD700"))
+
+            holder.action.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#FFD700")))
+            holder.action.setTextColor(Color.BLACK)
+
+            avatarImg.strokeColor = android.content.res.ColorStateList.valueOf(Color.parseColor("#FFD700"))
+        }
 
         // --- LÓGICA PARA EL AVATAR ---
         val avatarNombre = user["avatarActual"] ?: "avadef.png"
         val context = holder.itemView.context
-
-        // Quitamos el .png para buscar el recurso en Android
         val cleanName = avatarNombre.replace(".png", "")
         val resId = context.resources.getIdentifier(cleanName, "drawable", context.packageName)
 
-        if (resId != 0) {
-            holder.avatar.setImageResource(resId)
-        } else {
-            holder.avatar.setImageResource(R.drawable.ic_avatar3) // Imagen por defecto
-        }
-        // Configuramos el botón según el modo de la pantalla
+        if (resId != 0) holder.avatar.setImageResource(resId)
+        else holder.avatar.setImageResource(R.drawable.ic_avatar3)
+
+        // --- CONFIGURACIÓN DE BOTONES (Usando la variable 'relacion') ---
         when (modo) {
             "RECIBIDAS" -> {
                 holder.action.text = "Onartu"
-                holder.action.isEnabled = true
-                holder.action.alpha = 1.0f
-                holder.action.setOnClickListener {
-                    // CORRECCIÓN: Ahora pasamos holder.adapterPosition como tercer parámetro
-                    aceptarSolicitud(userId, holder.itemView.context, holder.adapterPosition)
-                }
+                holder.action.setOnClickListener { aceptarSolicitud(userId, context, holder.adapterPosition) }
             }
             "ENVIADAS" -> {
                 holder.action.text = "Kendu"
-                holder.action.isEnabled = true
-                holder.action.alpha = 1.0f
                 holder.action.setOnClickListener {
-                    cancelarSolicitudEnviada(userId, holder.itemView.context)
-                    // Eliminamos el item de la lista visualmente
+                    cancelarSolicitudEnviada(userId, context)
                     items.removeAt(holder.adapterPosition)
                     notifyItemRemoved(holder.adapterPosition)
                 }
@@ -85,12 +127,12 @@ class FriendsAdapter(
                         holder.action.isEnabled = false
                         holder.action.alpha = 0.5f
                     }
-                    else -> { // EXPLORAR
+                    else -> {
                         holder.action.text = "Gehitu"
                         holder.action.isEnabled = true
                         holder.action.alpha = 1.0f
                         holder.action.setOnClickListener {
-                            enviarSolicitudAmistad(userId, holder.itemView.context)
+                            enviarSolicitudAmistad(userId, context)
                             holder.action.text = "Bidalita"
                             holder.action.isEnabled = false
                             holder.action.alpha = 0.5f
@@ -164,10 +206,11 @@ class FriendsAdapter(
         items.clear()
 
         if (lowerCaseQuery.isEmpty()) {
-            // Si no hay búsqueda, volvemos a mostrar la lista original (que ya está ordenada)
-            items.addAll(original)
+            // REGLA: Si el buscador está vacío, mostrar SOLO los que ya son amigos
+            val soloAmigos = original.filter { it["relacion"] == "AMIGO" }
+            items.addAll(soloAmigos)
         } else {
-            // Filtramos por el nombre de usuario
+            // REGLA: Si el usuario está buscando, buscar en la lista ORIGINAL (todos los usuarios)
             val filteredList = original.filter {
                 val username = it["username"]?.lowercase() ?: ""
                 username.contains(lowerCaseQuery)
