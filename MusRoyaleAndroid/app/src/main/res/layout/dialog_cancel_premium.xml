@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:gravity="center"
-            android:text="Ziur zaude premium abantaila guztiak eta hileroko 50.000 urreak galdu nahi dituzula?"
+            android:text="Ziur zaude premium abantaila guztiak galdu nahi dituzula?"
             android:textColor="#BDBDBD"
             android:textSize="15sp" />
 
@@ -59,6 +59,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="✘ Ez duzu urre gehiago jasoko"
+                android:textColor="#FF5252"
+                android:textSize="13sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="✘ Iragarkiak berriro agertuko dira"
                 android:textColor="#FF5252"
                 android:textSize="13sp" />
         </LinearLayout>

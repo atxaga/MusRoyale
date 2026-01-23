@@ -16,10 +16,17 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.musroyale.databinding.ActivityMainBinding
 import com.google.firebase.firestore.FirebaseFirestore
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.rewarded.RewardedAd
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.google.firebase.database.FirebaseDatabase
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var currentUserId: String? = null
+    private val AD_UNIT_ID = "ca-app-pub-3940256099942544/5224354917"
+    private var rewardedAd: RewardedAd? = null
     private var userListener: com.google.firebase.firestore.ListenerRegistration? = null
     private var chatNotificationsListener: com.google.firebase.firestore.ListenerRegistration? = null
 
@@ -34,7 +41,10 @@ class MainActivity : AppCompatActivity() {
 
         // 1. Inicializar Tabs (Movimiento del círculo y clics)
         setupTabs()
-
+        MobileAds.initialize(this) { status ->
+            // Una vez inicializado, cargamos el primer anuncio
+            cargarAnuncioRecompensa()
+        }
         // 2. Cargar Fragmento inicial (Home)
         if (savedInstanceState == null) {
             loadFragment(HomeFragment())
@@ -52,7 +62,17 @@ class MainActivity : AppCompatActivity() {
         cargarDatosUser()
         configurarSistemaPresencia(currentUserId.toString())
     }
-
+    private fun cargarAnuncioRecompensa() {
+        val adRequest = AdRequest.Builder().build()
+        RewardedAd.load(this, AD_UNIT_ID, adRequest, object : RewardedAdLoadCallback() {
+            override fun onAdFailedToLoad(adError: LoadAdError) {
+                rewardedAd = null
+            }
+            override fun onAdLoaded(ad: RewardedAd) {
+                rewardedAd = ad
+            }
+        })
+    }
 
     fun configurarSistemaPresencia(uid: String) {
         // 1. Referencia a Realtime Database (la base de datos rápida)
@@ -220,36 +240,60 @@ class MainActivity : AppCompatActivity() {
     }
     private fun mostrarDialogoCompraOro() {
         val dialog = com.google.android.material.bottomsheet.BottomSheetDialog(this)
+        // Inflamos el XML que modificamos con el botón de "Oro gratis"
         val view = layoutInflater.inflate(R.layout.dialog_store_oro_v2, null)
         dialog.setContentView(view)
 
         val container = view.findViewById<LinearLayout>(R.id.containerPacks)
 
-        val packs = listOf(
-            Pair(1000, 1.0),
-            Pair(5000, 4.0),
-            Pair(15000, 10.0),
-            Pair(50000, 30.0)
-        )
+        // --- NUEVA LÓGICA PARA EL ANUNCIO ---
+        val btnFreeGold = view.findViewById<com.google.android.material.card.MaterialCardView>(R.id.btnFreeGold)
+        btnFreeGold.addClickScaleAnimation() // Usamos tu extensión de animación
 
+        btnFreeGold.setOnClickListener {
+            if (rewardedAd != null) {
+                rewardedAd?.show(this) { rewardItem ->
+                    // Al terminar de ver el anuncio:
+                    otorgarRecompensaAnuncio(1000)
+                    dialog.dismiss() // Cerramos el diálogo tras el premio
+                }
+            } else {
+                Toast.makeText(this, "Iragarkia kargatzen... Saiatu berriro", Toast.LENGTH_SHORT).show()
+                cargarAnuncioRecompensa() // Reintentar carga
+            }
+        }
+        // -------------------------------------
+
+        // Tu lógica actual de los packs pagados
+        val packs = listOf(Pair(1000, 1.0), Pair(5000, 4.0), Pair(15000, 10.0), Pair(50000, 30.0))
         packs.forEach { pack ->
             val itemView = layoutInflater.inflate(R.layout.item_pack_oro_row, container, false)
-
-            // 1. APLICAR ANIMACIÓN DE ESCALA (HOVER)
             itemView.addClickScaleAnimation()
-
             itemView.findViewById<TextView>(R.id.txtCantidadOro).text = "${String.format("%,d", pack.first)} ORO"
-            itemView.findViewById<TextView>(R.id.txtPrecioBtn).text = "$${pack.second}"
-
+            itemView.findViewById<TextView>(R.id.txtPrecioBtn).text = "${pack.second}€"
             itemView.setOnClickListener {
                 procesarCompra(pack.first, pack.second)
                 dialog.dismiss()
             }
-
             container.addView(itemView)
         }
-
         dialog.show()
+    }
+    private fun otorgarRecompensaAnuncio(cantidad: Int) {
+        val uid = currentUserId ?: return
+        val userRef = FirebaseFirestore.getInstance().collection("Users").document(uid)
+
+        userRef.get().addOnSuccessListener { snapshot ->
+            val oroActualString = snapshot.getString("oro") ?: "0"
+            val oroActual = oroActualString.toIntOrNull() ?: 0
+            val nuevoOro = oroActual + cantidad
+
+            userRef.update("oro", nuevoOro.toString())
+                .addOnSuccessListener {
+                    Toast.makeText(this, "¡+1000 Oro lortu duzu! 💰", Toast.LENGTH_LONG).show()
+                    cargarAnuncioRecompensa() // Cargamos el siguiente para la próxima vez
+                }
+        }
     }
     private fun procesarCompra(cantidadOro: Int, costoDinero: Double) {
         val uid = currentUserId ?: return

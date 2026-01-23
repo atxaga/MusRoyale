@@ -29,7 +29,6 @@ class PartidaActivity : AppCompatActivity() {
     private lateinit var bottomCard2: ImageView
     private lateinit var bottomCard3: ImageView
     private lateinit var bottomCard4: ImageView
-    private lateinit var headerPartidaFragment: HeaderPartidaFragment
     // Referencia para pausar/reanudar la lectura del servidor
     private var decisionContinuation: kotlinx.coroutines.CancellableContinuation<String>? = null
 
@@ -206,19 +205,22 @@ class PartidaActivity : AppCompatActivity() {
                             writer.flush()
 
                             withContext(Dispatchers.Main) {
-                                limpiarCartasDescartadas()
-                                findViewById<Button>(R.id.btnDeskartea).visibility = View.GONE
+                                findViewById<Button>(R.id.btnEnvido).visibility = View.GONE
+                                findViewById<Button>(R.id.btnQuiero).visibility = View.GONE
+                                findViewById<Button>(R.id.btnPasar).visibility = View.GONE
                             }
                         }
                         serverMsg == "PUNTUAKJASO" -> {
                             withContext(Dispatchers.Main){
                                 val ezkerrekoTaldea1 = reader.readLine()
                                 val ezkerrekoTaldea2 = reader.readLine()
-                                headerPartidaFragment.setLeftScoreBoxes(ezkerrekoTaldea1, ezkerrekoTaldea2)
+                                findViewById<TextView>(R.id.leftScoreBox1).text = ezkerrekoTaldea1
+                                findViewById<TextView>(R.id.leftScoreBox2).text = ezkerrekoTaldea2
 
                                 val eskuinekoTaldea1 = reader.readLine()
                                 val eskuinekoTaldea2 = reader.readLine()
-                                headerPartidaFragment.setRightScoreBoxes(eskuinekoTaldea1, eskuinekoTaldea2)
+                                findViewById<TextView>(R.id.rightScoreBox1).text = eskuinekoTaldea1
+                                findViewById<TextView>(R.id.rightScoreBox2).text = eskuinekoTaldea2
                             }
                         }
                     }
@@ -283,6 +285,7 @@ class PartidaActivity : AppCompatActivity() {
         repeat(cantidad) { i ->
             val karta = reader.readLine() ?: return@repeat
             currentCards.add(karta)
+
             withContext(Dispatchers.Main) {
                 val resId = resources.getIdentifier(karta, "drawable", packageName)
                 views[i].setImageResource(resId)
