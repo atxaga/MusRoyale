@@ -1,13 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "26oXCX2cWzE=",
+  "dgSpecHash": "jZKvEPqLyfU=",
   "success": true,
-  "projectFilePath": "D:\\MusRoyalePC\\MusRoyalePC.csproj",
-  "expectedPackageFiles": [
-    "C:\\Users\\ik012982i18\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.20\\microsoft.windowsdesktop.app.ref.8.0.20.nupkg.sha512",
-    "C:\\Users\\ik012982i18\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.20\\microsoft.netcore.app.ref.8.0.20.nupkg.sha512",
-    "C:\\Users\\ik012982i18\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.20\\microsoft.aspnetcore.app.ref.8.0.20.nupkg.sha512",
-    "C:\\Users\\ik012982i18\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\8.0.20\\microsoft.netcore.app.host.win-x64.8.0.20.nupkg.sha512"
-  ],
+  "projectFilePath": "D:\\MusRoyale\\MusRoyalePC\\MusRoyalePC.csproj",
+  "expectedPackageFiles": [],
   "logs": []
 }
