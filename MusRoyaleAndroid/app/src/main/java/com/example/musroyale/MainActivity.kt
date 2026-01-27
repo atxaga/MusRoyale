@@ -254,7 +254,7 @@ class MainActivity : AppCompatActivity() {
             if (rewardedAd != null) {
                 rewardedAd?.show(this) { rewardItem ->
                     // Al terminar de ver el anuncio:
-                    otorgarRecompensaAnuncio(1000)
+                    otorgarRecompensaAnuncio(250)
                     dialog.dismiss() // Cerramos el diálogo tras el premio
                 }
             } else {
@@ -290,7 +290,7 @@ class MainActivity : AppCompatActivity() {
 
             userRef.update("oro", nuevoOro.toString())
                 .addOnSuccessListener {
-                    Toast.makeText(this, "¡+1000 Oro lortu duzu! 💰", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "¡+250 Urre lortu duzu! 💰", Toast.LENGTH_LONG).show()
                     cargarAnuncioRecompensa() // Cargamos el siguiente para la próxima vez
                 }
         }

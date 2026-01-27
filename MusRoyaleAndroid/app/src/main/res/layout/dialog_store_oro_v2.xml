@@ -73,7 +73,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-black"
                     android:lineSpacingExtra="-2dp"
-                    android:text="1.000 URRE\nDOHAINIK!"
+                    android:text="250 URRE\nDOHAINIK!"
                     android:textColor="#FFD700"
                     android:textSize="18sp" />
 
