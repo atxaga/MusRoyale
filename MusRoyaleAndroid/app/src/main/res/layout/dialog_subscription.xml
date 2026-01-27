@@ -19,7 +19,7 @@
         <ImageView
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@android:drawable/btn_star_big_on"
+            android:src="@drawable/estrella"
             app:tint="@android:color/white" />
 
         <TextView
@@ -45,8 +45,8 @@
             <ImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:src="@android:drawable/checkbox_on_background"
-                app:tint="#2ECC71" />
+                android:src="@drawable/ofertas"
+                 />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -71,6 +71,24 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
                 android:text="50.000 urre hilero opari"
+                android:textColor="@android:color/white"
+                android:textSize="14sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/noads" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="Iragarki gabe jolastu"
                 android:textColor="@android:color/white"
                 android:textSize="14sp" />
         </LinearLayout>

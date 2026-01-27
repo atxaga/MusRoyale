@@ -116,7 +116,7 @@ class MainActivity : AppCompatActivity() {
 
         // Pestañas laterales (Sin movimiento de círculo)
         binding.tabAvatar.setOnClickListener {
-            startActivity(Intent(this, EditProfileActivity::class.java))
+            navegarAFuncion(binding.tabAvatar, binding.imgAvatar, "PERFIL")
         }
 
         binding.tabChat.setOnClickListener {
@@ -137,6 +137,7 @@ class MainActivity : AppCompatActivity() {
             "HOME" -> HomeFragment()
             "FRIENDS" -> FriendsFragment()
             "STORE" -> StoreFragment()
+            "PERFIL" -> EditProfileFragment()
             else -> HomeFragment()
         }
 

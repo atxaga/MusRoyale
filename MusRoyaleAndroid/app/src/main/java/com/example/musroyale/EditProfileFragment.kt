@@ -4,44 +4,58 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
-import com.example.musroyale.databinding.ActivityEditProfileBinding
+import androidx.fragment.app.Fragment
+import com.example.musroyale.databinding.ActivityEditProfileBinding // Asegúrate que el nombre del XML coincida
+import com.example.musroyale.databinding.FragmentEditProfileBinding
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import java.security.MessageDigest
 
-class EditProfileActivity : AppCompatActivity() {
+class EditProfileFragment : Fragment() {
 
-    private lateinit var binding: ActivityEditProfileBinding
+    private var _binding: FragmentEditProfileBinding? = null
+    private val binding get() = _binding!!
+
     private val db = FirebaseFirestore.getInstance()
     private var userId: String? = null
     private var runnable: Runnable? = null
     private val handler = android.os.Handler(android.os.Looper.getMainLooper())
-    private var userListener: com.google.firebase.firestore.ListenerRegistration? = null
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityEditProfileBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    private var userListener: ListenerRegistration? = null
 
-        val prefs = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentEditProfileBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val prefs = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
         userId = prefs.getString("userRegistrado", null)
 
         loadProfile()
 
-        binding.btnBack.setOnClickListener { finish() }
+        // El botón back en un fragment suele cerrar el fragment o volver atrás en el stack
+
         binding.btnSaveProfile.setOnClickListener { saveProfile() }
 
-        // Listener para el botón de suscripción azul
         binding.btnSubscribe.setOnClickListener {
             showSubscriptionDialog()
         }
     }
 
     private fun showSubscriptionDialog() {
-        val dialog = AlertDialog.Builder(this).create()
+        val dialog = AlertDialog.Builder(requireContext()).create()
         val view = layoutInflater.inflate(R.layout.dialog_subscription, null)
 
         dialog.setView(view)
@@ -50,13 +64,8 @@ class EditProfileActivity : AppCompatActivity() {
         val btnConfirm = view.findViewById<Button>(R.id.btnConfirmSub)
         val btnCancel = view.findViewById<TextView>(R.id.btnCancelSub)
 
-        btnConfirm.setOnClickListener {
-            ejecutarCompraPremium(dialog)
-        }
-
-        btnCancel.setOnClickListener {
-            dialog.dismiss()
-        }
+        btnConfirm.setOnClickListener { ejecutarCompraPremium(dialog) }
+        btnCancel.setOnClickListener { dialog.dismiss() }
 
         dialog.show()
     }
@@ -65,7 +74,7 @@ class EditProfileActivity : AppCompatActivity() {
         val id = userId ?: return
         val userRef = db.collection("Users").document(id)
 
-        Toast.makeText(this, "Transakzioa prozesatzen...", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), "Transakzioa prozesatzen...", Toast.LENGTH_SHORT).show()
 
         db.runTransaction { transaction ->
             val snapshot = transaction.get(userRef)
@@ -75,8 +84,8 @@ class EditProfileActivity : AppCompatActivity() {
             if (saldoActual >= 10.0) {
                 val nuevoSaldo = saldoActual - 10.0
                 val nuevoOro = oroActual + 50000
-
                 val timestampActual = System.currentTimeMillis()
+
                 transaction.update(userRef, "dinero", String.format("%.2f", nuevoSaldo).replace(",", "."))
                 transaction.update(userRef, "oro", nuevoOro.toString())
                 transaction.update(userRef, "premium", true)
@@ -87,37 +96,36 @@ class EditProfileActivity : AppCompatActivity() {
             }
         }.addOnSuccessListener {
             dialog.dismiss()
-            Toast.makeText(this, "¡Premium aktibatuta! 🏆 +50.000 urre", Toast.LENGTH_LONG).show()
-            loadProfile() // Recargamos para ver el nuevo saldo
+            Toast.makeText(requireContext(), "¡Premium aktibatuta! 🏆 +50.000 urre", Toast.LENGTH_LONG).show()
         }.addOnFailureListener { e ->
             val msg = if (e.message == "SALDO_INSUFICIENTE") "Ez duzu nahikoa diru (10€ behar dira)" else "Errorea: ${e.message}"
-            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun loadProfile() {
         val id = userId ?: return
-
-        // Cancelamos listener previo si existiera para evitar duplicados
         userListener?.remove()
 
         userListener = db.collection("Users").document(id)
             .addSnapshotListener { snapshot, e ->
-                if (e != null) {
-                    Toast.makeText(this, "Errorea dautak jasotzean", Toast.LENGTH_SHORT).show()
-                    return@addSnapshotListener
-                }
+                if (_binding == null || e != null) return@addSnapshotListener
 
                 if (snapshot != null && snapshot.exists()) {
-                    // 1. Datos básicos
+                    // Datos básicos
                     binding.etEditUsername.setText(snapshot.getString("username") ?: "")
                     binding.etEditEmail.setText(snapshot.getString("email") ?: "")
-                    val saldo = snapshot.getString("dinero") ?: "0.00"
-                    binding.tvMoney.text = "$saldo €"
 
-                    // 2. Gestión de Premium en Tiempo Real
+                    // Estadísticas (Incluyendo las nuevas)
+                    binding.tvMoney.text = "${snapshot.getString("dinero") ?: "0.00"} €"
+                    binding.tvGamesPlayed.text = snapshot.getString("partidasJugadas") ?: "0"
+
+                    // Nuevos campos del XML anterior
+                    // binding.tvWins.text = snapshot.getString("victorias") ?: "0"
+                    // binding.tvLosses.text = snapshot.getString("derrotas") ?: "0"
+
+                    // Gestión de Premium
                     val esPremium = snapshot.getBoolean("premium") ?: false
-
                     if (esPremium) {
                         val ultimaRecarga = snapshot.getLong("ultimaRecargaOro") ?: 0L
                         iniciarContadorRealTime(id, snapshot.getString("oro") ?: "0", ultimaRecarga)
@@ -126,22 +134,24 @@ class EditProfileActivity : AppCompatActivity() {
                         resetearBotonSuscripcion()
                     }
 
-                    // 3. Avatar
+                    // Avatar
                     val nombreImagen = snapshot.getString("avatarActual")
                     if (!nombreImagen.isNullOrEmpty()) {
-                        val resId = resources.getIdentifier(nombreImagen.replace(".png", ""), "drawable", packageName)
+                        val resId = resources.getIdentifier(nombreImagen.replace(".png", ""), "drawable", requireContext().packageName)
                         if (resId != 0) binding.ivAvatar.setImageResource(resId)
                     }
                 }
             }
     }
+
     private fun iniciarContadorRealTime(id: String, oroActual: String, ultimaRecarga: Long) {
-        binding.btnUnsubscribe.visibility = android.view.View.VISIBLE
+        binding.btnUnsubscribe.visibility = View.VISIBLE
         binding.btnUnsubscribe.setOnClickListener { mostrarDialogoCancelar() }
 
         runnable?.let { handler.removeCallbacks(it) }
         runnable = object : Runnable {
             override fun run() {
+                if (_binding == null) return
                 val tiempoTexto = obtenerCuentaAtras(ultimaRecarga)
                 if (tiempoTexto == "RECARGA DISPONIBLE") {
                     recargarOroMensual(id, oroActual.toInt())
@@ -157,22 +167,66 @@ class EditProfileActivity : AppCompatActivity() {
         handler.post(runnable!!)
     }
 
-    private fun detenerContador() {
-        runnable?.let { handler.removeCallbacks(it) }
-        runnable = null
-    }
-
     private fun resetearBotonSuscripcion() {
+        if (_binding == null) return
         binding.btnSubscribe.isEnabled = true
         binding.btnSubscribe.text = "HARPIDETU (PREMIUM)"
         binding.btnSubscribe.setBackgroundResource(R.drawable.bg_subscription_gold)
         binding.btnSubscribe.setBackgroundTintList(null)
         binding.btnSubscribe.setIconResource(android.R.drawable.btn_star_big_on)
-        binding.btnSubscribe.visibility = android.view.View.VISIBLE
-        binding.btnUnsubscribe.visibility = android.view.View.GONE
+        binding.btnUnsubscribe.visibility = View.GONE
     }
+
+    private fun saveProfile() {
+        val nuevoUser = binding.etEditUsername.text.toString().trim()
+        val nuevoEmail = binding.etEditEmail.text.toString().trim()
+        val pass = binding.etEditPassword.text.toString()
+
+        if (nuevoUser.isEmpty()) {
+            binding.etEditUsername.error = "Izena ezin da hutsik egon"
+            return
+        }
+
+        val updates = mutableMapOf<String, Any>("username" to nuevoUser, "email" to nuevoEmail)
+        if (pass.isNotEmpty()) {
+            if (pass.length < 6) {
+                binding.etEditPassword.error = "Gutxienez 6 karaktere"
+                return
+            }
+            updates["password"] = sha256(pass)
+        }
+
+        userId?.let { id ->
+            db.collection("Users").document(id).update(updates)
+                .addOnSuccessListener {
+                    Toast.makeText(requireContext(), "Profila eguneratuta!", Toast.LENGTH_SHORT).show()
+                }
+        }
+    }
+
+    private fun sha256(base: String): String {
+        val digest = MessageDigest.getInstance("SHA-256")
+        val hash = digest.digest(base.toByteArray(charset("UTF-8")))
+        return hash.joinToString("") { "%02x".format(it) }
+    }
+
+    private fun detenerContador() {
+        runnable?.let { handler.removeCallbacks(it) }
+        runnable = null
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        userListener?.remove()
+        detenerContador()
+        _binding = null // Evita memory leaks
+    }
+
+
+
+
     private fun mostrarDialogoCancelar() {
-        val dialog = AlertDialog.Builder(this).create()
+        val dialog = AlertDialog.Builder(requireContext()).create()
         val view = layoutInflater.inflate(R.layout.dialog_cancel_premium, null)
 
         dialog.setView(view)
@@ -205,7 +259,7 @@ class EditProfileActivity : AppCompatActivity() {
             db.collection("Users").document(id).update(updates)
                 .addOnSuccessListener {
                     runnable?.let { handler.removeCallbacks(it) } // Paramos el reloj
-                    Toast.makeText(this, "Harpidetza bertan behera utzi da", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Harpidetza bertan behera utzi da", Toast.LENGTH_SHORT).show()
 
                     resetearBotonSuscripcion() // <--- CAMBIO AQUÍ: UI instantánea
                 }
@@ -218,7 +272,7 @@ class EditProfileActivity : AppCompatActivity() {
             "ultimaRecargaOro" to System.currentTimeMillis()
         )
         db.collection("Users").document(id).update(updates).addOnSuccessListener {
-            Toast.makeText(this, "¡Hileroko 50.000 urre jaso dituzu! 💰", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), "¡Hileroko 50.000 urre jaso dituzu! 💰", Toast.LENGTH_LONG).show()
             loadProfile() // Recargar para actualizar textos
         }
     }
@@ -239,40 +293,6 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
 
-    private fun saveProfile() {
-        val nuevoUser = binding.etEditUsername.text.toString().trim()
-        val nuevoEmail = binding.etEditEmail.text.toString().trim()
-        val pass = binding.etEditPassword.text.toString()
-
-        if (nuevoUser.isEmpty()) {
-            binding.etEditUsername.error = "Izena ezin da hutsik egon"
-            return
-        }
-
-        val updates = mutableMapOf<String, Any>("username" to nuevoUser, "email" to nuevoEmail)
-
-        if (pass.isNotEmpty()) {
-            if (pass.length < 6) {
-                binding.etEditPassword.error = "Gutxienez 6 karaktere"
-                return
-            }
-            updates["password"] = sha256(pass)
-        }
-
-        userId?.let { id ->
-            db.collection("Users").document(id).update(updates)
-                .addOnSuccessListener {
-                    Toast.makeText(this, "Profila eguneratuta!", Toast.LENGTH_SHORT).show()
-                    finish()
-                }
-        }
-    }
-
-    private fun sha256(base: String): String {
-        val digest = MessageDigest.getInstance("SHA-256")
-        val hash = digest.digest(base.toByteArray(charset("UTF-8")))
-        return hash.joinToString("") { "%02x".format(it) }
-    }
     override fun onDestroy() {
         super.onDestroy()
         runnable?.let { handler.removeCallbacks(it) }
