@@ -210,6 +210,46 @@ class PartidaActivity : AppCompatActivity() {
                                 findViewById<Button>(R.id.btnPasar).visibility = View.GONE
                             }
                         }
+                        serverMsg == "PEQUEÑAS" -> {
+                            withContext(Dispatchers.Main) {
+                                toggleEnvidoButtons(visible = true)
+                                Toast.makeText(this@PartidaActivity, "Grandes jolasten, zure txanda da!", Toast.LENGTH_SHORT).show()
+                            }
+
+                            val respuesta = kotlinx.coroutines.suspendCancellableCoroutine<String> { cont ->
+                                decisionContinuation = cont
+                            }
+
+                            writer.write(respuesta)
+                            writer.newLine()
+                            writer.flush()
+
+                            withContext(Dispatchers.Main) {
+                                findViewById<Button>(R.id.btnEnvido).visibility = View.GONE
+                                findViewById<Button>(R.id.btnQuiero).visibility = View.GONE
+                                findViewById<Button>(R.id.btnPasar).visibility = View.GONE
+                            }
+                        }
+                        serverMsg == "PARES" -> {
+                            withContext(Dispatchers.Main) {
+                                toggleEnvidoButtons(visible = true)
+                                Toast.makeText(this@PartidaActivity, "Grandes jolasten, zure txanda da!", Toast.LENGTH_SHORT).show()
+                            }
+
+                            val respuesta = kotlinx.coroutines.suspendCancellableCoroutine<String> { cont ->
+                                decisionContinuation = cont
+                            }
+
+                            writer.write(respuesta)
+                            writer.newLine()
+                            writer.flush()
+
+                            withContext(Dispatchers.Main) {
+                                findViewById<Button>(R.id.btnEnvido).visibility = View.GONE
+                                findViewById<Button>(R.id.btnQuiero).visibility = View.GONE
+                                findViewById<Button>(R.id.btnPasar).visibility = View.GONE
+                            }
+                        }
                         serverMsg == "PUNTUAKJASO" -> {
                             withContext(Dispatchers.Main){
                                 val ezkerrekoTaldea1 = reader.readLine()
