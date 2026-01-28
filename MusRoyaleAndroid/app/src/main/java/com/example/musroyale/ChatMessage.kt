@@ -5,5 +5,6 @@ data class ChatMessage(
     val receiverId: String = "",
     val message: String = "",
     val timestamp: Long = 0L,
-    val isMine: Boolean = false // Se calcula al recibirlo
+    val isMine: Boolean = false,
+    val leido: Boolean = false
 )
