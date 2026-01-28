@@ -99,7 +99,8 @@ class ChatSplitActivity : AppCompatActivity() {
                             receiverId = receptor,
                             message = doc.getString("mensaje") ?: "",
                             timestamp = doc.getLong("timestamp") ?: 0L,
-                            isMine = emisor == currentUserId
+                            isMine = emisor == currentUserId,
+                            leido = doc.getBoolean("leido") ?: false // <-- AÑADIR ESTO
                         ))
 
                         // 2. LÓGICA CLAVE: Si el mensaje es para MÍ, viene de ESTE AMIGO y no está LEÍDO...
