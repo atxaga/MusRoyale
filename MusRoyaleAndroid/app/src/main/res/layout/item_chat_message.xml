@@ -11,7 +11,6 @@
         android:layout_height="wrap_content"
         android:background="@drawable/bg_date_separator"
         android:padding="6dp"
-        android:text="Hoy"
         android:textColor="#FFFFFF"
         android:textSize="12sp"
         android:visibility="gone"
@@ -37,6 +36,18 @@
             android:padding="12dp"
             android:textColor="#FFFFFF"
             android:textSize="16sp" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imgReceived"
+            android:layout_width="240dp"
+            android:layout_height="180dp"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            android:background="@drawable/bg_chat_received"
+            android:padding="2dp"
+            app:shapeAppearanceOverlay="@style/RoundedImageView" />
+
 
         <TextView
             android:id="@+id/timeReceived"
@@ -66,6 +77,17 @@
             android:textColor="#FFFFFF"
             android:textSize="16sp" />
 
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imgSent"
+            android:layout_width="240dp"
+            android:layout_height="180dp"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            android:background="@drawable/bg_chat_sent"
+            android:padding="2dp"
+            app:shapeAppearanceOverlay="@style/RoundedImageView" />
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

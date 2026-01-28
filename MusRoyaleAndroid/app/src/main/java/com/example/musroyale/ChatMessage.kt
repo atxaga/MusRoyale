@@ -6,5 +6,7 @@ data class ChatMessage(
     val message: String = "",
     val timestamp: Long = 0L,
     val isMine: Boolean = false,
-    val leido: Boolean = false
+    val leido: Boolean = false,
+    val imageUrl: String? = null
+
 )

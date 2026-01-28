@@ -108,7 +108,14 @@
                 android:padding="12dp"
                 android:maxLines="3"
                 android:inputType="textCapSentences|textMultiLine" />
-
+            <ImageButton
+                android:id="@+id/btnCamara"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@android:drawable/ic_menu_camera"
+                app:tint="#BFA06A"
+                android:contentDescription="Enviar" />
             <ImageButton
                 android:id="@+id/btnSend"
                 android:layout_width="48dp"
