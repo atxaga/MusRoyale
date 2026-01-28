@@ -213,7 +213,7 @@ class PartidaActivity : AppCompatActivity() {
                         serverMsg == "PEQUEÑAS" -> {
                             withContext(Dispatchers.Main) {
                                 toggleEnvidoButtons(visible = true)
-                                Toast.makeText(this@PartidaActivity, "Grandes jolasten, zure txanda da!", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this@PartidaActivity, "Pequeñas jolasten, zure txanda da!", Toast.LENGTH_SHORT).show()
                             }
 
                             val respuesta = kotlinx.coroutines.suspendCancellableCoroutine<String> { cont ->
@@ -233,7 +233,47 @@ class PartidaActivity : AppCompatActivity() {
                         serverMsg == "PARES" -> {
                             withContext(Dispatchers.Main) {
                                 toggleEnvidoButtons(visible = true)
-                                Toast.makeText(this@PartidaActivity, "Grandes jolasten, zure txanda da!", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this@PartidaActivity, "Pares jolasten, zure txanda da!", Toast.LENGTH_SHORT).show()
+                            }
+
+                            val respuesta = kotlinx.coroutines.suspendCancellableCoroutine<String> { cont ->
+                                decisionContinuation = cont
+                            }
+
+                            writer.write(respuesta)
+                            writer.newLine()
+                            writer.flush()
+
+                            withContext(Dispatchers.Main) {
+                                findViewById<Button>(R.id.btnEnvido).visibility = View.GONE
+                                findViewById<Button>(R.id.btnQuiero).visibility = View.GONE
+                                findViewById<Button>(R.id.btnPasar).visibility = View.GONE
+                            }
+                        }
+                        serverMsg == "JUEGO" -> {
+                            withContext(Dispatchers.Main) {
+                                toggleEnvidoButtons(visible = true)
+                                Toast.makeText(this@PartidaActivity, "Juego jolasten, zure txanda da!", Toast.LENGTH_SHORT).show()
+                            }
+
+                            val respuesta = kotlinx.coroutines.suspendCancellableCoroutine<String> { cont ->
+                                decisionContinuation = cont
+                            }
+
+                            writer.write(respuesta)
+                            writer.newLine()
+                            writer.flush()
+
+                            withContext(Dispatchers.Main) {
+                                findViewById<Button>(R.id.btnEnvido).visibility = View.GONE
+                                findViewById<Button>(R.id.btnQuiero).visibility = View.GONE
+                                findViewById<Button>(R.id.btnPasar).visibility = View.GONE
+                            }
+                        }
+                        serverMsg == "PUNTO" -> {
+                            withContext(Dispatchers.Main) {
+                                toggleEnvidoButtons(visible = true)
+                                Toast.makeText(this@PartidaActivity, "Punto jolasten, zure txanda da!", Toast.LENGTH_SHORT).show()
                             }
 
                             val respuesta = kotlinx.coroutines.suspendCancellableCoroutine<String> { cont ->
