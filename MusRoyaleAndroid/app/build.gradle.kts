@@ -52,12 +52,14 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation("com.android.volley:volley:1.2.1")
     implementation(platform("com.google.firebase:firebase-bom:33.1.0"))
-
+    implementation("com.google.firebase:firebase-storage-ktx:20.3.0")
     // 2. Librerías de Firebase SIN el sufijo -ktx y SIN versión
     implementation("com.google.firebase:firebase-database")
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.android.gms:play-services-ads:23.0.0")
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
 // Verifica la última versión
     // Otras dependencias
     implementation("com.android.volley:volley:1.2.1")

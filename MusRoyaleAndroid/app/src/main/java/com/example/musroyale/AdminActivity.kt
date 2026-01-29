@@ -51,41 +51,79 @@ class AdminActivity : AppCompatActivity() {
     }
 
     private fun confirmarAccion(solicitud: SolicitudPago) {
+        if (solicitud.status == "retirada") {
+            // CASO RETIRADA: Solo cambiar estado (el dinero se quitó al pedirla)
+            actualizarEstadoAprobado(solicitud)
+        } else {
+            // CASO RECARGA: Hay que ingresar el dinero al usuario
+            ingresarSaldoRecarga(solicitud)
+        }
+    }
+
+    private fun ingresarSaldoRecarga(solicitud: SolicitudPago) {
         val userRef = db.collection("Users").document(solicitud.userId)
         userRef.get().addOnSuccessListener { document ->
             if (document.exists()) {
                 val dineroActualString = document.getString("dinero") ?: "0.00"
                 val dineroActualDouble = dineroActualString.replace(",", ".").toDoubleOrNull() ?: 0.00
-                val nuevoSaldo = if (solicitud.status == "retirada") dineroActualDouble - solicitud.monto else dineroActualDouble + solicitud.monto
 
-                if (nuevoSaldo < 0 && solicitud.status == "retirada") {
-                    Toast.makeText(this, "Errorea: Saldo nahikorik ez", Toast.LENGTH_LONG).show()
-                    return@addOnSuccessListener
-                }
-
+                // SUMAMOS el saldo porque es una recarga
+                val nuevoSaldo = dineroActualDouble + solicitud.monto
                 val saldoFormateado = String.format(java.util.Locale.US, "%.2f", nuevoSaldo)
+
                 userRef.update("dinero", saldoFormateado).addOnSuccessListener {
-                    db.collection("SolicitudesRecarga").document(solicitud.idDoc).update("status", "aprobado")
-                    obtenerEmailYEnviar(solicitud.userId, "Aprobada", solicitud.monto.toString())
-                    Toast.makeText(this, "Karga onartua: ${solicitud.username}", Toast.LENGTH_SHORT).show()
+                    actualizarEstadoAprobado(solicitud)
                 }
             }
         }
     }
 
+    private fun actualizarEstadoAprobado(solicitud: SolicitudPago) {
+        db.collection("SolicitudesRecarga").document(solicitud.idDoc).update("status", "aprobado")
+            .addOnSuccessListener {
+                obtenerEmailYEnviar(solicitud.userId, "Aprobada", solicitud.monto.toString())
+                Toast.makeText(this, "Eskaera onartua!", Toast.LENGTH_SHORT).show()
+            }
+    }
+
     private fun rechazarSolicitud(solicitud: SolicitudPago) {
         android.app.AlertDialog.Builder(this)
             .setTitle("Eskaera Ukatu")
-            .setMessage("Ziur zaude ${solicitud.username}(r)en eskaera ukatu nahi duzula?")
-            .setPositiveButton("Bai, Ezeztatu") { _, _ ->
-                db.collection("SolicitudesRecarga").document(solicitud.idDoc).update("status", "rechazado")
-                    .addOnSuccessListener {
-                        obtenerEmailYEnviar(solicitud.userId, "Rechazada", solicitud.monto.toString())
-                        Toast.makeText(this, "Eskaera ukatua", Toast.LENGTH_SHORT).show()
-                    }
+            .setMessage("Ziur zaude ukatu nahi duzula?")
+            .setPositiveButton("Bai") { _, _ ->
+                if (solicitud.status == "retirada") {
+                    // Si rechazas retirada, devuelves lo que se le quitó
+                    devolverDinero(solicitud)
+                } else {
+                    // Si rechazas recarga, no hay nada que devolver
+                    actualizarEstadoRechazado(solicitud)
+                }
             }.setNegativeButton("Utzi", null).show()
     }
 
+    private fun devolverDinero(solicitud: SolicitudPago) {
+        val userRef = db.collection("Users").document(solicitud.userId)
+        userRef.get().addOnSuccessListener { document ->
+            if (document.exists()) {
+                val dineroActualString = document.getString("dinero") ?: "0.00"
+                val dineroActualDouble = dineroActualString.replace(",", ".").toDoubleOrNull() ?: 0.00
+                val nuevoSaldo = dineroActualDouble + solicitud.monto
+                val saldoFormateado = String.format(java.util.Locale.US, "%.2f", nuevoSaldo)
+
+                userRef.update("dinero", saldoFormateado).addOnSuccessListener {
+                    actualizarEstadoRechazado(solicitud)
+                }
+            }
+        }
+    }
+
+    private fun actualizarEstadoRechazado(solicitud: SolicitudPago) {
+        db.collection("SolicitudesRecarga").document(solicitud.idDoc).update("status", "rechazado")
+            .addOnSuccessListener {
+                obtenerEmailYEnviar(solicitud.userId, "Rechazada", solicitud.monto.toString())
+                Toast.makeText(this, "Eskaera ukatua", Toast.LENGTH_SHORT).show()
+            }
+    }
     private fun obtenerEmailYEnviar(userId: String, estado: String, monto: String) {
         db.collection("Users").document(userId).get()
             .addOnSuccessListener { userDoc ->
