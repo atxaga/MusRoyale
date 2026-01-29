@@ -219,6 +219,8 @@ class PartidaActivity : AppCompatActivity() {
                                 findViewById<Button>(R.id.btnPasar).visibility = View.GONE
                                 findViewById<Button>(R.id.btnOrdago).visibility = View.GONE
                             }
+                            ordagoOn = false
+                            envidoOn = false
                         }
 
                         serverMsg == "ORDAGO" -> ordagoOn = true
