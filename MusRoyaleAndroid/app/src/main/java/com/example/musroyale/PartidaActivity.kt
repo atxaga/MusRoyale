@@ -18,8 +18,10 @@ import java.io.InputStreamReader
 import java.net.InetSocketAddress
 import java.net.Socket
 import android.widget.TextView
+import com.example.musroyale.databinding.ActivityPartidaBinding
 
 class PartidaActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityPartidaBinding
     private val serverHost = "34.233.112.247"
     private val serverPort = 13000
     private val connectTimeoutMs = 20000
@@ -34,7 +36,8 @@ class PartidaActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_partida)
+        binding = ActivityPartidaBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         val iconoAjustes = findViewById<ImageView>(R.id.salir)
 
         val txtUtzi = findViewById<TextView>(R.id.txtPartidaUtzi)
@@ -148,6 +151,8 @@ class PartidaActivity : AppCompatActivity() {
                         }
 
                         serverMsg == "CARDS" -> {
+                            binding.roundLabel.text = "BANATZEN"
+
                             recibirCartas(reader, 4)
                         }
 
@@ -191,6 +196,7 @@ class PartidaActivity : AppCompatActivity() {
                         }
 
                         serverMsg == "GRANDES" -> {
+                            binding.roundLabel.text = serverMsg
                             withContext(Dispatchers.Main) {
                                 toggleEnvidoButtons(visible = true)
                                 Toast.makeText(this@PartidaActivity, "Grandes jolasten, zure txanda da!", Toast.LENGTH_SHORT).show()
@@ -211,6 +217,8 @@ class PartidaActivity : AppCompatActivity() {
                             }
                         }
                         serverMsg == "PEQUEÑAS" -> {
+                            binding.roundLabel.text = serverMsg
+
                             withContext(Dispatchers.Main) {
                                 toggleEnvidoButtons(visible = true)
                                 Toast.makeText(this@PartidaActivity, "Pequeñas jolasten, zure txanda da!", Toast.LENGTH_SHORT).show()
@@ -231,6 +239,8 @@ class PartidaActivity : AppCompatActivity() {
                             }
                         }
                         serverMsg == "PARES" -> {
+                            binding.roundLabel.text = serverMsg
+
                             withContext(Dispatchers.Main) {
                                 toggleEnvidoButtons(visible = true)
                                 Toast.makeText(this@PartidaActivity, "Pares jolasten, zure txanda da!", Toast.LENGTH_SHORT).show()
@@ -251,6 +261,8 @@ class PartidaActivity : AppCompatActivity() {
                             }
                         }
                         serverMsg == "JUEGO" -> {
+                            binding.roundLabel.text = serverMsg
+
                             withContext(Dispatchers.Main) {
                                 toggleEnvidoButtons(visible = true)
                                 Toast.makeText(this@PartidaActivity, "Juego jolasten, zure txanda da!", Toast.LENGTH_SHORT).show()
@@ -271,6 +283,8 @@ class PartidaActivity : AppCompatActivity() {
                             }
                         }
                         serverMsg == "PUNTO" -> {
+                            binding.roundLabel.text = serverMsg
+
                             withContext(Dispatchers.Main) {
                                 toggleEnvidoButtons(visible = true)
                                 Toast.makeText(this@PartidaActivity, "Punto jolasten, zure txanda da!", Toast.LENGTH_SHORT).show()
@@ -292,6 +306,8 @@ class PartidaActivity : AppCompatActivity() {
                             }
                         }
                         serverMsg == "PUNTUAKJASO" -> {
+                            binding.roundLabel.text = "Puntuazioa"
+
                             withContext(Dispatchers.Main){
                                 val ezkerrekoTaldea1 = reader.readLine()
                                 val ezkerrekoTaldea2 = reader.readLine()
