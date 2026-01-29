@@ -31,137 +31,137 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/headerFragment"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:paddingTop="16dp"
-            android:paddingBottom="16dp"
-            android:background="@android:color/transparent"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/headerFragment"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:id="@+id/leftScoreContainer"
+            android:layout_width="120dp"
+            android:layout_height="80dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/bg_team_left"
+            app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/centerRoundContainer">
+
+            <TextView
+                android:id="@+id/leftTeamName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Etxekoak"
+                android:textSize="14sp"
+                android:textColor="#3E2723"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp">
+
+                <TextView
+                    android:id="@+id/leftScoreBox1"
+                    android:layout_width="36dp"
+                    android:layout_height="32dp"
+                    android:background="@drawable/bg_score_box_1"
+                    android:gravity="center"
+                    android:text="1"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/leftScoreBox2"
+                    android:layout_width="36dp"
+                    android:layout_height="32dp"
+                    android:background="@drawable/bg_score_box_2"
+                    android:gravity="center"
+                    android:text="2"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/centerRoundContainer"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/bg_round_center"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/leftScoreContainer"
+            app:layout_constraintEnd_toStartOf="@+id/rightScoreContainer">
+
+            <TextView
+                android:id="@+id/roundLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="RONDA"
+                android:textSize="10sp"
+                android:textColor="#3E2723"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/rightScoreContainer"
+            android:layout_width="120dp"
+            android:layout_height="80dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/bg_team_right"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/centerRoundContainer"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <LinearLayout
-                android:id="@+id/leftScoreContainer"
-                android:layout_width="120dp"
-                android:layout_height="80dp"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:background="@drawable/bg_team_left"
-                app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/centerRoundContainer">
-
-                <TextView
-                    android:id="@+id/leftTeamName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Etxekoak"
-                    android:textSize="14sp"
-                    android:textColor="#3E2723"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp">
-
-                    <TextView
-                        android:id="@+id/leftScoreBox1"
-                        android:layout_width="36dp"
-                        android:layout_height="32dp"
-                        android:background="@drawable/bg_score_box_1"
-                        android:gravity="center"
-                        android:text="1"
-                        android:textColor="#FFFFFF"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/leftScoreBox2"
-                        android:layout_width="36dp"
-                        android:layout_height="32dp"
-                        android:background="@drawable/bg_score_box_2"
-                        android:gravity="center"
-                        android:text="2"
-                        android:textColor="#FFFFFF"
-                        android:textStyle="bold" />
-                </LinearLayout>
-            </LinearLayout>
+            <TextView
+                android:id="@+id/rightTeamName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Kanpokoak"
+                android:textSize="14sp"
+                android:textColor="#3E2723"
+                android:textStyle="bold" />
 
             <LinearLayout
-                android:id="@+id/centerRoundContainer"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:background="@drawable/bg_round_center"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toEndOf="@id/leftScoreContainer"
-                app:layout_constraintEnd_toStartOf="@+id/rightScoreContainer">
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp">
 
                 <TextView
-                    android:id="@+id/roundLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="RONDA"
-                    android:textSize="10sp"
-                    android:textColor="#3E2723"
+                    android:id="@+id/rightScoreBox1"
+                    android:layout_width="36dp"
+                    android:layout_height="32dp"
+                    android:background="@drawable/bg_score_box_1"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textColor="#FFFFFF"
                     android:textStyle="bold" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/rightScoreContainer"
-                android:layout_width="120dp"
-                android:layout_height="80dp"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:background="@drawable/bg_team_right"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toEndOf="@id/centerRoundContainer"
-                app:layout_constraintEnd_toEndOf="parent">
 
                 <TextView
-                    android:id="@+id/rightTeamName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Kanpokoak"
-                    android:textSize="14sp"
-                    android:textColor="#3E2723"
+                    android:id="@+id/rightScoreBox2"
+                    android:layout_width="36dp"
+                    android:layout_height="32dp"
+                    android:background="@drawable/bg_score_box_2"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textColor="#FFFFFF"
                     android:textStyle="bold" />
-
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp">
-
-                    <TextView
-                        android:id="@+id/rightScoreBox1"
-                        android:layout_width="36dp"
-                        android:layout_height="32dp"
-                        android:background="@drawable/bg_score_box_1"
-                        android:gravity="center"
-                        android:text="0"
-                        android:textColor="#FFFFFF"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/rightScoreBox2"
-                        android:layout_width="36dp"
-                        android:layout_height="32dp"
-                        android:background="@drawable/bg_score_box_2"
-                        android:gravity="center"
-                        android:text="0"
-                        android:textColor="#FFFFFF"
-                        android:textStyle="bold" />
-                </LinearLayout>
             </LinearLayout>
+        </LinearLayout>
 
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
         android:id="@+id/txtPartidaUtzi"
@@ -798,6 +798,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Quiero"
+            android:visibility="gone"
+            android:backgroundTint="#FF9800"
+            android:layout_margin="4dp"
+            app:cornerRadius="8dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnOrdago"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ordago"
             android:visibility="gone"
             android:backgroundTint="#FF9800"
             android:layout_margin="4dp"

@@ -31,6 +31,8 @@ class PartidaActivity : AppCompatActivity() {
     private lateinit var bottomCard2: ImageView
     private lateinit var bottomCard3: ImageView
     private lateinit var bottomCard4: ImageView
+    private var ordagoOn: Boolean = false
+    private var envidoOn: Boolean = false
     // Referencia para pausar/reanudar la lectura del servidor
     private var decisionContinuation: kotlinx.coroutines.CancellableContinuation<String>? = null
 
@@ -107,6 +109,9 @@ class PartidaActivity : AppCompatActivity() {
         }
         findViewById<Button>(R.id.btnQuiero).setOnClickListener {
             decisionContinuation?.resume("quiero", null)
+        }
+        findViewById<Button>(R.id.btnOrdago).setOnClickListener {
+            decisionContinuation?.resume("ordago", null)
         }
 
         partidaHasi()
@@ -305,6 +310,12 @@ class PartidaActivity : AppCompatActivity() {
                                 findViewById<Button>(R.id.btnPasar).visibility = View.GONE
                             }
                         }
+                        serverMsg == "ORDAGO" -> {
+                            ordagoOn = true
+                        }
+                        serverMsg == "ENVIDO" -> {
+                            envidoOn = true
+                        }
                         serverMsg == "PUNTUAKJASO" -> {
                             binding.roundLabel.text = "Puntuazioa"
 
@@ -415,9 +426,9 @@ class PartidaActivity : AppCompatActivity() {
     }
     private fun toggleEnvidoButtons(visible: Boolean) {
         val estado = if (visible) android.view.View.VISIBLE else android.view.View.GONE
-        findViewById<Button>(R.id.btnEnvido).visibility = estado
+        findViewById<Button>(R.id.btnEnvido).visibility = if (ordagoOn) View.GONE else estado
         findViewById<Button>(R.id.btnPasar).visibility = estado
-        findViewById<Button>(R.id.btnQuiero).visibility = estado
+        findViewById<Button>(R.id.btnQuiero).visibility = if (envidoOn) estado else View.GONE
     }
 
 
