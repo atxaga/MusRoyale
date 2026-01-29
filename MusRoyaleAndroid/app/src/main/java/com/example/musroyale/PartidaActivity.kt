@@ -132,10 +132,10 @@ class PartidaActivity : AppCompatActivity() {
                 val reader = BufferedReader(InputStreamReader(socket.getInputStream()))
                 val writer = socket.getOutputStream().bufferedWriter()
 
+                withContext(Dispatchers.Main) {
+                    roundLabel.text = "BILATZEN..."
+                }
                 while (true) {
-                    withContext(Dispatchers.Main) {
-                        roundLabel.text = "BILATZEN..."
-                    }
 
                     val serverMsg = reader.readLine() ?: break
 
@@ -227,6 +227,7 @@ class PartidaActivity : AppCompatActivity() {
                         serverMsg == "ENVIDO" -> envidoOn = true
 
                         serverMsg == "PUNTUAKJASO" -> {
+                            roundLabel.text = "Jasota"
                             withContext(Dispatchers.Main) {
                                 roundLabel.text = "Puntuazioa"
                                 findViewById<TextView>(R.id.leftScoreBox1).text = reader.readLine()
