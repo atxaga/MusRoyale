@@ -276,6 +276,7 @@ class PartidaActivity : AppCompatActivity() {
                                 Toast.makeText(this@PartidaActivity, "Punto jolasten, zure txanda da!", Toast.LENGTH_SHORT).show()
                             }
 
+                            //lalalala
                             val respuesta = kotlinx.coroutines.suspendCancellableCoroutine<String> { cont ->
                                 decisionContinuation = cont
                             }
