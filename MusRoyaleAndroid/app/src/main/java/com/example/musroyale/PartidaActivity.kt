@@ -2,23 +2,19 @@ package com.example.musroyale
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.example.musroyale.databinding.ActivityPartidaBinding
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.withTimeoutOrNull
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.InetSocketAddress
 import java.net.Socket
-import android.widget.TextView
-import com.example.musroyale.databinding.ActivityPartidaBinding
 
 class PartidaActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPartidaBinding
@@ -33,23 +29,19 @@ class PartidaActivity : AppCompatActivity() {
     private lateinit var bottomCard4: ImageView
     private var ordagoOn: Boolean = false
     private var envidoOn: Boolean = false
-    // Referencia para pausar/reanudar la lectura del servidor
     private var decisionContinuation: kotlinx.coroutines.CancellableContinuation<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPartidaBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val iconoAjustes = findViewById<ImageView>(R.id.salir)
 
-        val txtUtzi = findViewById<TextView>(R.id.txtPartidaUtzi)
+        // Usamos binding para acceder a las vistas directamente
+        val txtUtzi = binding.txtPartidaUtzi
 
-        iconoAjustes.setOnClickListener {
-            // Si está oculto lo muestra, si está visible lo oculta
+        binding.salir.setOnClickListener {
             if (txtUtzi.visibility == View.GONE) {
                 txtUtzi.visibility = View.VISIBLE
-
-                // Opcional: Que se oculte solo después de 3 segundos
                 txtUtzi.postDelayed({
                     txtUtzi.visibility = View.GONE
                 }, 3000)
@@ -58,14 +50,10 @@ class PartidaActivity : AppCompatActivity() {
             }
         }
 
-        txtUtzi.setOnClickListener {
-            // Inflar el layout personalizado
+        binding.txtPartidaUtzi.setOnClickListener {
             val view = layoutInflater.inflate(R.layout.dialog_custom_exit, null)
-
             val dialog = android.app.Dialog(this)
             dialog.setContentView(view)
-
-            // Hacer el fondo transparente para que se vean las esquinas redondeadas del CardView
             dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
             val btnSi = view.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnSi)
@@ -73,49 +61,51 @@ class PartidaActivity : AppCompatActivity() {
 
             btnSi.setOnClickListener {
                 dialog.dismiss()
-                finish() // Salir de la partida
+                finish()
             }
 
             btnNo.setOnClickListener {
-                dialog.dismiss() // Cerrar el diálogo y seguir jugando
+                dialog.dismiss()
             }
 
             dialog.show()
         }
-        // Inicializar vistas de cartas
-        bottomCard1 = findViewById(R.id.bottomCard1)
-        bottomCard2 = findViewById(R.id.bottomCard2)
-        bottomCard3 = findViewById(R.id.bottomCard3)
-        bottomCard4 = findViewById(R.id.bottomCard4)
+
+        // Inicializar vistas de cartas usando binding
+        bottomCard1 = binding.bottomCard1
+        bottomCard2 = binding.bottomCard2
+        bottomCard3 = binding.bottomCard3
+        bottomCard4 = binding.bottomCard4
 
         setupCardClick(bottomCard1, 0)
         setupCardClick(bottomCard2, 1)
         setupCardClick(bottomCard3, 2)
         setupCardClick(bottomCard4, 3)
 
-        // --- LISTENERS DE LOS BOTONES (FUERA DEL BUCLE) ---
-        findViewById<Button>(R.id.btnMus).setOnClickListener {
+        // Listeners de los botones usando binding
+        binding.btnMus.setOnClickListener {
             decisionContinuation?.resume("mus", null)
         }
-        findViewById<Button>(R.id.btnPasar).setOnClickListener {
+        binding.btnPasar.setOnClickListener {
             decisionContinuation?.resume("paso", null)
         }
-        findViewById<Button>(R.id.btnDeskartea).setOnClickListener {
+        binding.btnDeskartea.setOnClickListener {
             val discardString = buildDiscardString()
             decisionContinuation?.resume(discardString, null)
         }
-        findViewById<Button>(R.id.btnEnvido).setOnClickListener {
+        binding.btnEnvido.setOnClickListener {
             decisionContinuation?.resume("2", null)
         }
-        findViewById<Button>(R.id.btnQuiero).setOnClickListener {
+        binding.btnQuiero.setOnClickListener {
             decisionContinuation?.resume("quiero", null)
         }
-        findViewById<Button>(R.id.btnOrdago).setOnClickListener {
+        binding.btnOrdago.setOnClickListener {
             decisionContinuation?.resume("ordago", null)
         }
 
         partidaHasi()
     }
+
     private fun setupCardClick(view: ImageView, index: Int) {
         view.setOnClickListener {
             if (selectedIndices.contains(index)) {
@@ -127,6 +117,7 @@ class PartidaActivity : AppCompatActivity() {
             }
         }
     }
+
     fun partidaHasi() {
         lifecycleScope.launch(Dispatchers.IO) {
             var socket: Socket? = null
@@ -140,9 +131,10 @@ class PartidaActivity : AppCompatActivity() {
                 var partidaActiva = true
 
                 while (partidaActiva) {
+                    binding.roundLabel.text = "BILATZEN..."
+
                     val serverMsg = reader.readLine() ?: break
 
-                    // CORRECCIÓN: Usamos when sin argumento para poder usar serverMsg.startsWith
                     when {
                         serverMsg.startsWith("DECISION:") -> {
                             val partes = serverMsg.split(":")
@@ -157,7 +149,6 @@ class PartidaActivity : AppCompatActivity() {
 
                         serverMsg == "CARDS" -> {
                             binding.roundLabel.text = "BANATZEN"
-
                             recibirCartas(reader, 4)
                         }
 
@@ -182,7 +173,7 @@ class PartidaActivity : AppCompatActivity() {
 
                         serverMsg == "ALL_MUS" -> {
                             withContext(Dispatchers.Main) {
-                                findViewById<Button>(R.id.btnDeskartea).visibility = View.VISIBLE
+                                binding.btnDeskartea.visibility = View.VISIBLE
                             }
 
                             val deskarteRespuesta = kotlinx.coroutines.suspendCancellableCoroutine<String> { cont ->
@@ -195,16 +186,16 @@ class PartidaActivity : AppCompatActivity() {
 
                             withContext(Dispatchers.Main) {
                                 limpiarCartasDescartadas()
-                                findViewById<Button>(R.id.btnDeskartea).visibility = View.GONE
+                                binding.btnDeskartea.visibility = View.GONE
                             }
                             recibirCartas(reader, 4)
                         }
 
-                        serverMsg == "GRANDES" -> {
+                        serverMsg == "GRANDES" || serverMsg == "PEQUEÑAS" || serverMsg == "PARES" || serverMsg == "JUEGO" || serverMsg == "PUNTO" -> {
                             binding.roundLabel.text = serverMsg
                             withContext(Dispatchers.Main) {
                                 toggleEnvidoButtons(visible = true)
-                                Toast.makeText(this@PartidaActivity, "Grandes jolasten, zure txanda da!", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this@PartidaActivity, "$serverMsg jolasten, zure txanda da!", Toast.LENGTH_SHORT).show()
                             }
 
                             val respuesta = kotlinx.coroutines.suspendCancellableCoroutine<String> { cont ->
@@ -216,105 +207,13 @@ class PartidaActivity : AppCompatActivity() {
                             writer.flush()
 
                             withContext(Dispatchers.Main) {
-                                findViewById<Button>(R.id.btnEnvido).visibility = View.GONE
-                                findViewById<Button>(R.id.btnQuiero).visibility = View.GONE
-                                findViewById<Button>(R.id.btnPasar).visibility = View.GONE
-                                findViewById<Button>(R.id.btnOrdago).visibility = View.GONE
+                                binding.btnEnvido.visibility = View.GONE
+                                binding.btnQuiero.visibility = View.GONE
+                                binding.btnPasar.visibility = View.GONE
+                                binding.btnOrdago.visibility = View.GONE
                             }
                         }
-                        serverMsg == "PEQUEÑAS" -> {
-                            binding.roundLabel.text = serverMsg
 
-                            withContext(Dispatchers.Main) {
-                                toggleEnvidoButtons(visible = true)
-                                Toast.makeText(this@PartidaActivity, "Pequeñas jolasten, zure txanda da!", Toast.LENGTH_SHORT).show()
-                            }
-
-                            val respuesta = kotlinx.coroutines.suspendCancellableCoroutine<String> { cont ->
-                                decisionContinuation = cont
-                            }
-
-                            writer.write(respuesta)
-                            writer.newLine()
-                            writer.flush()
-
-                            withContext(Dispatchers.Main) {
-                                findViewById<Button>(R.id.btnEnvido).visibility = View.GONE
-                                findViewById<Button>(R.id.btnQuiero).visibility = View.GONE
-                                findViewById<Button>(R.id.btnPasar).visibility = View.GONE
-                                findViewById<Button>(R.id.btnOrdago).visibility = View.GONE
-                            }
-                        }
-                        serverMsg == "PARES" -> {
-                            binding.roundLabel.text = serverMsg
-
-                            withContext(Dispatchers.Main) {
-                                toggleEnvidoButtons(visible = true)
-                                Toast.makeText(this@PartidaActivity, "Pares jolasten, zure txanda da!", Toast.LENGTH_SHORT).show()
-                            }
-
-                            val respuesta = kotlinx.coroutines.suspendCancellableCoroutine<String> { cont ->
-                                decisionContinuation = cont
-                            }
-
-                            writer.write(respuesta)
-                            writer.newLine()
-                            writer.flush()
-
-                            withContext(Dispatchers.Main) {
-                                findViewById<Button>(R.id.btnEnvido).visibility = View.GONE
-                                findViewById<Button>(R.id.btnQuiero).visibility = View.GONE
-                                findViewById<Button>(R.id.btnPasar).visibility = View.GONE
-                                findViewById<Button>(R.id.btnOrdago).visibility = View.GONE
-                            }
-                        }
-                        serverMsg == "JUEGO" -> {
-                            binding.roundLabel.text = serverMsg
-
-                            withContext(Dispatchers.Main) {
-                                toggleEnvidoButtons(visible = true)
-                                Toast.makeText(this@PartidaActivity, "Juego jolasten, zure txanda da!", Toast.LENGTH_SHORT).show()
-                            }
-
-                            val respuesta = kotlinx.coroutines.suspendCancellableCoroutine<String> { cont ->
-                                decisionContinuation = cont
-                            }
-
-                            writer.write(respuesta)
-                            writer.newLine()
-                            writer.flush()
-
-                            withContext(Dispatchers.Main) {
-                                findViewById<Button>(R.id.btnEnvido).visibility = View.GONE
-                                findViewById<Button>(R.id.btnQuiero).visibility = View.GONE
-                                findViewById<Button>(R.id.btnPasar).visibility = View.GONE
-                                findViewById<Button>(R.id.btnOrdago).visibility = View.GONE
-                            }
-                        }
-                        serverMsg == "PUNTO" -> {
-                            binding.roundLabel.text = serverMsg
-
-                            withContext(Dispatchers.Main) {
-                                toggleEnvidoButtons(visible = true)
-                                Toast.makeText(this@PartidaActivity, "Punto jolasten, zure txanda da!", Toast.LENGTH_SHORT).show()
-                            }
-
-                            //lalalala
-                            val respuesta = kotlinx.coroutines.suspendCancellableCoroutine<String> { cont ->
-                                decisionContinuation = cont
-                            }
-
-                            writer.write(respuesta)
-                            writer.newLine()
-                            writer.flush()
-
-                            withContext(Dispatchers.Main) {
-                                findViewById<Button>(R.id.btnEnvido).visibility = View.GONE
-                                findViewById<Button>(R.id.btnQuiero).visibility = View.GONE
-                                findViewById<Button>(R.id.btnPasar).visibility = View.GONE
-                                findViewById<Button>(R.id.btnOrdago).visibility = View.GONE
-                            }
-                        }
                         serverMsg == "ORDAGO" -> {
                             ordagoOn = true
                         }
@@ -325,15 +224,10 @@ class PartidaActivity : AppCompatActivity() {
                             binding.roundLabel.text = "Puntuazioa"
 
                             withContext(Dispatchers.Main){
-                                val ezkerrekoTaldea1 = reader.readLine()
-                                val ezkerrekoTaldea2 = reader.readLine()
-                                findViewById<TextView>(R.id.leftScoreBox1).text = ezkerrekoTaldea1
-                                findViewById<TextView>(R.id.leftScoreBox2).text = ezkerrekoTaldea2
-
-                                val eskuinekoTaldea1 = reader.readLine()
-                                val eskuinekoTaldea2 = reader.readLine()
-                                findViewById<TextView>(R.id.rightScoreBox1).text = eskuinekoTaldea1
-                                findViewById<TextView>(R.id.rightScoreBox2).text = eskuinekoTaldea2
+                                binding.leftScoreBox1.text = reader.readLine()
+                                binding.leftScoreBox2.text = reader.readLine()
+                                binding.rightScoreBox1.text = reader.readLine()
+                                binding.rightScoreBox2.text = reader.readLine()
                             }
                         }
                     }
@@ -348,13 +242,12 @@ class PartidaActivity : AppCompatActivity() {
         }
     }
 
-    // FUNCIÓN DE DECISIÓN MEJORADA (MÁS BONITA Y CON ANIMACIÓN)
     private fun mostrarDecision(playerZnb: Int, mensaje: String) {
         val statusView = when (playerZnb) {
-            0 -> findViewById<android.widget.TextView>(R.id.statusBottom)
-            1 -> findViewById<android.widget.TextView>(R.id.statusLeft)
-            2 -> findViewById<android.widget.TextView>(R.id.statusTop)
-            3 -> findViewById<android.widget.TextView>(R.id.statusRight)
+            0 -> binding.statusBottom
+            1 -> binding.statusLeft
+            2 -> binding.statusTop
+            3 -> binding.statusRight
             else -> null
         }
 
@@ -362,14 +255,12 @@ class PartidaActivity : AppCompatActivity() {
             tv.text = mensaje.uppercase()
             tv.visibility = View.VISIBLE
 
-            // Estilo visual dinámico
             if (mensaje.lowercase() == "mus") {
-                tv.setTextColor(android.graphics.Color.parseColor("#FFEB3B")) // Amarillo Mus
+                tv.setTextColor(android.graphics.Color.parseColor("#FFEB3B"))
             } else {
-                tv.setTextColor(android.graphics.Color.parseColor("#FF5252")) // Rojo Paso
+                tv.setTextColor(android.graphics.Color.parseColor("#FF5252"))
             }
 
-            // Animación de aparición (Pop-up)
             tv.alpha = 0f
             tv.scaleX = 0.5f
             tv.scaleY = 0.5f
@@ -382,7 +273,6 @@ class PartidaActivity : AppCompatActivity() {
                     tv.animate().scaleX(1.0f).scaleY(1.0f).setDuration(100)
                 }
 
-            // Desvanecer y ocultar tras 2.5 segundos
             tv.postDelayed({
                 tv.animate().alpha(0f).setDuration(500).withEndAction {
                     tv.visibility = View.GONE
@@ -393,7 +283,7 @@ class PartidaActivity : AppCompatActivity() {
 
     private suspend fun recibirCartas(reader: BufferedReader, cantidad: Int) {
         currentCards.clear()
-        val views = listOf(bottomCard1, bottomCard2, bottomCard3, bottomCard4)
+        val views = listOf(binding.bottomCard1, binding.bottomCard2, binding.bottomCard3, binding.bottomCard4)
 
         repeat(cantidad) { i ->
             val karta = reader.readLine() ?: return@repeat
@@ -402,55 +292,41 @@ class PartidaActivity : AppCompatActivity() {
             withContext(Dispatchers.Main) {
                 val resId = resources.getIdentifier(karta, "drawable", packageName)
                 views[i].setImageResource(resId)
-                views[i].visibility = View.VISIBLE // Por si acaso estaban ocultas
+                views[i].visibility = View.VISIBLE
                 views[i].alpha = 1f
             }
         }
 
-        // Limpiamos los índices seleccionados para la siguiente ronda
         withContext(Dispatchers.Main) {
             selectedIndices.clear()
         }
     }
+
     private fun limpiarCartasDescartadas() {
-        val views = listOf(bottomCard1, bottomCard2, bottomCard3, bottomCard4)
-
-        // Para cada índice seleccionado (0, 1, 2 o 3)
+        val views = listOf(binding.bottomCard1, binding.bottomCard2, binding.bottomCard3, binding.bottomCard4)
         for (index in selectedIndices) {
-            views[index].setImageResource(0) // Borra la imagen de la carta
-            views[index].alpha = 1f          // Reseteamos el alpha para cuando llegue la nueva
+            views[index].setImageResource(0)
+            views[index].alpha = 1f
         }
-
-        // IMPORTANTE: No borres selectedIndices aquí,
-        // se borran dentro de resetCardSelection() después de recibir las nuevas.
     }
+
     private fun toggleDecisionButtons(visible: Boolean) {
-        val estado = if (visible) android.view.View.VISIBLE else android.view.View.GONE
-        findViewById<Button>(R.id.btnMus).visibility = estado
-        findViewById<Button>(R.id.btnPasar).visibility = estado
+        val estado = if (visible) View.VISIBLE else View.GONE
+        binding.btnMus.visibility = estado
+        binding.btnPasar.visibility = estado
     }
+
     private fun toggleEnvidoButtons(visible: Boolean) {
-        val estado = if (visible) android.view.View.VISIBLE else android.view.View.GONE
-        findViewById<Button>(R.id.btnEnvido).visibility = if (ordagoOn) View.GONE else estado
-        findViewById<Button>(R.id.btnPasar).visibility = estado
-        findViewById<Button>(R.id.btnQuiero).visibility = if (envidoOn) estado else View.GONE
-        findViewById<Button>(R.id.btnOrdago).visibility = estado
+        val estado = if (visible) View.VISIBLE else View.GONE
+        binding.btnEnvido.visibility = if (ordagoOn) View.GONE else estado
+        binding.btnPasar.visibility = estado
+        binding.btnQuiero.visibility = if (envidoOn) estado else View.GONE
+        binding.btnOrdago.visibility = estado
     }
 
-
-
-    private fun resetCardSelection() {
-        selectedIndices.clear()
-        listOf(bottomCard1, bottomCard2, bottomCard3, bottomCard4).forEach { it.alpha = 1f }
-    }
     private fun buildDiscardString(): String {
-        // Si no hay cartas seleccionadas, enviamos solo el asterisco (o vacío según C#)
         if (selectedIndices.isEmpty()) return "*"
-
-        // Cogemos los nombres de las cartas seleccionadas
         val seleccionadas = selectedIndices.map { currentCards[it] }
-
-        // Resultado: "oro1-copa12*"
         return seleccionadas.joinToString("-") + "*"
     }
 }
