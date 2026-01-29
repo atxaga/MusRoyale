@@ -219,6 +219,7 @@ class PartidaActivity : AppCompatActivity() {
                                 findViewById<Button>(R.id.btnEnvido).visibility = View.GONE
                                 findViewById<Button>(R.id.btnQuiero).visibility = View.GONE
                                 findViewById<Button>(R.id.btnPasar).visibility = View.GONE
+                                findViewById<Button>(R.id.btnOrdago).visibility = View.GONE
                             }
                         }
                         serverMsg == "PEQUEÑAS" -> {
@@ -241,6 +242,7 @@ class PartidaActivity : AppCompatActivity() {
                                 findViewById<Button>(R.id.btnEnvido).visibility = View.GONE
                                 findViewById<Button>(R.id.btnQuiero).visibility = View.GONE
                                 findViewById<Button>(R.id.btnPasar).visibility = View.GONE
+                                findViewById<Button>(R.id.btnOrdago).visibility = View.GONE
                             }
                         }
                         serverMsg == "PARES" -> {
@@ -263,6 +265,7 @@ class PartidaActivity : AppCompatActivity() {
                                 findViewById<Button>(R.id.btnEnvido).visibility = View.GONE
                                 findViewById<Button>(R.id.btnQuiero).visibility = View.GONE
                                 findViewById<Button>(R.id.btnPasar).visibility = View.GONE
+                                findViewById<Button>(R.id.btnOrdago).visibility = View.GONE
                             }
                         }
                         serverMsg == "JUEGO" -> {
@@ -285,6 +288,7 @@ class PartidaActivity : AppCompatActivity() {
                                 findViewById<Button>(R.id.btnEnvido).visibility = View.GONE
                                 findViewById<Button>(R.id.btnQuiero).visibility = View.GONE
                                 findViewById<Button>(R.id.btnPasar).visibility = View.GONE
+                                findViewById<Button>(R.id.btnOrdago).visibility = View.GONE
                             }
                         }
                         serverMsg == "PUNTO" -> {
@@ -308,6 +312,7 @@ class PartidaActivity : AppCompatActivity() {
                                 findViewById<Button>(R.id.btnEnvido).visibility = View.GONE
                                 findViewById<Button>(R.id.btnQuiero).visibility = View.GONE
                                 findViewById<Button>(R.id.btnPasar).visibility = View.GONE
+                                findViewById<Button>(R.id.btnOrdago).visibility = View.GONE
                             }
                         }
                         serverMsg == "ORDAGO" -> {
@@ -429,6 +434,7 @@ class PartidaActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnEnvido).visibility = if (ordagoOn) View.GONE else estado
         findViewById<Button>(R.id.btnPasar).visibility = estado
         findViewById<Button>(R.id.btnQuiero).visibility = if (envidoOn) estado else View.GONE
+        findViewById<Button>(R.id.btnOrdago).visibility = estado
     }
 
 
