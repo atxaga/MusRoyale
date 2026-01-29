@@ -1,6 +1,7 @@
 package com.example.musroyale
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -227,13 +228,16 @@ class PartidaActivity : AppCompatActivity() {
                         serverMsg == "ENVIDO" -> envidoOn = true
 
                         serverMsg == "PUNTUAKJASO" -> {
-                            roundLabel.text = "Jasota"
+                            val left1 = reader.readLine()
+                            val left2 = reader.readLine()
+                            val right1 = reader.readLine()
+                            val right2 = reader.readLine()
                             withContext(Dispatchers.Main) {
                                 roundLabel.text = "Puntuazioa"
-                                findViewById<TextView>(R.id.leftScoreBox1).text = reader.readLine()
-                                findViewById<TextView>(R.id.leftScoreBox2).text = reader.readLine()
-                                findViewById<TextView>(R.id.rightScoreBox1).text = reader.readLine()
-                                findViewById<TextView>(R.id.rightScoreBox2).text = reader.readLine()
+                                findViewById<TextView>(R.id.leftScoreBox1).text = left1
+                                findViewById<TextView>(R.id.leftScoreBox2).text = left2
+                                findViewById<TextView>(R.id.rightScoreBox1).text = right1
+                                findViewById<TextView>(R.id.rightScoreBox2).text = right2
                             }
                         }
                     }
@@ -241,6 +245,7 @@ class PartidaActivity : AppCompatActivity() {
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(this@PartidaActivity, "Konexio errorea: ${e.message}", Toast.LENGTH_LONG).show()
+                    Log.e("PartidaActivity", e.message, e)
                 }
             } finally {
                 socket?.close()
