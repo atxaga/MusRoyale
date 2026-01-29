@@ -324,7 +324,7 @@ class PartidaActivity : AppCompatActivity() {
         val estado = if (visible) View.VISIBLE else View.GONE
         findViewById<Button>(R.id.btnEnvido).visibility = if (ordagoOn) View.GONE else estado
         findViewById<Button>(R.id.btnPasar).visibility = estado
-        findViewById<Button>(R.id.btnQuiero).visibility = if (envidoOn) estado else View.GONE
+        findViewById<Button>(R.id.btnQuiero).visibility = if (envidoOn || ordagoOn) estado else View.GONE
         findViewById<Button>(R.id.btnOrdago).visibility = if (ordagoOn) View.GONE else estado
     }
 
