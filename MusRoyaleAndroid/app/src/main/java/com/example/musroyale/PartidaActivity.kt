@@ -133,15 +133,15 @@ class PartidaActivity : AppCompatActivity() {
                 val reader = BufferedReader(InputStreamReader(socket.getInputStream()))
                 val writer = socket.getOutputStream().bufferedWriter()
 
-                withContext(Dispatchers.Main) {
-                    roundLabel.text = "BILATZEN..."
-                }
                 while (true) {
+                    withContext(Dispatchers.Main) {
+                        roundLabel.text = "BILATZEN..."
+                    }
 
                     val serverMsg = reader.readLine() ?: break
 
                     when {
-                        serverMsg.startsWith("DECISION:") -> {
+                        serverMsg.startsWith("ACTION:") -> {
                             val partes = serverMsg.split(":")
                             if (partes.size >= 3) {
                                 val pId = partes[1].toInt()
@@ -254,8 +254,9 @@ class PartidaActivity : AppCompatActivity() {
     }
 
     private fun mostrarDecision(playerZnb: Int, mensaje: String) {
+        // 1. Mapear el ID del jugador al TextView correspondiente
         val statusId = when (playerZnb) {
-            0 -> R.id.statusBottom
+            0 -> R.id.statusBottom // Debes añadir este ID en tu XML
             1 -> R.id.statusLeft
             2 -> R.id.statusTop
             3 -> R.id.statusRight
@@ -264,32 +265,43 @@ class PartidaActivity : AppCompatActivity() {
 
         statusId?.let { id ->
             val tv = findViewById<TextView>(id)
+
+            // 2. Personalizar el texto y color según la acción
             tv.text = mensaje.uppercase()
             tv.visibility = View.VISIBLE
 
-            if (mensaje.lowercase() == "mus") {
-                tv.setTextColor(android.graphics.Color.parseColor("#FFEB3B"))
-            } else {
-                tv.setTextColor(android.graphics.Color.parseColor("#FF5252"))
+            when (mensaje.lowercase()) {
+                "mus" -> tv.setTextColor(android.graphics.Color.parseColor("#FFEB3B")) // Amarillo
+                "envido", "2" -> tv.setTextColor(android.graphics.Color.parseColor("#4CAF50")) // Verde
+                "ordago" -> tv.setTextColor(android.graphics.Color.parseColor("#FF5252")) // Rojo
+                else -> tv.setTextColor(android.graphics.Color.WHITE)
             }
 
+            // 3. Animación de "Pop-up" (Aparecer escalando)
             tv.alpha = 0f
             tv.scaleX = 0.5f
             tv.scaleY = 0.5f
             tv.animate()
                 .alpha(1f)
-                .scaleX(1.2f)
-                .scaleY(1.2f)
+                .scaleX(1.1f)
+                .scaleY(1.1f)
                 .setDuration(300)
                 .withEndAction {
                     tv.animate().scaleX(1.0f).scaleY(1.0f).setDuration(100)
                 }
 
+            // 4. Desvanecer después de 3 segundos
+            tv.removeCallbacks(null) // Limpiar callbacks previos si el jugador habla rápido
             tv.postDelayed({
-                tv.animate().alpha(0f).setDuration(500).withEndAction {
-                    tv.visibility = View.GONE
-                }
-            }, 2500)
+                tv.animate()
+                    .alpha(0f)
+                    .scaleX(0.8f)
+                    .scaleY(0.8f)
+                    .setDuration(400)
+                    .withEndAction {
+                        tv.visibility = View.GONE
+                    }
+            }, 3000)
         }
     }
 
