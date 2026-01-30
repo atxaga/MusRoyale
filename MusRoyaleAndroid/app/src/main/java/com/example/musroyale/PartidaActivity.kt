@@ -134,90 +134,108 @@ class PartidaActivity : AppCompatActivity() {
                 val writer = socket.getOutputStream().bufferedWriter()
 
                 while (true) {
-                    // Si el servidor no envía nada, el hilo se queda aquí esperando (bloqueo sano)
-                    val serverMsg = reader.readLine() ?: break
-                    Log.d("SOCKET", "Mensaje recibido: $serverMsg")
-
                     withContext(Dispatchers.Main) {
-                        when {
-                            serverMsg.startsWith("CONNECTED_COUNT:") -> {
-                                val count = serverMsg.split(":")[1]
-                                runOnUiThread { roundLabel.text = "JOKALARIAK: $count / 4" }
-                            }
+                        roundLabel.text = "BILATZEN..."
+                    }
 
-                            serverMsg.startsWith("ACTION:") -> {
-                                val partes = serverMsg.split(":")
-                                if (partes.size >= 3) {
+                    val serverMsg = reader.readLine() ?: break
+
+                    when {
+                        serverMsg.startsWith("ACTION:") -> {
+                            val partes = serverMsg.split(":")
+                            if (partes.size >= 3) {
+                                withContext(Dispatchers.Main) {
                                     runOnUiThread { mostrarDecision(partes[1].toInt(), partes[2]) }
                                 }
                             }
+                        }
 
-                            serverMsg == "CARDS" -> {
-                                // No bloqueamos: recibirCartas ya maneja sus propios contextos
-                                recibirCartas(reader, 4)
+                        serverMsg == "CARDS" -> {
+                            withContext(Dispatchers.Main) {
+                                roundLabel.text = "BANATZEN"
+                            }
+                            recibirCartas(reader, 4)
+                        }
+
+                        serverMsg == "TURN" -> {
+                            withContext(Dispatchers.Main) {
+                                toggleDecisionButtons(visible = true)
+                                Toast.makeText(this@PartidaActivity, "Zure txanda!", Toast.LENGTH_SHORT).show()
                             }
 
-                            // 4. Gestión de Turnos (Aquí usamos el suspendCancellableCoroutine)
-                            serverMsg == "TURN" -> {
-                                // Lanzamos un nuevo scope para no bloquear el bucle 'while'
-                                lifecycleScope.launch(Dispatchers.Main) {
-                                    toggleDecisionButtons(visible = true)
-                                    Toast.makeText(this@PartidaActivity, "Zure txanda!", Toast.LENGTH_SHORT).show()
-
-                                    val respuesta = kotlinx.coroutines.suspendCancellableCoroutine<String> { cont ->
-                                        decisionContinuation = cont
-                                    }
-
-                                    withContext(Dispatchers.IO) {
-                                        writer.write(respuesta)
-                                        writer.newLine()
-                                        writer.flush()
-                                    }
-                                    toggleDecisionButtons(visible = false)
-                                }
+                            val respuesta = kotlinx.coroutines.suspendCancellableCoroutine<String> { cont ->
+                                decisionContinuation = cont
                             }
 
-                            // 5. Fases del juego
-                            serverMsg == "GRANDES" || serverMsg == "PEQUEÑAS" || serverMsg == "PARES" || serverMsg == "JUEGO" || serverMsg == "PUNTO" -> {
+                            writer.write(respuesta)
+                            writer.newLine()
+                            writer.flush()
+
+                            withContext(Dispatchers.Main) {
+                                toggleDecisionButtons(visible = false)
+                            }
+                        }
+
+                        serverMsg == "ALL_MUS" -> {
+                            withContext(Dispatchers.Main) {
+                                findViewById<Button>(R.id.btnDeskartea).visibility = View.VISIBLE
+                            }
+
+                            val deskarteRespuesta = kotlinx.coroutines.suspendCancellableCoroutine<String> { cont ->
+                                decisionContinuation = cont
+                            }
+
+                            writer.write(deskarteRespuesta)
+                            writer.newLine()
+                            writer.flush()
+
+                            withContext(Dispatchers.Main) {
+                                limpiarCartasDescartadas()
+                                findViewById<Button>(R.id.btnDeskartea).visibility = View.GONE
+                            }
+                            recibirCartas(reader, 4)
+                        }
+
+                        // Agrupamos las fases de juego
+                        serverMsg == "GRANDES" || serverMsg == "PEQUEÑAS" || serverMsg == "PARES" || serverMsg == "JUEGO" || serverMsg == "PUNTO" -> {
+                            withContext(Dispatchers.Main) {
                                 roundLabel.text = serverMsg
                                 toggleEnvidoButtons(visible = true)
+                                Toast.makeText(this@PartidaActivity, "$serverMsg jolasten!", Toast.LENGTH_SHORT).show()
+                            }
 
-                                val respuesta = kotlinx.coroutines.suspendCancellableCoroutine<String> { cont ->
-                                    decisionContinuation = cont
-                                }
+                            val respuesta = kotlinx.coroutines.suspendCancellableCoroutine<String> { cont ->
+                                decisionContinuation = cont
+                            }
 
-                                launch(Dispatchers.IO) {
-                                    writer.write(respuesta)
-                                    writer.newLine()
-                                    writer.flush()
-                                }
+                            writer.write(respuesta)
+                            writer.newLine()
+                            writer.flush()
 
-                                // Ocultar botones tras elegir
+                            withContext(Dispatchers.Main) {
                                 findViewById<Button>(R.id.btnEnvido).visibility = View.GONE
                                 findViewById<Button>(R.id.btnQuiero).visibility = View.GONE
                                 findViewById<Button>(R.id.btnPasar).visibility = View.GONE
                                 findViewById<Button>(R.id.btnOrdago).visibility = View.GONE
-
-                                ordagoOn = false
-                                envidoOn = false
                             }
+                            ordagoOn = false
+                            envidoOn = false
+                        }
 
-                            // 6. Modificadores de estado
-                            serverMsg == "ORDAGO" -> ordagoOn = true
-                            serverMsg == "ENVIDO" -> envidoOn = true
+                        serverMsg == "ORDAGO" -> ordagoOn = true
+                        serverMsg == "ENVIDO" -> envidoOn = true
 
-                            // 7. Puntuación
-                            serverMsg == "PUNTUAKJASO" -> {
-                                launch(Dispatchers.IO) {
-                                    val l1 = reader.readLine(); val l2 = reader.readLine()
-                                    val r1 = reader.readLine(); val r2 = reader.readLine()
-                                    withContext(Dispatchers.Main) {
-                                        findViewById<TextView>(R.id.leftScoreBox1).text = l1
-                                        findViewById<TextView>(R.id.leftScoreBox2).text = l2
-                                        findViewById<TextView>(R.id.rightScoreBox1).text = r1
-                                        findViewById<TextView>(R.id.rightScoreBox2).text = r2
-                                    }
-                                }
+                        serverMsg == "PUNTUAKJASO" -> {
+                            val left1 = reader.readLine()
+                            val left2 = reader.readLine()
+                            val right1 = reader.readLine()
+                            val right2 = reader.readLine()
+                            withContext(Dispatchers.Main) {
+                                roundLabel.text = "Puntuazioa"
+                                findViewById<TextView>(R.id.leftScoreBox1).text = left1
+                                findViewById<TextView>(R.id.leftScoreBox2).text = left2
+                                findViewById<TextView>(R.id.rightScoreBox1).text = right1
+                                findViewById<TextView>(R.id.rightScoreBox2).text = right2
                             }
                         }
                     }
