@@ -150,13 +150,11 @@ class PartidaActivity : AppCompatActivity() {
                     val serverMsg = reader.readLine() ?: break
 
                     when {
-                        serverMsg.startsWith("DECISION:") -> {
+                        serverMsg.startsWith("ACTION:") -> {
                             val partes = serverMsg.split(":")
                             if (partes.size >= 3) {
-                                val pId = partes[1].toInt()
-                                val decision = partes[2]
                                 withContext(Dispatchers.Main) {
-                                    mostrarDecision(pId, decision)
+                                    runOnUiThread { mostrarDecision(partes[1].toInt(), partes[2]) }
                                 }
                             }
                         }
@@ -276,10 +274,11 @@ class PartidaActivity : AppCompatActivity() {
             tv.text = mensaje.uppercase()
             tv.visibility = View.VISIBLE
 
-            if (mensaje.lowercase() == "mus") {
-                tv.setTextColor(android.graphics.Color.parseColor("#FFEB3B"))
-            } else {
-                tv.setTextColor(android.graphics.Color.parseColor("#FF5252"))
+            when (mensaje.lowercase()) {
+                "mus" -> tv.setTextColor(android.graphics.Color.parseColor("#FFEB3B")) // Amarillo
+                "envido", "2" -> tv.setTextColor(android.graphics.Color.parseColor("#4CAF50")) // Verde
+                "ordago" -> tv.setTextColor(android.graphics.Color.parseColor("#FF5252")) // Rojo
+                else -> tv.setTextColor(android.graphics.Color.WHITE)
             }
 
             tv.alpha = 0f
@@ -294,11 +293,18 @@ class PartidaActivity : AppCompatActivity() {
                     tv.animate().scaleX(1.0f).scaleY(1.0f).setDuration(100)
                 }
 
+            // 4. Desvanecer después de 3 segundos
+            tv.removeCallbacks(null) // Limpiar callbacks previos si el jugador habla rápido
             tv.postDelayed({
-                tv.animate().alpha(0f).setDuration(500).withEndAction {
-                    tv.visibility = View.GONE
-                }
-            }, 2500)
+                tv.animate()
+                    .alpha(0f)
+                    .scaleX(0.8f)
+                    .scaleY(0.8f)
+                    .setDuration(400)
+                    .withEndAction {
+                        tv.visibility = View.GONE
+                    }
+            }, 3000)
         }
     }
 
