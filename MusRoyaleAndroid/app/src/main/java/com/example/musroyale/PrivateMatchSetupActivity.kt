@@ -27,8 +27,10 @@ class PrivateMatchSetupActivity : AppCompatActivity() {
         }
         binding.btnJoin.setOnClickListener {
             val valueToSend = "UNIRSE_PRIVADA"
+            val kodea = binding.codeInput.text.toString()
             val intent = Intent(this, PartidaActivity::class.java)
             intent.putExtra(PartidaActivity.EXTRA_PARAM, valueToSend)
+            intent.putExtra(PartidaActivity.EXTRA_CODE, kodea)
             startActivity(intent)
         }
         binding.btnCreate.setOnClickListener {
