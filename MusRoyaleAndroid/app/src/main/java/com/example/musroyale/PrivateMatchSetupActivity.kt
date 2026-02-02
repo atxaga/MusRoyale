@@ -24,7 +24,18 @@ class PrivateMatchSetupActivity : AppCompatActivity() {
         binding.btnBack.setOnClickListener {
             var intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
-
+        }
+        binding.btnJoin.setOnClickListener {
+            val valueToSend = "UNIRSE_PRIVADA"
+            val intent = Intent(this, PartidaActivity::class.java)
+            intent.putExtra(PartidaActivity.EXTRA_PARAM, valueToSend)
+            startActivity(intent)
+        }
+        binding.btnCreate.setOnClickListener {
+            val valueToSend = "CREAR_PRIVADA"
+            val intent = Intent(this, PartidaActivity::class.java)
+            intent.putExtra(PartidaActivity.EXTRA_PARAM, valueToSend)
+            startActivity(intent)
         }
         // Mostrar SortuFragment
         supportFragmentManager.beginTransaction()

@@ -19,6 +19,10 @@ import android.widget.TextView
 
 class PartidaActivity : AppCompatActivity() {
 
+    companion object {
+        const val EXTRA_PARAM = "com.example.musroyale.EXTRA_PARAM"
+    }
+
     private val serverHost = "34.233.112.247"
     private val serverPort = 13000
     private val connectTimeoutMs = 20000
@@ -132,6 +136,11 @@ class PartidaActivity : AppCompatActivity() {
 
                 val reader = BufferedReader(InputStreamReader(socket.getInputStream()))
                 val writer = socket.getOutputStream().bufferedWriter()
+
+                val received = intent.getStringExtra(EXTRA_PARAM)
+                writer.write(received)
+                writer.newLine()
+                writer.flush()
 
                 withContext(Dispatchers.Main) {
                     roundLabel.text = "BILATZEN..."

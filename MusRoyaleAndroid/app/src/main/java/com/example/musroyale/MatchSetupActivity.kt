@@ -13,7 +13,6 @@ import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.snackbar.Snackbar
 
 class MatchSetupActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityMatchSetupBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,8 +29,9 @@ class MatchSetupActivity : AppCompatActivity() {
 
         }
         binding.btnPlay.setOnClickListener {
-            var intent = Intent(this, PartidaActivity::class.java)
-            startActivity(intent)
+            val valueToSend = "PUBLICA"
+            val intent = Intent(this, PartidaActivity::class.java)
+            intent.putExtra(PartidaActivity.EXTRA_PARAM, valueToSend)
         }
 
 
