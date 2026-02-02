@@ -29,6 +29,8 @@ class MainActivity : AppCompatActivity() {
     private var rewardedAd: RewardedAd? = null
     private var userListener: com.google.firebase.firestore.ListenerRegistration? = null
     private var chatNotificationsListener: com.google.firebase.firestore.ListenerRegistration? = null
+    private val amigosListeners = mutableMapOf<String, com.google.firebase.database.ValueEventListener>()
+    private val databaseRT = FirebaseDatabase.getInstance("https://musroyale-488aa-default-rtdb.europe-west1.firebasedatabase.app/")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +63,85 @@ class MainActivity : AppCompatActivity() {
         if (currentUserId != null) escucharNotificacionesChat()
         cargarDatosUser()
         configurarSistemaPresencia(currentUserId.toString())
+        iniciarObservadorAmigos()
+    }
+    private fun iniciarObservadorAmigos() {
+        val uid = currentUserId ?: return
+
+        // 1. Obtenemos la lista de amigos de Firestore
+        FirebaseFirestore.getInstance().collection("Users").document(uid).get()
+            .addOnSuccessListener { snapshot ->
+                val listaAmigos = snapshot.get("amigos") as? List<String> ?: emptyList()
+
+                for (amigoId in listaAmigos) {
+                    escucharEstadoAmigo(amigoId)
+                }
+            }
+    }
+
+    private fun escucharEstadoAmigo(amigoId: String) {
+        val ref = databaseRT.getReference("estado_usuarios/$amigoId")
+
+        val listener = object : com.google.firebase.database.ValueEventListener {
+            private var primeraVez = true // Para evitar que salte al abrir la app
+
+            override fun onDataChange(snapshot: com.google.firebase.database.DataSnapshot) {
+                val estado = snapshot.getValue(String::class.java) ?: "offline"
+
+                if (!primeraVez && estado == "online") {
+                    // El amigo se acaba de conectar, buscamos sus datos para el banner
+                    obtenerDatosYMostrarBanner(amigoId)
+                }
+                primeraVez = false
+            }
+            override fun onCancelled(error: com.google.firebase.database.DatabaseError) {}
+        }
+
+        ref.addValueEventListener(listener)
+        amigosListeners[amigoId] = listener
+    }
+
+    private fun obtenerDatosYMostrarBanner(amigoId: String) {
+        FirebaseFirestore.getInstance().collection("Users").document(amigoId).get()
+            .addOnSuccessListener { doc ->
+                val nombre = doc.getString("username") ?: "Lagun bat"
+                val avatar = doc.getString("avatarActual")
+                mostrarBannerTop(nombre, avatar)
+            }
+    }
+
+    private fun mostrarBannerTop(nombre: String, avatarStr: String?) {
+        val inflater = layoutInflater
+        // Usamos binding.root para asegurarnos de que se añade a la base de la actividad
+        val layout = inflater.inflate(R.layout.layout_notification_online, binding.root, false)
+
+        layout.findViewById<TextView>(R.id.txtNotifyMessage).text = "$nombre konektatua!"
+        val img = layout.findViewById<ImageView>(R.id.imgNotifyAvatar)
+        val resId = getResIdFromName(this, avatarStr)
+        img.setImageResource(if (resId != 0) resId else R.drawable.ic_avatar3)
+
+        // Añadimos la vista al root
+        binding.root.addView(layout)
+
+        // Alineamos el banner arriba (opcional si el XML ya lo hace)
+        layout.translationZ = 100f // Asegura que esté por encima de botones y tabs
+
+        layout.translationY = -300f
+        layout.animate()
+            .translationY(100f) // Baja hasta 100px desde el tope
+            .setDuration(600)
+            .setInterpolator(android.view.animation.OvershootInterpolator())
+            .withEndAction {
+                layout.postDelayed({
+                    layout.animate()
+                        .translationY(-400f)
+                        .alpha(0f)
+                        .setDuration(500)
+                        .withEndAction { binding.root.removeView(layout) }
+                        .start()
+                }, 3500)
+            }
+            .start()
     }
     private fun cargarAnuncioRecompensa() {
         val adRequest = AdRequest.Builder().build()
@@ -400,6 +481,11 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
         userListener?.remove()
         chatNotificationsListener?.remove()
+
+        // Eliminar todos los listeners de amigos
+        amigosListeners.forEach { (id, listener) ->
+            databaseRT.getReference("estado_usuarios/$id").removeEventListener(listener)
+        }
     }
 }
 private fun View.addClickScaleAnimation() {
