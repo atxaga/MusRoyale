@@ -21,6 +21,7 @@ class PartidaActivity : AppCompatActivity() {
 
     companion object {
         const val EXTRA_PARAM = "com.example.musroyale.EXTRA_PARAM"
+        const val EXTRA_CODE = "com.example.musroyale.EXTRA_CODE"
     }
 
     private val serverHost = "34.233.112.247"
@@ -246,6 +247,12 @@ class PartidaActivity : AppCompatActivity() {
                                 findViewById<TextView>(R.id.rightScoreBox1).text = right1
                                 findViewById<TextView>(R.id.rightScoreBox2).text = right2
                             }
+                        }
+                        serverMsg == "PEDIR_CODIGO" -> {
+                            val kodea = intent.getStringExtra(EXTRA_CODE) ?: ""
+                            writer.write(kodea)
+                            writer.newLine()
+                            writer.flush()
                         }
                     }
                 }
