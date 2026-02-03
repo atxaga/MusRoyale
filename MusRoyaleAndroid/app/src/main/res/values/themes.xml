@@ -49,6 +49,11 @@
         <item name="cornerSize">16dp</item>
         <item name="cornerFamily">rounded</item>
     </style>
+    <style name="MaterialAlertDialog_Beige" parent="Theme.MaterialComponents.Light.Dialog.Alert">
+        <item name="android:background">#E6D5B8</item>
+        <item name="android:textColorPrimary">#3E2723</item>
+        <item name="colorAccent">#8D6E63</item>
+    </style>
     <style name="ShapeAppearance.MaterialComponents.MediumComponent" parent="">
         <item name="cornerSize">20dp</item>
     </style>

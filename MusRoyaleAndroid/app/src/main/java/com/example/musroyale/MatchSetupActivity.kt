@@ -24,17 +24,45 @@ class MatchSetupActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.btnBack.setOnClickListener {
-            var intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+            finish()
 
         }
         binding.btnPlay.setOnClickListener {
             val valueToSend = "PUBLICA"
             val intent = Intent(this, PartidaActivity::class.java)
             intent.putExtra(PartidaActivity.EXTRA_PARAM, valueToSend)
+            startActivity(intent)
+        }
+        setupApuestaLogica()
+
+
+    }
+    // En tu Activity
+    private fun setupApuestaLogica() {
+        val etApuesta = binding.etApuestaValue
+
+        // Botón MENOS
+        binding.btnMinus.setOnClickListener {
+            val actual = etApuesta.text.toString().toIntOrNull() ?: 0
+            if (actual >= 5) {
+                etApuesta.setText((actual - 5).toString())
+            } else {
+                etApuesta.setText("0")
+            }
         }
 
+        // Botón MÁS
+        binding.btnPlus.setOnClickListener {
+            val actual = etApuesta.text.toString().toIntOrNull() ?: 0
+            etApuesta.setText((actual + 5).toString())
+        }
 
+        // Opcional: Que al borrar todo no se quede vacío
+        etApuesta.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus && etApuesta.text.isEmpty()) {
+                etApuesta.setText("0")
+            }
+        }
     }
 
 

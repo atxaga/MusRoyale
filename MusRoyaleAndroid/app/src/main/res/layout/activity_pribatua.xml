@@ -2,145 +2,168 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/match_setup_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#D7CCC8"
     tools:context=".PrivateMatchSetupActivity">
 
     <RelativeLayout
-        android:id="@+id/setupBackground"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/fondo1">
 
-        <fragment
-            android:id="@+id/headerBar"
-            android:name="com.example.musroyale.HeaderFragment"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <LinearLayout
-            android:padding="32dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/btnBack"
-                android:layout_marginTop="50dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="7dp"
-                app:cardElevation="10dp"
-                app:strokeColor="#8B4513"
-                app:strokeWidth="2dp"
-                app:cardBackgroundColor="#FFBFA06A">
-
-                <LinearLayout
-                    android:layout_width="140dp"
-                    android:layout_height="60dp"
-                    android:orientation="horizontal"
-                    android:padding="8dp"
-                    android:gravity="center_vertical">
-
-                    <ImageView
-                        android:id="@+id/btnAtzera"
-                        android:layout_width="30dp"
-                        android:layout_marginEnd="20dp"
-                        android:layout_height="90dp"
-                        android:src="@drawable/atras"
-                        android:contentDescription="Volver" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Atzera"
-                        android:textColor="@color/white"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-        </LinearLayout>
-
-        <!-- Tarjeta centrada que añade la UI para crear/unirse sin romper la estética -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/privateCard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="24dp"
-            android:layout_marginTop="180dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="8dp"
-            app:cardBackgroundColor="#FFBFA06A"
-            android:padding="16dp">
+            android:layout_height="match_parent"
+            android:layout_marginTop="40dp"
+            android:scrollbars="none">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:orientation="vertical"
-                android:gravity="center_horizontal">
+                android:padding="20dp">
 
-                <TextView
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/btnBack"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Sala privada"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"
-                    android:layout_marginBottom="12dp"/>
+                    android:layout_marginBottom="20dp"
+                    android:layout_gravity="start"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="#F5F5DC"
+                    app:strokeColor="#C5A059"
+                    app:strokeWidth="1dp">
+                    <LinearLayout
+                        android:layout_width="125dp"
+                        android:layout_height="45dp"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="8dp"
+                            android:src="@drawable/atras"
+                            app:tint="#5D4037" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Atzera"
+                            android:textColor="#5D4037"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
-                <EditText
-                    android:id="@+id/codeInput"
-                    android:layout_width="200dp"
-                    android:layout_height="wrap_content"
-                    android:hint="Código (4 dígitos)"
-                    android:inputType="number"
-                    android:maxLength="4"
-                    android:gravity="center"
-                    android:textSize="22sp"
-                    android:layout_marginBottom="12dp"
-                    android:backgroundTint="@color/black" />
-
-                <LinearLayout
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center"
-                    android:weightSum="2">
+                    app:cardCornerRadius="28dp"
+                    app:cardElevation="8dp"
+                    app:cardBackgroundColor="#E6D5B8"
+                    app:strokeColor="#BCAAA4"
+                    app:strokeWidth="1.5dp">
 
-                    <Button
-                        android:id="@+id/btnJoin"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Unirse"
-                        android:layout_marginEnd="8dp"
-                        style="@style/Widget.MaterialComponents.Button"/>
+                        android:orientation="vertical"
+                        android:padding="28dp">
 
-                    <Button
-                        android:id="@+id/btnCreate"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:text="Crear sala"
-                        android:layout_marginStart="8dp"
-                        style="@style/Widget.MaterialComponents.Button"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Gela Pribatua"
+                            android:textColor="#3E2723"
+                            android:textSize="24sp"
+                            android:fontFamily="serif"
+                            android:textStyle="bold" />
 
-                </LinearLayout>
+                        <View
+                            android:layout_width="40dp"
+                            android:layout_height="3dp"
+                            android:layout_marginTop="4dp"
+                            android:background="#C5A059" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="24dp"
+                            android:text="Sartu Kodea"
+                            android:textColor="#5D4037"
+                            android:textAllCaps="true"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                        <EditText
+                            android:id="@+id/codeInput"
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:layout_marginTop="8dp"
+                            android:hint="0000"
+                            android:gravity="center"
+                            android:inputType="number"
+                            android:maxLength="4"
+                            android:letterSpacing="0.3"
+                            android:textColor="#3E2723"
+                            android:textSize="22sp"
+                            android:background="@android:color/transparent"
+                            android:textStyle="bold" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnJoin"
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:layout_marginTop="12dp"
+                            android:text="SARTU"
+                            android:textStyle="bold"
+                            app:backgroundTint="#5D4037"
+                            app:cornerRadius="16dp"
+                            android:textColor="#FFFFFF"/>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginVertical="24dp"
+                            android:background="#BCAAA4" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Gela Berria Sortu"
+                            android:textColor="#5D4037"
+                            android:textAllCaps="true"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="Konfiguratu partida eta sortu gela"
+                            android:textColor="#8B6F47"
+                            android:textSize="13sp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnCreate"
+                            android:layout_width="match_parent"
+                            android:layout_height="70dp"
+                            android:layout_marginTop="20dp"
+                            android:text="GELA SORTU"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            app:backgroundTint="#3E2723"
+                            app:cornerRadius="20dp"
+                            android:textColor="#E6D5B8"
+                            app:icon="@android:drawable/ic_menu_add"
+                            app:iconTint="#E6D5B8"
+                            app:iconGravity="textStart"/>
+
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
             </LinearLayout>
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <FrameLayout
-            android:id="@+id/fragmentContainer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="110dp"/>
-
+        </ScrollView>
     </RelativeLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

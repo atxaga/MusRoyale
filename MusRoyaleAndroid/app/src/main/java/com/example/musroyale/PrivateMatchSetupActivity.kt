@@ -40,9 +40,7 @@ class PrivateMatchSetupActivity : AppCompatActivity() {
             startActivity(intent)
         }
         // Mostrar SortuFragment
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, SortuFragment())
-            .commit()
+
 
         /*supportFragmentManager.beginTransaction()
             .replace(R.id.fragmentContainer, SartuFragment())

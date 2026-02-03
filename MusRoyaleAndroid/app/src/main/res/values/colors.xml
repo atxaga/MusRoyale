@@ -66,7 +66,11 @@
     <color name="friends_button_pressed">#FFE3CBA5</color>
     <color name="friends_overlay_light">#1A000000</color>
 
-
+    <color name="beige_claro">#F5F5DC</color>
+    <color name="beige_oscuro">#D2B48C</color>
+    <color name="marron_cuero">#5D4037</color>
+    <color name="dorado_suave">#C5A059</color>
+    <color name="blanco_hueso">#FFFDD0</color>
     <color name="friends_beige_primary_dark">#FF9F8B54</color>
 
 

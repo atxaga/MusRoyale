@@ -311,11 +311,15 @@ class MainActivity : AppCompatActivity() {
 
                 val avatarResId = getResIdFromName(this, document.getString("avatarActual"))
                 binding.imgHeaderAvatar.setImageResource(if (avatarResId != 0) avatarResId else R.drawable.ic_avatar3)
+                val userRol = document.get("rol") as? Long ?: 0
 
-                // Panel de Admin
-                binding.btnAdminPanel.visibility = if (currentUserId == "kHjrbXVjxZQzRHRvvqf7") View.VISIBLE else View.GONE
-                if (currentUserId == "kHjrbXVjxZQzRHRvvqf7") {
-                    binding.btnAdminPanel.setOnClickListener { startActivity(Intent(this, AdminActivity::class.java)) }
+                if (userRol == 1L) {
+                    binding.btnAdminPanel.visibility = View.VISIBLE
+                    binding.btnAdminPanel.setOnClickListener {
+                        startActivity(Intent(this, AdminActivity::class.java))
+                    }
+                } else {
+                    binding.btnAdminPanel.visibility = View.GONE
                 }
             }
         }

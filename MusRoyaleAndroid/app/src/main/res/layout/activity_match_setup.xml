@@ -2,275 +2,266 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/match_setup_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#D7CCC8"
     tools:context=".MatchSetupActivity">
 
     <RelativeLayout
-        android:id="@+id/setupBackground"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/fondo1">
 
-
-
         <ScrollView
-            android:layout_marginTop="20dp"
-            android:id="@+id/setupScroll"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="16dp"
-            android:clipToPadding="false">
-
-
+            android:layout_marginTop="40dp"
+            android:scrollbars="none">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="20dp">
+
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/btnBack"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    app:cardCornerRadius="7dp"
-                    app:cardElevation="10dp"
-                    app:strokeColor="#8B4513"
-                    app:strokeWidth="2dp"
-                    app:cardBackgroundColor="#FFBFA06A">
+                    android:layout_marginBottom="20dp"
+                    android:layout_gravity="start"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="#F5F5DC"
+                    app:strokeColor="#C5A059"
+                    app:strokeWidth="1dp">
 
-                    <!-- Contenedor para ImageView y TextView -->
                     <LinearLayout
-                        android:layout_width="140dp"
-                        android:layout_height="60dp"
-                        android:orientation="horizontal"
-                        android:padding="8dp"
-                        android:gravity="center_vertical">
+                        android:layout_width="125dp"
+                        android:layout_height="45dp"
+                        android:gravity="center"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="16dp"
+                        android:orientation="horizontal">
 
                         <ImageView
-                            android:id="@+id/btnAtzera"
-                            android:layout_width="30dp"
-                            android:layout_marginEnd="20dp"
-                            android:layout_height="90dp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="8dp"
                             android:src="@drawable/atras"
-                            android:contentDescription="Volver" />
+                            app:tint="#5D4037"
+                            android:contentDescription="Atzera joan" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Atzera"
-                            android:textColor="@color/white"
-                            android:textSize="18sp"
+                            android:textColor="#5D4037"
+                            android:textSize="16sp"
                             android:textStyle="bold" />
-
                     </LinearLayout>
-
                 </com.google.android.material.card.MaterialCardView>
-
 
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="24dp"
-                    app:cardCornerRadius="22dp"
-                    app:cardElevation="10dp"
-                    app:strokeColor="#8B4513"
-                    app:strokeWidth="2dp"
-                    app:cardBackgroundColor="#FFBFA06A">
+                    app:cardCornerRadius="28dp"
+                    app:cardElevation="8dp"
+                    app:cardBackgroundColor="#E6D5B8"
+                    app:strokeColor="#BCAAA4"
+                    app:strokeWidth="1.5dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="24dp">
+                        android:padding="28dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Partida konfigurazioa"
-                            android:textColor="@color/white"
-                            android:textSize="20sp"
+                            android:text="Konfigurazioa"
+                            android:textColor="#3E2723"
+                            android:textSize="24sp"
+                            android:fontFamily="serif"
                             android:textStyle="bold" />
 
+                        <View
+                            android:layout_width="40dp"
+                            android:layout_height="3dp"
+                            android:layout_marginTop="4dp"
+                            android:background="#C5A059" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="Partda beste jokalarien aurka edo IAren aurka"
-                            android:textColor="#8B6F47"
-                            android:textSize="14sp" />
+                            android:layout_marginTop="24dp"
+                            android:text="Joko Modua"
+                            android:textColor="#5D4037"
+                            android:textAllCaps="true"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:letterSpacing="0.1" />
 
                         <com.google.android.material.button.MaterialButtonToggleGroup
                             android:id="@+id/toggleGroupOnlineIa"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
-                            android:layout_marginBottom="20dp"
+                            android:layout_marginTop="8dp"
                             app:singleSelection="true"
-                            app:selectionRequired="true">
+                            app:selectionRequired="true"
+                            app:checkedButton="@+id/btnOnline">
 
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/btnOnline"
                                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                                 android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="8dp"
+                                android:layout_height="55dp"
                                 android:layout_weight="1"
                                 android:text="Online"
-                                android:textAllCaps="false"
-                                android:textSize="16sp"
                                 android:textColor="@color/toggle_text_selector"
-                                app:backgroundTint="#5B3A1C"
-                                app:cornerRadius="18dp"
-                                app:strokeColor="@color/toggle_stroke_selector"
-                                app:strokeWidth="1dp" />
+                                app:backgroundTint="@color/toggle_bg_selector"
+                                app:strokeColor="#8D6E63" />
 
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/btnIa"
                                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                                 android:layout_width="0dp"
-                                android:layout_height="wrap_content"
+                                android:layout_height="55dp"
                                 android:layout_weight="1"
                                 android:text="vs IA"
-                                android:textAllCaps="false"
-                                android:textSize="16sp"
-                                android:textColor="@color/black"
+                                android:textColor="@color/toggle_text_selector"
                                 app:backgroundTint="@color/toggle_bg_selector"
-                                app:cornerRadius="18dp"
-                                app:strokeColor="@color/black"
-                                app:strokeWidth="1dp" />
-
+                                app:strokeColor="#8D6E63" />
                         </com.google.android.material.button.MaterialButtonToggleGroup>
 
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginBottom="20dp"
-                            android:background="#D2B48C" />
-
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Modalitatea aukeratu"
-                            android:textColor="@color/white"
-                            android:textSize="18sp"
+                            android:layout_marginTop="24dp"
+                            android:text="Errege Kopurua"
+                            android:textColor="#5D4037"
+                            android:textAllCaps="true"
+                            android:textSize="12sp"
                             android:textStyle="bold" />
 
+                        <com.google.android.material.button.MaterialButtonToggleGroup
+                            android:id="@+id/btnPartidaMota"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            app:singleSelection="true"
+                            app:selectionRequired="true"
+                            app:checkedButton="@+id/btn4errege">
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btn4errege"
+                                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                                android:layout_width="0dp"
+                                android:layout_height="55dp"
+                                android:layout_weight="1"
+                                android:text="4 Errege"
+                                android:textColor="@color/toggle_text_selector"
+                                app:backgroundTint="@color/toggle_bg_selector"
+                                app:strokeColor="#8D6E63" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btn8errege"
+                                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                                android:layout_width="0dp"
+                                android:layout_height="55dp"
+                                android:layout_weight="1"
+                                android:text="8 Errege"
+                                android:textColor="@color/toggle_text_selector"
+                                app:backgroundTint="@color/toggle_bg_selector"
+                                app:strokeColor="#8D6E63" />
+                        </com.google.android.material.button.MaterialButtonToggleGroup>
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="Partida mota aukeratu"
-                            android:textColor="#8B6F47"
-                            android:textSize="14sp" />
+                            android:layout_marginTop="24dp"
+                            android:text="Apostua"
+                            android:textColor="#5D4037"
+                            android:textAllCaps="true"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
 
-                        <com.google.android.material.button.MaterialButtonToggleGroup
-                            android:id="@+id/toggleGroupReyes"
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="12dp"
-                            android:layout_marginBottom="20dp"
-                            app:singleSelection="true"
-                            app:selectionRequired="true">
+                            android:gravity="center"
+                            android:orientation="horizontal">
 
                             <com.google.android.material.button.MaterialButton
-                                android:id="@+id/btnFourKings"
+                                android:id="@+id/btnMinus"
                                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="8dp"
-                                android:layout_weight="1"
-                                android:text="4 Errege"
-                                android:textAllCaps="false"
-                                android:textSize="16sp"
-                                android:textColor="@color/toggle_text_selector"
-                                app:backgroundTint="#5B3A1C"
-                                app:cornerRadius="18dp"
-                                app:strokeColor="@color/toggle_stroke_selector"
-                                app:strokeWidth="1dp" />
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                android:text="−"
+                                android:textSize="26sp"
+                                android:textColor="#FFFFFF"
+                                app:cornerRadius="16dp"
+                                app:strokeWidth="0dp"
+                                app:backgroundTint="#8D6E63"/>
+
+                            <com.google.android.material.card.MaterialCardView
+                                android:layout_width="120dp"
+                                android:layout_height="60dp"
+                                android:layout_marginHorizontal="12dp"
+                                app:cardCornerRadius="12dp"
+                                app:cardBackgroundColor="#FFFFFF"
+                                app:cardElevation="4dp">
+
+                                <EditText
+                                    android:id="@+id/etApuestaValue"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:background="@android:color/transparent"
+                                    android:gravity="center"
+                                    android:inputType="number"
+                                    android:text="5"
+                                    android:textColor="#3E2723"
+                                    android:textSize="22sp"
+                                    android:textStyle="bold" />
+                            </com.google.android.material.card.MaterialCardView>
 
                             <com.google.android.material.button.MaterialButton
-                                android:id="@+id/btnEightKings"
+                                android:id="@+id/btnPlus"
                                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="8 Errege"
-                                android:textAllCaps="false"
-                                android:textSize="16sp"
-                                android:textColor="@color/black"
-                                app:backgroundTint="@color/toggle_bg_selector"
-                                app:cornerRadius="18dp"
-                                app:strokeColor="@color/black"
-                                app:strokeWidth="1dp" />
-
-                        </com.google.android.material.button.MaterialButtonToggleGroup>
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginBottom="20dp"
-                            android:background="#D2B48C" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Apostua ezarri"
-                            android:textColor="@color/white"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="Kantitatea aukeratu"
-                            android:textColor="#8B6F47"
-                            android:textSize="14sp" />
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:gravity="center_horizontal"
-                            android:layout_height="wrap_content">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:layout_width="200sp"
-                            android:inputType="number"
-                            android:textAlignment="center"
-                            android:layout_height="wrap_content"/>
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                android:text="+"
+                                android:textSize="26sp"
+                                android:textColor="#FFFFFF"
+                                app:cornerRadius="16dp"
+                                app:strokeWidth="0dp"
+                                app:backgroundTint="#8D6E63"/>
                         </LinearLayout>
-
-
-
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnPlay"
-                    style="@style/Widget.MaterialComponents.Button"
                     android:layout_width="match_parent"
-                    android:layout_height="64dp"
-                    android:layout_marginTop="8dp"
-                    android:text="Jokatu"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white"
-                    android:textSize="20sp"
+                    android:layout_height="75dp"
+                    android:text="JOKATU"
+                    android:textSize="22sp"
                     android:textStyle="bold"
-                    app:backgroundTint="#FFBFA06A"
-                    app:cornerRadius="28dp"
-                    app:elevation="8dp"
+                    android:letterSpacing="0.15"
+                    app:cornerRadius="20dp"
+                    app:backgroundTint="#3E2723"
+                    android:textColor="#E6D5B8"
                     app:icon="@android:drawable/ic_media_play"
-                    app:iconGravity="start"
-                    app:iconPadding="12dp"
-                    app:iconTint="#5B3A1C"
-                    app:rippleColor="#FFFFFF"
-                    app:strokeColor="#D2B48C"
-                    app:strokeWidth="3dp" />
+                    app:iconTint="#E6D5B8"
+                    app:iconSize="28dp"
+                    app:iconGravity="textStart"
+                    app:elevation="12dp"/>
 
             </LinearLayout>
         </ScrollView>
-
     </RelativeLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
