@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="12dp"
+    app:cardCornerRadius="28dp"
+    app:cardElevation="16dp"
+    app:strokeWidth="2dp"
+    app:strokeColor="#6200EE"
+    android:backgroundTint="#121212"> <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="20dp"
+    android:gravity="center_vertical"
+    android:background="@drawable/bg_invite_gradient_vibrant"> <com.google.android.material.imageview.ShapeableImageView
+    android:id="@+id/ivSenderAvatar"
+    android:layout_width="64dp"
+    android:layout_height="64dp"
+    android:src="@drawable/ic_avatar3"
+    android:padding="3dp"
+    app:strokeColor="#03DAC5"
+    app:strokeWidth="3dp"
+    app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.SmallComponent" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_marginStart="16dp">
+
+        <TextView
+            android:id="@+id/tvSenderName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="User"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:shadowColor="#40000000"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:shadowRadius="4"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="¡Jokatzera gonbidatu dizu!"
+            android:textColor="#E0E0E0"
+            android:textStyle="bold"
+            android:textSize="11sp"
+            android:letterSpacing="0.1"/>
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/btnDeclineInvite"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@android:color/transparent"
+        android:src="@android:drawable/ic_menu_close_clear_cancel"
+        android:layout_marginEnd="12dp"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnAccept"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:fabSize="mini"
+        android:src="@drawable/check"
+        app:tint="#FFFFFF"
+        app:backgroundTint="#00C853"
+        app:elevation="4dp"/>
+
+</LinearLayout>
+</com.google.android.material.card.MaterialCardView>

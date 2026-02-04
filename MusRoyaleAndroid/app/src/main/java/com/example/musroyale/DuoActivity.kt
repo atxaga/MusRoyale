@@ -24,6 +24,7 @@ class DuoActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDuosBinding
     private val db = FirebaseFirestore.getInstance()
+    private lateinit var currentUser: String
     private val realtimeDb = FirebaseDatabase.getInstance("https://musroyale-488aa-default-rtdb.europe-west1.firebasedatabase.app/")
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,6 +32,9 @@ class DuoActivity : AppCompatActivity() {
         enableEdgeToEdge()
         binding = ActivityDuosBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        var prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        currentUser = prefs.getString("userRegistrado", null) ?: ""
 
         // Lógica de los botones de apuesta (±5)
         setupApuestaButtons()
@@ -49,6 +53,7 @@ class DuoActivity : AppCompatActivity() {
             Toast.makeText(this, "Partida hasten: $apuesta fitxa", Toast.LENGTH_SHORT).show()
             // Aquí iría la lógica para crear la partida en Firebase
         }
+        decidirRolYEscuchar()
     }
 
     private fun setupApuestaButtons() {
@@ -118,6 +123,144 @@ class DuoActivity : AppCompatActivity() {
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
     }
+    private var esemisor = false
+    private var esreceptor = false
+    private var idPartidaActiva: String? = null
+
+    private fun decidirRolYEscuchar() {
+        val currentUserId = getSharedPreferences("UserPrefs", MODE_PRIVATE).getString("userRegistrado", null) ?: return
+
+        // Escuchamos TODA la colección buscando partidas donde participemos y no hayan empezado
+        db.collection("PartidaDuo")
+            .whereIn("idreceptor", listOf(currentUserId)) // Buscamos si somos receptores
+            .addSnapshotListener { snapshots, e ->
+                if (e != null) return@addSnapshotListener
+
+                // 1. Lógica para determinar si somos RECEPTORES
+                val partidaReceptor = snapshots?.documents?.find {
+                    it.getString("idreceptor") == currentUserId && it.getBoolean("jokatu") == false
+                }
+
+                if (partidaReceptor != null) {
+                    esreceptor = true
+                    esemisor = false
+                    idPartidaActiva = partidaReceptor.id
+                    escucharComoReceptor(idPartidaActiva!!)
+                    return@addSnapshotListener // Salimos para no ejecutar la lógica de emisor
+                }
+
+                // 2. Si no somos receptores, buscamos si somos EMISORES
+                db.collection("PartidaDuo")
+                    .whereEqualTo("idemisor", currentUserId)
+                    .whereEqualTo("jokatu", false)
+                    .addSnapshotListener { emisorSnaps, _ ->
+                        val partidaEmisor = emisorSnaps?.documents?.firstOrNull()
+
+                        if (partidaEmisor != null) {
+                            esemisor = true
+                            esreceptor = false
+                            idPartidaActiva = partidaEmisor.id
+                            escucharComoEmisor(idPartidaActiva!!)
+                        } else {
+                            // CASO NUEVO: No hay nada en la DB, somos emisor libre
+                            setupVistasNuevoEmisor()
+                        }
+                    }
+            }
+    }
+
+    private fun escucharComoReceptor(idPartida: String) {
+        db.collection("PartidaDuo").document(idPartida)
+            .addSnapshotListener { doc, e ->
+                if (e != null || doc == null || !doc.exists()) return@addSnapshotListener
+
+                // El receptor siempre tiene el Play oculto
+                binding.btnPlay.visibility = View.GONE
+                binding.btnInviteFriend.visibility = View.GONE
+                binding.layoutGuestProfile.visibility = View.VISIBLE
+
+                val onartua = doc.getBoolean("onartua") ?: false
+                val jokatu = doc.getBoolean("jokatu") ?: false
+
+                if (onartua) {
+                    // Buscamos nombre del emisor (puedes guardarlo en el doc al crear para ahorrar esta consulta)
+                    val emisorId = doc.getString("idemisor") ?: ""
+                    db.collection("Users").document(emisorId).get().addOnSuccessListener { u ->
+                        binding.tvGuestName.text = u.getString("username") ?: "Laguna"
+                        // Aquí cargarías el avatar con getResIdFromName
+                    }
+
+                    // Si el emisor pulsa JOKATU, el receptor salta
+                    if (jokatu) {
+                        val codigoExistente = doc.getString("kodea") ?: ""
+                        irAPartida(idPartida, codigoExistente)
+                    }
+                } else {
+                    binding.tvGuestName.text = "Zure lagunaren zain..."
+                }
+            }
+    }
+
+    private fun escucharComoEmisor(idPartida: String) {
+        db.collection("PartidaDuo").document(idPartida)
+            .addSnapshotListener { doc, e ->
+                if (e != null || doc == null || !doc.exists()) return@addSnapshotListener
+
+                val onartua = doc.getBoolean("onartua") ?: false
+
+                if (onartua) {
+                    // El amigo ha aceptado la invitación
+                    binding.btnInviteFriend.visibility = View.GONE
+                    binding.layoutGuestProfile.visibility = View.VISIBLE
+
+                    val idReceptor = doc.getString("idreceptor") ?: ""
+                    db.collection("Users").document(idReceptor).get().addOnSuccessListener { u ->
+                        binding.tvGuestName.text = u.getString("username") ?: "Laguna"
+                    }
+
+                    // Habilitamos el botón JOKATU
+                    binding.btnPlay.visibility = View.VISIBLE
+                    binding.btnPlay.isEnabled = true
+                    binding.btnPlay.alpha = 1.0f
+                    binding.btnPlay.setOnClickListener {
+                        val codigoEnDB = doc.getString("kodea") ?: ""
+                        doc.reference.update("jokatu", true)
+                            .addOnSuccessListener {
+                                irAPartida(idPartida)
+                            }
+                    }
+                } else {
+                    // Esperando a que el receptor acepte el diálogo en su MainActivity
+                    binding.btnInviteFriend.visibility = View.GONE // Ya invitamos, ocultamos el botón
+                    binding.layoutGuestProfile.visibility = View.VISIBLE
+                    binding.tvGuestName.text = "Gonbidapena bidalita..."
+                    binding.btnPlay.isEnabled = false
+                    binding.btnPlay.alpha = 0.5f
+                }
+            }
+    }
+
+    private fun irAPartida(idPartida: String) {
+        var codigo = "ID_ESKATU"
+        val intent = Intent(this, PartidaActivity::class.java).apply {
+            putExtra("idPartida", idPartida)
+            putExtra("EXTRA_CODE", codigo)
+            putExtra("EXTRA_PARAM", "UNIRSE_PRIVADA")
+        }
+        db.collection("PartidaDuo").document(idPartida).delete()
+        startActivity(intent)
+        finish()
+    }
+
+    private fun setupVistasNuevoEmisor() {
+        esemisor = true
+        esreceptor = false
+        binding.btnInviteFriend.visibility = View.VISIBLE
+        binding.layoutGuestProfile.visibility = View.GONE
+        binding.btnPlay.visibility = View.VISIBLE
+        binding.btnPlay.isEnabled = false
+        binding.btnPlay.alpha = 0.5f
+    }
 
     // Adaptador Interno para el diálogo de invitación
     inner class InviteAdapter(
@@ -165,7 +308,23 @@ class DuoActivity : AppCompatActivity() {
                     override fun onCancelled(error: com.google.firebase.database.DatabaseError) {}
                 })
 
-            holder.btn.setOnClickListener { onInvite(userId) }
+            holder.btn.setOnClickListener {invitarAmigo(userId)  }
+        }
+        fun invitarAmigo(userid: String) {
+                db.collection("PartidaDuo").document()
+                    .set(
+                        mapOf(
+                            "idemisor" to currentUser,
+                            "idreceptor" to userid,
+                            "onartua" to false,
+                            "jokatu" to false,
+                        )
+                    ).addOnSuccessListener {
+                        Toast.makeText(this@DuoActivity, "Gonbidapena bidali da!", Toast.LENGTH_SHORT).show()
+                        onInvite(userid)
+                    }
+
+
         }
 
         override fun getItemCount() = friends.size

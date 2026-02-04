@@ -64,6 +64,7 @@ class MainActivity : AppCompatActivity() {
         cargarDatosUser()
         configurarSistemaPresencia(currentUserId.toString())
         iniciarObservadorAmigos()
+        escucharInvitaciones()
     }
     private fun iniciarObservadorAmigos() {
         val uid = currentUserId ?: return
@@ -277,6 +278,112 @@ class MainActivity : AppCompatActivity() {
             .replace(R.id.mainContainer, fragment) // <--- ESTE ID DEBE SER IGUAL AL DEL XML
             .setTransition(androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_FADE)
             .commit()
+    }
+    private fun escucharInvitaciones() {
+        val uid = currentUserId ?: return
+
+        FirebaseFirestore.getInstance().collection("PartidaDuo")
+            .whereEqualTo("idreceptor", uid)
+            .whereEqualTo("onartua", false) // Filtro basado en tu tabla
+            .addSnapshotListener { snapshots, e ->
+                if (e != null) return@addSnapshotListener
+
+                // Si hay documentos, significa que hay invitaciones pendientes
+                snapshots?.documentChanges?.forEach { dc ->
+                    if (dc.type == com.google.firebase.firestore.DocumentChange.Type.ADDED) {
+                        val doc = dc.document
+                        val idPartida = doc.id
+                        val emisorId = doc.getString("idemisor") ?: ""
+
+                        if (emisorId.isNotEmpty()) {
+                            mostrarDialogoInvitacion(emisorId, idPartida)
+                        }
+                    }
+                }
+            }
+    }
+    private fun mostrarDialogoInvitacion(emisorid: String, idPartida: String) {
+        val db = FirebaseFirestore.getInstance()
+
+        db.collection("Users").document(emisorid).get().addOnSuccessListener { documentSnapshot ->
+            if (documentSnapshot != null && documentSnapshot.exists()) {
+
+                val dialogView = layoutInflater.inflate(R.layout.dialog_invitacion, null)
+
+                // Usamos el estilo predeterminado de Diálogo pero sin título
+                val dialog = android.app.Dialog(this)
+                dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE)
+                dialog.setContentView(dialogView)
+
+                // Configurar vistas (Avatar y Nombre)
+                val tvSendNombre = dialogView.findViewById<TextView>(R.id.tvSenderName)
+                val tvSendAvatar = dialogView.findViewById<ImageView>(R.id.ivSenderAvatar)
+                tvSendNombre.text = documentSnapshot.getString("username") ?: "Lagun bat"
+                val avatarName = documentSnapshot.getString("avatarActual") ?: "avadef"
+                tvSendAvatar.setImageResource(getResIdFromName(this, avatarName))
+
+                // --- CONFIGURACIÓN CRÍTICA DEL WINDOW ---
+                dialog.window?.apply {
+                    // 1. IMPORTANTE: El ancho debe ser Match Parent
+                    setLayout(
+                        android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                        android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+                    )
+
+                    // 2. Transparencia y posición
+                    setBackgroundDrawable(android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT))
+                    setGravity(android.view.Gravity.TOP)
+
+                    // 3. Flags para que no bloquee y se vea arriba
+                    clearFlags(android.view.WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+
+                    val params = attributes
+                    params.y = 100 // Ajusta este valor si queda muy arriba (debajo de la cámara)
+                    attributes = params
+                }
+
+                // Lógica de botones
+                // Dentro de mostrarDialogoInvitacion, en la lógica del botón aceptar:
+                dialogView.findViewById<View>(R.id.btnAccept).setOnClickListener {
+                    val codigoRandom = (1000..9999).random().toString()
+
+                    // 1. Preparamos los datos para actualizar la partida
+                    val actualizaciones = mapOf(
+                        "onartua" to true,
+                        "jokalariak" to listOf(emisorid, currentUserId),
+                        "kodea" to codigoRandom
+                    )
+
+                    // 2. Actualizamos Firebase
+                    db.collection("PartidaDuo").document(idPartida)
+                        .update(actualizaciones)
+                        .addOnSuccessListener {
+                            // 3. Cerramos el diálogo
+                            dialog.dismiss()
+
+                            // 4. NAVEGACIÓN: Vamos a DuoActivity pasando el ID de la partida
+                            val intent = Intent(this, DuoActivity::class.java).apply {
+                                putExtra("idPartida", idPartida)
+                                // Opcional: puedes pasar también si es receptor o emisor si lo necesitas
+                                putExtra("esReceptor", true)
+                            }
+                            startActivity(intent)
+
+                            Toast.makeText(this, "Partidara sartzen...", Toast.LENGTH_SHORT).show()
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(this, "Errorea onartzerakoan", Toast.LENGTH_SHORT).show()
+                        }
+                }
+
+                dialogView.findViewById<View>(R.id.btnDeclineInvite).setOnClickListener {
+                    db.collection("PartidaDuo").document(idPartida).delete()
+                    dialog.dismiss()
+                }
+
+                dialog.show()
+            }
+        }
     }
 
     private fun cargarDatosUser() {

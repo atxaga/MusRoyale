@@ -103,22 +103,79 @@
                             android:textSize="12sp"
                             android:textStyle="bold" />
 
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnInviteFriend"
-                            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                        <FrameLayout
                             android:layout_width="match_parent"
-                            android:layout_height="60dp"
-                            android:layout_marginTop="12dp"
-                            android:text="Laguna Gonbidatu"
-                            android:textAllCaps="false"
-                            android:textColor="#FFFFFF"
-                            android:textSize="16sp"
-                            app:backgroundTint="#8D6E63"
-                            app:cornerRadius="16dp"
-                            app:icon="@android:drawable/ic_input_add"
-                            app:iconTint="#FFFFFF"
-                            app:strokeColor="#5D4037"
-                            app:strokeWidth="1dp" />
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp">
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnInviteFriend"
+                                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                                android:layout_width="match_parent"
+                                android:layout_height="65dp"
+                                android:text="Laguna Gonbidatu"
+                                android:textAllCaps="false"
+                                android:textColor="#FFFFFF"
+                                android:textSize="16sp"
+                                app:backgroundTint="#8D6E63"
+                                app:cornerRadius="16dp"
+                                app:icon="@android:drawable/ic_input_add"
+                                app:iconTint="#FFFFFF"
+                                android:visibility="visible" />
+
+                            <LinearLayout
+                                android:id="@+id/layoutGuestProfile"
+                                android:layout_width="match_parent"
+                                android:layout_height="65dp"
+                                android:backgroundTint="#F5F5DC"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal"
+                                android:padding="8dp"
+                                android:visibility="gone">
+
+                                <com.google.android.material.imageview.ShapeableImageView
+                                    android:id="@+id/ivGuestAvatar"
+                                    android:layout_width="45dp"
+                                    android:layout_height="45dp"
+                                    android:src="@drawable/ic_avatar3"
+                                    app:shapeAppearanceOverlay="@style/ShapeAppearance.MaterialComponents.SmallComponent"
+                                    app:strokeColor="#C5A059"
+                                    app:strokeWidth="2dp" />
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:layout_marginStart="12dp"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:id="@+id/tvGuestName"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Jokalaria..."
+                                        android:textColor="#3E2723"
+                                        android:textSize="16sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Prest jokatzeko"
+                                        android:textColor="#2ECC71"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+                                </LinearLayout>
+
+                                <ImageView
+                                    android:id="@+id/btnRemoveGuest"
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:src="@android:drawable/ic_delete"
+                                    app:tint="#D32F2F" />
+                            </LinearLayout>
+                        </FrameLayout>
 
                         <View
                             android:layout_width="match_parent"
