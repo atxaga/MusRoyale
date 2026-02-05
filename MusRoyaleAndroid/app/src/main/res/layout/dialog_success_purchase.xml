@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="280dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    app:cardBackgroundColor="@android:color/transparent"
+    app:cardCornerRadius="24dp"
+    app:cardElevation="15dp"
+    app:strokeColor="#475569"
+    app:strokeWidth="1.2dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_dialog_blue_gradient"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="28dp">
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp">
+
+            <View
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_free_gold_gradient"
+                android:alpha="0.25"/>
+
+            <ImageView
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:layout_gravity="center"
+                android:src="@drawable/addreward" />
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-black"
+            android:text="ZORIONAK!"
+            android:textColor="#FFD700"
+            android:textSize="22sp"
+            android:letterSpacing="0.08" />
+
+        <TextView
+            android:id="@+id/txtMensajeExito"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:textAlignment="center"
+            android:text="1.000 urre gehitu dira\nzure kontura."
+            android:textColor="#F1F5F9"
+            android:lineSpacingExtra="3dp"
+            android:textSize="15sp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAceptarExito"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="26dp"
+            android:fontFamily="sans-serif-black"
+            android:text="ONDO!"
+            android:textColor="#0F172A"
+            android:textSize="15sp"
+            app:backgroundTint="#FFD700"
+            app:cornerRadius="14dp"
+            app:rippleColor="#60FFFFFF" />
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

@@ -20,12 +20,12 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.database.FirebaseDatabase
 
-class DuoActivity : AppCompatActivity() {
+class DuoActivity : BaseActivity() {
 
     private lateinit var binding: ActivityDuosBinding
-    private val db = FirebaseFirestore.getInstance()
     private lateinit var currentUser: String
-    private val realtimeDb = FirebaseDatabase.getInstance("https://musroyale-488aa-default-rtdb.europe-west1.firebasedatabase.app/")
+    private val realtimeDb =
+        FirebaseDatabase.getInstance("https://musroyale-488aa-default-rtdb.europe-west1.firebasedatabase.app/")
     private var idPartidaRecibida: String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,29 +83,69 @@ class DuoActivity : AppCompatActivity() {
     }
 
     private fun showInviteDialog() {
-        val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
-        val myEmail = prefs.getString("userRegistrado", null) ?: return
+        val uid = currentUser.ifEmpty {
+            getSharedPreferences(
+                "UserPrefs",
+                MODE_PRIVATE
+            ).getString("userRegistrado", "") ?: ""
+        }
+        if (uid.isEmpty()) return
 
-        // 1. Obtener mi lista de IDs de amigos
-        db.collection("Users").document(myEmail).get().addOnSuccessListener { doc ->
-            val amigosIds = doc.get("amigos") as? List<String> ?: listOf()
-
-            if (amigosIds.isEmpty()) {
+        // 1. Obtener lista de IDs de amigos
+        db.collection("Users").document(uid).get().addOnSuccessListener { snapshot ->
+            val idsAmigos = snapshot.get("amigos") as? List<String> ?: emptyList()
+            if (idsAmigos.isEmpty()) {
                 Toast.makeText(this, "Ez duzu lagunik oraindik", Toast.LENGTH_SHORT).show()
                 return@addOnSuccessListener
             }
 
-            // 2. Obtener los datos (username, avatar) de esos amigos
-            db.collection("Users").whereIn(com.google.firebase.firestore.FieldPath.documentId(), amigosIds)
-                .get().addOnSuccessListener { query ->
-                    val listaAmigos = query.documents.map { d ->
-                        mutableMapOf(
+            // 2. Obtener datos de esos amigos de Firestore
+            db.collection("Users")
+                .whereIn(com.google.firebase.firestore.FieldPath.documentId(), idsAmigos).get()
+                .addOnSuccessListener { query ->
+                    val listaTemp = query.documents.map { d ->
+                        mapOf(
                             "id" to d.id,
                             "username" to (d.getString("username") ?: "Sin nombre"),
-                            "avatarActual" to (d.getString("avatarActual") ?: "avadef.png")
+                            "avatarActual" to (d.getString("avatarActual") ?: "avadef")
                         )
                     }
-                    mostrarDialogoCustom(listaAmigos)
+
+                    // 3. Consultar Realtime DB para ordenar por Online/Offline
+                    realtimeDb.getReference("estado_usuarios").get()
+                        .addOnSuccessListener { stateSnapshot ->
+                            val online = mutableListOf<Map<String, String>>()
+                            val offline = mutableListOf<Map<String, String>>()
+
+                            for (amigo in listaTemp) {
+                                val status =
+                                    stateSnapshot.child(amigo["id"]!!).getValue(String::class.java)
+                                        ?: "offline"
+                                if (status == "online") online.add(amigo) else offline.add(amigo)
+                            }
+
+                            val listaOrdenada = online + offline
+
+                            // 4. Mostrar el diálogo con la lista ya ordenada
+                            val dialogView =
+                                layoutInflater.inflate(R.layout.dialog_friends_list, null)
+                            val rv = dialogView.findViewById<RecyclerView>(R.id.rvInviteFriends)
+                            val btnCancel = dialogView.findViewById<Button>(R.id.btnCancelDialog)
+                            rv.layoutManager = LinearLayoutManager(this)
+
+                            val dialog = MaterialAlertDialogBuilder(this)
+                                .setView(dialogView)
+                                .setBackground(android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT))
+                                .create()
+
+                            // Pasamos el diálogo al adapter para que pueda cerrarlo al invitar
+                            rv.adapter = InviteAdapter(listaOrdenada) {
+                                dialog.dismiss()
+                            }
+
+                            btnCancel.setOnClickListener { dialog.dismiss() }
+                            dialog.show()
+                        }
                 }
         }
     }
@@ -137,12 +177,15 @@ class DuoActivity : AppCompatActivity() {
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
     }
+
     private var esemisor = false
     private var esreceptor = false
     private var idPartidaActiva: String? = null
 
     private fun decidirRolYEscuchar() {
-        val currentUserId = getSharedPreferences("UserPrefs", MODE_PRIVATE).getString("userRegistrado", null) ?: return
+        val currentUserId =
+            getSharedPreferences("UserPrefs", MODE_PRIVATE).getString("userRegistrado", null)
+                ?: return
 
         // Escuchamos TODA la colección buscando partidas donde participemos y no hayan empezado
         db.collection("PartidaDuo")
@@ -237,12 +280,22 @@ class DuoActivity : AppCompatActivity() {
     private fun escucharComoEmisor(idPartida: String) {
         db.collection("PartidaDuo").document(idPartida)
             .addSnapshotListener { doc, e ->
-                if (e != null || doc == null || !doc.exists()) return@addSnapshotListener
+                // --- DETECTAR RECHAZO O BORRADO ---
+                if (e != null) return@addSnapshotListener
+
+                if (doc == null || !doc.exists()) {
+                    // Si el documento ya no existe, es que el receptor ha rechazado (btnDeclineInvite)
+                    // o el tiempo de 10s se ha agotado.
+                    Toast.makeText(this, "Gonbidapena ukatu da edo iraungi da", Toast.LENGTH_SHORT)
+                        .show()
+                    setupVistasNuevoEmisor() // Volvemos al estado inicial (botón de invitar visible)
+                    return@addSnapshotListener
+                }
 
                 val onartua = doc.getBoolean("onartua") ?: false
 
                 if (onartua) {
-                    // El amigo ha aceptado la invitación
+                    // ... (El código de cuando acepta se queda igual)
                     binding.btnInviteFriend.visibility = View.GONE
                     binding.layoutGuestProfile.visibility = View.VISIBLE
 
@@ -250,31 +303,37 @@ class DuoActivity : AppCompatActivity() {
                     db.collection("Users").document(idReceptor).get().addOnSuccessListener { u ->
                         binding.tvGuestName.text = u.getString("username") ?: "Laguna"
                         binding.itxaroten.text = "Laguna prest dago jolasteko!"
-                    }
-                    binding.btnRemoveGuest.setOnClickListener {
-                        // Eliminar la partida y resetear la UI
-                        startActivity(Intent(this, MainActivity::class.java))
-                        db.collection("PartidaDuo").document(idPartida).delete()
+
+                        // IMPORTANTE: Cargar también el avatar del receptor aquí
+                        val avatar = u.getString("avatarActual") ?: "avadef"
+                        binding.ivGuestAvatar.setImageResource(getResIdFromName(this, avatar))
                     }
 
-                    // Habilitamos el botón JOKATU
+                    binding.btnRemoveGuest.setOnClickListener {
+                        db.collection("PartidaDuo").document(idPartida).delete()
+                        // El propio listener detectará el borrado arriba y llamará a setupVistasNuevoEmisor()
+                    }
+
                     binding.btnPlay.visibility = View.VISIBLE
                     binding.btnPlay.isEnabled = true
                     binding.btnPlay.alpha = 1.0f
                     binding.btnPlay.setOnClickListener {
-                        val codigoEnDB = doc.getString("kodea") ?: ""
                         doc.reference.update("jokatu", true)
-                            .addOnSuccessListener {
-                                irAPartida(idPartida)
-                            }
+                            .addOnSuccessListener { irAPartida(idPartida) }
                     }
                 } else {
-                    // Esperando a que el receptor acepte el diálogo en su MainActivity
-                    binding.btnInviteFriend.visibility = View.GONE // Ya invitamos, ocultamos el botón
+                    // Esperando aceptación
+                    binding.btnInviteFriend.visibility = View.GONE
                     binding.layoutGuestProfile.visibility = View.VISIBLE
-                    binding.tvGuestName.text = "Gonbidapena bidalita..."
+                    binding.tvGuestName.text = "Itxaroten..."
+                    binding.itxaroten.text = "Gonbidapena bidalita..."
                     binding.btnPlay.isEnabled = false
                     binding.btnPlay.alpha = 0.5f
+
+                    // Botón para que el EMISOR cancele la invitación si se arrepiente
+                    binding.btnRemoveGuest.setOnClickListener {
+                        db.collection("PartidaDuo").document(idPartida).delete()
+                    }
                 }
             }
     }
@@ -315,8 +374,8 @@ class DuoActivity : AppCompatActivity() {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InviteVH {
-            // USAMOS EL NUEVO LAYOUT
-            val v = LayoutInflater.from(parent.context).inflate(R.layout.item_friend_invite, parent, false)
+            val v = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_friend_invite, parent, false)
             return InviteVH(v)
         }
 
@@ -325,13 +384,10 @@ class DuoActivity : AppCompatActivity() {
             val userId = user["id"] ?: ""
             holder.name.text = user["username"]
 
-            // Manejo de Avatar
             val avatarNombre = user["avatarActual"] ?: "avadef"
-            val cleanName = avatarNombre.replace(".png", "")
-            val resId = resources.getIdentifier(cleanName, "drawable", packageName)
-            holder.avatar.setImageResource(if (resId != 0) resId else R.drawable.ic_avatar3)
+            holder.avatar.setImageResource(getResIdFromName(this@DuoActivity, avatarNombre))
 
-            // Estado en tiempo real
+            // Escucha en tiempo real solo para el indicador visual
             realtimeDb.getReference("estado_usuarios").child(userId)
                 .addValueEventListener(object : com.google.firebase.database.ValueEventListener {
                     override fun onDataChange(snapshot: com.google.firebase.database.DataSnapshot) {
@@ -339,18 +395,26 @@ class DuoActivity : AppCompatActivity() {
                         if (estado == "online") {
                             holder.status.text = "● Online"
                             holder.status.setTextColor(Color.parseColor("#2ECC71"))
+                            holder.btn.isEnabled = true
+                            holder.btn.alpha = 1.0f
                         } else {
                             holder.status.text = "○ Offline"
                             holder.status.setTextColor(Color.GRAY)
+                            holder.btn.isEnabled = false
+                            holder.btn.alpha = 0.5f
                         }
                     }
+
                     override fun onCancelled(error: com.google.firebase.database.DatabaseError) {}
                 })
 
-            holder.btn.setOnClickListener {invitarAmigo(userId)  }
+            // AQUÍ ESTABA EL ERROR: Ahora llama a invitarAmigo
+            holder.btn.setOnClickListener {
+                invitarAmigo(userId)
+            }
         }
-        fun invitarAmigo(userid: String) {
-            // 1. Creamos una referencia nueva para obtener el ID generado automáticamente
+
+        private fun invitarAmigo(userid: String) {
             val nuevaPartidaRef = db.collection("PartidaDuo").document()
             val idPartidaGenerada = nuevaPartidaRef.id
 
@@ -362,16 +426,12 @@ class DuoActivity : AppCompatActivity() {
             )
 
             nuevaPartidaRef.set(datosPartida).addOnSuccessListener {
-                Toast.makeText(this@DuoActivity, "Gonbidapena bidali da!", Toast.LENGTH_SHORT).show()
-
-                // 2. ¡CRÍTICO!: Guardamos el ID y empezamos a escuchar como emisor
+                Toast.makeText(this@DuoActivity, "Gonbidapena bidali da!", Toast.LENGTH_SHORT)
+                    .show()
                 idPartidaActiva = idPartidaGenerada
                 esemisor = true
                 escucharComoEmisor(idPartidaGenerada)
-
-                onInvite(userid) // Esto cierra el diálogo
-            }.addOnFailureListener {
-                Toast.makeText(this@DuoActivity, "Errorea bidaltzerakoan", Toast.LENGTH_SHORT).show()
+                onInvite(userid) // Cierra el diálogo
             }
         }
 

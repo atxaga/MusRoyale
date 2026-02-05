@@ -25,11 +25,10 @@ class ChatSplitActivity : AppCompatActivity() {
     private lateinit var binding: ActivityChatSplitBinding
     private lateinit var chatAdapter: ChatAdapter
     private lateinit var friendsAdapter: FriendsChatAdapter
+    private val db = com.google.firebase.firestore.FirebaseFirestore.getInstance()
+    private var currentUserId: String? = null
 
     private val messagesList = mutableListOf<ChatMessage>()
-    private val db = com.google.firebase.firestore.FirebaseFirestore.getInstance()
-
-    private var currentUserId: String? = null
     private var selectedFriendId: String? = null // El ID del amigo con el que hablas
     private var chatListener: com.google.firebase.firestore.ListenerRegistration? = null
 

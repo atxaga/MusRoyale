@@ -316,6 +316,21 @@
 
             <FrameLayout android:id="@+id/tabFriends" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1">
                 <ImageView android:id="@+id/imgFriends" android:layout_width="26dp" android:layout_height="26dp" android:layout_gravity="center" android:src="@drawable/ic_friends3" app:tint="#FFFFFF" />
+                <TextView
+                    android:id="@+id/notiLaguna"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/bg_circle_red"
+                    android:gravity="center"
+                    android:text="1"
+                    android:textColor="@android:color/white"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
             </FrameLayout>
 
             <FrameLayout android:id="@+id/tabStore" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1">

@@ -22,15 +22,13 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.google.firebase.database.FirebaseDatabase
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
     private lateinit var binding: ActivityMainBinding
-    private var currentUserId: String? = null
     private val AD_UNIT_ID = "ca-app-pub-3940256099942544/5224354917"
     private var rewardedAd: RewardedAd? = null
     private var userListener: com.google.firebase.firestore.ListenerRegistration? = null
     private var chatNotificationsListener: com.google.firebase.firestore.ListenerRegistration? = null
     private val amigosListeners = mutableMapOf<String, com.google.firebase.database.ValueEventListener>()
-    private val databaseRT = FirebaseDatabase.getInstance("https://musroyale-488aa-default-rtdb.europe-west1.firebasedatabase.app/")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,87 +61,10 @@ class MainActivity : AppCompatActivity() {
         if (currentUserId != null) escucharNotificacionesChat()
         cargarDatosUser()
         configurarSistemaPresencia(currentUserId.toString())
-        iniciarObservadorAmigos()
-        escucharInvitaciones()
-    }
-    private fun iniciarObservadorAmigos() {
-        val uid = currentUserId ?: return
-
-        // 1. Obtenemos la lista de amigos de Firestore
-        FirebaseFirestore.getInstance().collection("Users").document(uid).get()
-            .addOnSuccessListener { snapshot ->
-                val listaAmigos = snapshot.get("amigos") as? List<String> ?: emptyList()
-
-                for (amigoId in listaAmigos) {
-                    escucharEstadoAmigo(amigoId)
-                }
-            }
+        escucharSolicitudes()
     }
 
-    private fun escucharEstadoAmigo(amigoId: String) {
-        val ref = databaseRT.getReference("estado_usuarios/$amigoId")
 
-        val listener = object : com.google.firebase.database.ValueEventListener {
-            private var primeraVez = true // Para evitar que salte al abrir la app
-
-            override fun onDataChange(snapshot: com.google.firebase.database.DataSnapshot) {
-                val estado = snapshot.getValue(String::class.java) ?: "offline"
-
-                if (!primeraVez && estado == "online") {
-                    // El amigo se acaba de conectar, buscamos sus datos para el banner
-                    obtenerDatosYMostrarBanner(amigoId)
-                }
-                primeraVez = false
-            }
-            override fun onCancelled(error: com.google.firebase.database.DatabaseError) {}
-        }
-
-        ref.addValueEventListener(listener)
-        amigosListeners[amigoId] = listener
-    }
-
-    private fun obtenerDatosYMostrarBanner(amigoId: String) {
-        FirebaseFirestore.getInstance().collection("Users").document(amigoId).get()
-            .addOnSuccessListener { doc ->
-                val nombre = doc.getString("username") ?: "Lagun bat"
-                val avatar = doc.getString("avatarActual")
-                mostrarBannerTop(nombre, avatar)
-            }
-    }
-
-    private fun mostrarBannerTop(nombre: String, avatarStr: String?) {
-        val inflater = layoutInflater
-        // Usamos binding.root para asegurarnos de que se añade a la base de la actividad
-        val layout = inflater.inflate(R.layout.layout_notification_online, binding.root, false)
-
-        layout.findViewById<TextView>(R.id.txtNotifyMessage).text = "$nombre konektatua!"
-        val img = layout.findViewById<ImageView>(R.id.imgNotifyAvatar)
-        val resId = getResIdFromName(this, avatarStr)
-        img.setImageResource(if (resId != 0) resId else R.drawable.ic_avatar3)
-
-        // Añadimos la vista al root
-        binding.root.addView(layout)
-
-        // Alineamos el banner arriba (opcional si el XML ya lo hace)
-        layout.translationZ = 100f // Asegura que esté por encima de botones y tabs
-
-        layout.translationY = -300f
-        layout.animate()
-            .translationY(100f) // Baja hasta 100px desde el tope
-            .setDuration(600)
-            .setInterpolator(android.view.animation.OvershootInterpolator())
-            .withEndAction {
-                layout.postDelayed({
-                    layout.animate()
-                        .translationY(-400f)
-                        .alpha(0f)
-                        .setDuration(500)
-                        .withEndAction { binding.root.removeView(layout) }
-                        .start()
-                }, 3500)
-            }
-            .start()
-    }
     private fun cargarAnuncioRecompensa() {
         val adRequest = AdRequest.Builder().build()
         RewardedAd.load(this, AD_UNIT_ID, adRequest, object : RewardedAdLoadCallback() {
@@ -279,112 +200,7 @@ class MainActivity : AppCompatActivity() {
             .setTransition(androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_FADE)
             .commit()
     }
-    private fun escucharInvitaciones() {
-        val uid = currentUserId ?: return
 
-        FirebaseFirestore.getInstance().collection("PartidaDuo")
-            .whereEqualTo("idreceptor", uid)
-            .whereEqualTo("onartua", false) // Filtro basado en tu tabla
-            .addSnapshotListener { snapshots, e ->
-                if (e != null) return@addSnapshotListener
-
-                // Si hay documentos, significa que hay invitaciones pendientes
-                snapshots?.documentChanges?.forEach { dc ->
-                    if (dc.type == com.google.firebase.firestore.DocumentChange.Type.ADDED) {
-                        val doc = dc.document
-                        val idPartida = doc.id
-                        val emisorId = doc.getString("idemisor") ?: ""
-
-                        if (emisorId.isNotEmpty()) {
-                            mostrarDialogoInvitacion(emisorId, idPartida)
-                        }
-                    }
-                }
-            }
-    }
-    private fun mostrarDialogoInvitacion(emisorid: String, idPartida: String) {
-        val db = FirebaseFirestore.getInstance()
-
-        db.collection("Users").document(emisorid).get().addOnSuccessListener { documentSnapshot ->
-            if (documentSnapshot != null && documentSnapshot.exists()) {
-
-                val dialogView = layoutInflater.inflate(R.layout.dialog_invitacion, null)
-
-                // Usamos el estilo predeterminado de Diálogo pero sin título
-                val dialog = android.app.Dialog(this)
-                dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE)
-                dialog.setContentView(dialogView)
-
-                // Configurar vistas (Avatar y Nombre)
-                val tvSendNombre = dialogView.findViewById<TextView>(R.id.tvSenderName)
-                val tvSendAvatar = dialogView.findViewById<ImageView>(R.id.ivSenderAvatar)
-                tvSendNombre.text = documentSnapshot.getString("username") ?: "Lagun bat"
-                val avatarName = documentSnapshot.getString("avatarActual") ?: "avadef"
-                tvSendAvatar.setImageResource(getResIdFromName(this, avatarName))
-
-                // --- CONFIGURACIÓN CRÍTICA DEL WINDOW ---
-                dialog.window?.apply {
-                    // 1. IMPORTANTE: El ancho debe ser Match Parent
-                    setLayout(
-                        android.view.ViewGroup.LayoutParams.MATCH_PARENT,
-                        android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-                    )
-
-                    // 2. Transparencia y posición
-                    setBackgroundDrawable(android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT))
-                    setGravity(android.view.Gravity.TOP)
-
-                    // 3. Flags para que no bloquee y se vea arriba
-                    clearFlags(android.view.WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-
-                    val params = attributes
-                    params.y = 100 // Ajusta este valor si queda muy arriba (debajo de la cámara)
-                    attributes = params
-                }
-
-                // Lógica de botones
-                // Dentro de mostrarDialogoInvitacion, en la lógica del botón aceptar:
-                dialogView.findViewById<View>(R.id.btnAccept).setOnClickListener {
-                    val codigoRandom = (1000..9999).random().toString()
-
-                    // 1. Preparamos los datos para actualizar la partida
-                    val actualizaciones = mapOf(
-                        "onartua" to true,
-                        "jokalariak" to listOf(emisorid, currentUserId),
-                        "kodea" to codigoRandom
-                    )
-
-                    // 2. Actualizamos Firebase
-                    db.collection("PartidaDuo").document(idPartida)
-                        .update(actualizaciones)
-                        .addOnSuccessListener {
-                            // 3. Cerramos el diálogo
-                            dialog.dismiss()
-
-                            // 4. NAVEGACIÓN: Vamos a DuoActivity pasando el ID de la partida
-                            val intent = Intent(this, DuoActivity::class.java).apply {
-                                putExtra("idPartida", idPartida)
-                                // Opcional: puedes pasar también si es receptor o emisor si lo necesitas
-                                putExtra("esReceptor", true)
-                            }
-                            startActivity(intent)
-
-                            Toast.makeText(this, "Partidara sartzen...", Toast.LENGTH_SHORT).show()
-                        }
-                        .addOnFailureListener {
-                            Toast.makeText(this, "Errorea onartzerakoan", Toast.LENGTH_SHORT).show()
-                        }
-                }
-
-                dialogView.findViewById<View>(R.id.btnDeclineInvite).setOnClickListener {
-                    db.collection("PartidaDuo").document(idPartida).delete()
-                    dialog.dismiss()
-                }
-
-                dialog.show()
-            }
-        }
-    }
 
     private fun cargarDatosUser() {
         if (currentUserId == null) return
@@ -467,6 +283,8 @@ class MainActivity : AppCompatActivity() {
             itemView.setOnClickListener {
                 procesarCompra(pack.first, pack.second)
                 dialog.dismiss()
+                mostrarDialogoExitoOro(pack.first)
+
             }
             container.addView(itemView)
         }
@@ -486,7 +304,28 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this, "¡+250 Urre lortu duzu! 💰", Toast.LENGTH_LONG).show()
                     cargarAnuncioRecompensa() // Cargamos el siguiente para la próxima vez
                 }
+            mostrarDialogoExitoOro(cantidad)
         }
+    }
+    private fun mostrarDialogoExitoOro(cantidad: Int) {
+        val builder = android.app.AlertDialog.Builder(this)
+        val view = layoutInflater.inflate(R.layout.dialog_success_purchase, null)
+        builder.setView(view)
+
+        val dialog = builder.create()
+
+        // Esto quita el recuadro blanco de fondo que pone Android por defecto
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        // Formateamos el número para que sea "1.000" y no "1000"
+        val cantidadFormateada = String.format("%,d", cantidad).replace(",", ".")
+        view.findViewById<TextView>(R.id.txtMensajeExito).text = "$cantidadFormateada urre gehitu dira zure kontura."
+
+        view.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnAceptarExito).setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
     private fun procesarCompra(cantidadOro: Int, costoDinero: Double) {
         val uid = currentUserId ?: return
@@ -535,10 +374,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun getResIdFromName(context: Context, name: String?): Int {
-        if (name == null) return 0
-        return context.resources.getIdentifier(name.replace(".png", ""), "drawable", context.packageName)
-    }
 
     private fun escucharNotificacionesChat() {
         val uid = currentUserId ?: return
@@ -558,6 +393,30 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     // No hay mensajes nuevos
                     badgeChat.visibility = View.GONE
+                }
+            }
+    }
+    private fun escucharSolicitudes() {
+        val uid = currentUserId ?: return
+        val notilagunak = findViewById<TextView>(R.id.notiLaguna)
+
+        chatNotificationsListener = FirebaseFirestore.getInstance()
+            .collection("Users")
+            .document(uid)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) return@addSnapshotListener
+
+                if (snapshot != null && snapshot.exists()) {
+                    // Obtenemos el array como una lista
+                    val solicitudes = snapshot.get("solicitudRecivida") as? List<*>
+                    val numSolicitudes = solicitudes?.size ?: 0
+
+                    if (numSolicitudes > 0) {
+                        notilagunak.text = if (numSolicitudes > 9) "+9" else numSolicitudes.toString()
+                        notilagunak.visibility = View.VISIBLE
+                    } else {
+                        notilagunak.visibility = View.GONE
+                    }
                 }
             }
     }
@@ -583,6 +442,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun logout() {
+        val uid = currentUserId
+        if (uid != null) {
+            // Marcamos como offline manualmente en Realtime Database
+            val database = FirebaseDatabase.getInstance("https://musroyale-488aa-default-rtdb.europe-west1.firebasedatabase.app/")
+            database.getReference("estado_usuarios/$uid").setValue("offline")
+                .addOnCompleteListener {
+                    // Una vez actualizado el estado, procedemos con el logout
+                    limpiarSesion()
+                }
+        } else {
+            limpiarSesion()
+        }
+    }
+
+    private fun limpiarSesion() {
         getSharedPreferences("UserPrefs", MODE_PRIVATE).edit().remove("userRegistrado").apply()
         startActivity(Intent(this, LoginActivity::class.java))
         finish()

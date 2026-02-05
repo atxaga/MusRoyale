@@ -36,7 +36,7 @@ class FriendsFragment : Fragment() {
         val adapter = FriendsPagerAdapter(this)
         viewPager.adapter = adapter
 
-        val tabTitles = arrayOf("Amigos", "Enviadas", "Recibidas")
+        val tabTitles = arrayOf("Lagunak", "Bidaliak", "Jasoak")
         TabLayoutMediator(headerTabLayout, viewPager) { tab, position ->
             tab.text = tabTitles[position]
         }.attach()
