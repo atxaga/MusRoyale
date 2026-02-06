@@ -29,7 +29,7 @@ class ChatSplitActivity : AppCompatActivity() {
     private var currentUserId: String? = null
 
     private val messagesList = mutableListOf<ChatMessage>()
-    private var selectedFriendId: String? = null // El ID del amigo con el que hablas
+    private var selectedFriendId: String? = null
     private var chatListener: com.google.firebase.firestore.ListenerRegistration? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,10 +37,9 @@ class ChatSplitActivity : AppCompatActivity() {
         binding = ActivityChatSplitBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // 1. Obtener mi ID de usuario
         val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
         currentUserId = prefs.getString("userRegistrado", null)
-
+        binding.chatTitleName.text = "Mezuak kargatzen..."
         setupFriendsList()
         setupChatArea()
         cargarAmigosDelDrawer()
@@ -51,24 +50,21 @@ class ChatSplitActivity : AppCompatActivity() {
         binding.btnCamara.setOnClickListener {
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_GRANTED) {
-                abrirCamara() // Ya tenemos permiso
+                abrirCamara()
             } else {
                 requestCameraPermissionLauncher.launch(android.Manifest.permission.CAMERA) // Lo pedimos
             }
         }
 
-        // 2. Botón enviar ahora usa la base de datos real
         binding.btnSend.setOnClickListener { sendMessage() }
     }
     private lateinit var photoUri: Uri
 
-    // 1. Launcher para capturar la foto
     private val takePictureLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
         if (success) {
             subirImagenAFirebase(photoUri)
         }
     }
-    // 1. Launcher para pedir el permiso
     private val requestCameraPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
@@ -88,29 +84,24 @@ class ChatSplitActivity : AppCompatActivity() {
         takePictureLauncher.launch(photoUri)
     }
 
-    // 3. Subida a Firebase Storage
     private fun subirImagenAFirebase(uri: Uri) {
         try {
             val inputStream = contentResolver.openInputStream(uri)
             val originalBitmap = android.graphics.BitmapFactory.decodeStream(inputStream)
             inputStream?.close()
 
-            // 1. RESOLUCIÓN ALTA: 800px es ideal para chats
             val ratio = originalBitmap.width.toFloat() / originalBitmap.height.toFloat()
             val targetWidth = if (ratio > 1) 800 else (800 * ratio).toInt()
             val targetHeight = if (ratio > 1) (800 / ratio).toInt() else 800
             val scaledBitmap = android.graphics.Bitmap.createScaledBitmap(originalBitmap, targetWidth, targetHeight, true)
 
-            // 2. COMPRESIÓN EQUILIBRADA: 70% da mucha nitidez sin pesar megas
             val outputStream = java.io.ByteArrayOutputStream()
             scaledBitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 70, outputStream)
 
             val byteArray = outputStream.toByteArray()
             val base64Image = android.util.Base64.encodeToString(byteArray, android.util.Base64.NO_WRAP)
 
-            // Control de seguridad: Si el String supera los 900.000 caracteres, estamos cerca del límite de 1MB
             if (base64Image.length > 950000) {
-                // Si es muy grande, comprimimos un poco más automáticamente
                 outputStream.reset()
                 scaledBitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 50, outputStream)
                 val smallByteArray = outputStream.toByteArray()
@@ -124,7 +115,6 @@ class ChatSplitActivity : AppCompatActivity() {
         }
     }
 
-    // 4. Guardar el mensaje en Firestore con la URL de la imagen
     private fun enviarMensajeImagen(base64Data: String) {
         val fId = selectedFriendId ?: return
         val messageData: HashMap<String, Any> = hashMapOf(
@@ -141,34 +131,16 @@ class ChatSplitActivity : AppCompatActivity() {
                 Toast.makeText(this, "Irudia bidalita!", Toast.LENGTH_SHORT).show()
             }
     }
-    private fun redimensionarYConvertirABase64(uri: Uri): String? {
-        return try {
-            val inputStream = contentResolver.openInputStream(uri)
-            val originalBitmap = android.graphics.BitmapFactory.decodeStream(inputStream)
-            inputStream?.close()
 
-            // Redimensionar para que el lado más largo sea de 600px
-            val ratio = originalBitmap.width.toFloat() / originalBitmap.height.toFloat()
-            val width = if (ratio > 1) 600 else (600 * ratio).toInt()
-            val height = if (ratio > 1) (600 / ratio).toInt() else 600
-
-            val scaledBitmap = android.graphics.Bitmap.createScaledBitmap(originalBitmap, width, height, true)
-
-            val outputStream = java.io.ByteArrayOutputStream()
-            // Comprimimos al 60% para que el String sea ligero
-            scaledBitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 60, outputStream)
-            val byteArray = outputStream.toByteArray()
-
-            android.util.Base64.encodeToString(byteArray, android.util.Base64.NO_WRAP) // NO_WRAP evita saltos de línea
-        } catch (e: Exception) {
-            null
-        }
-    }
 
     private fun setupFriendsList() {
         friendsAdapter = FriendsChatAdapter(mutableListOf()) { friend ->
             selectedFriendId = friend.id
-            escucharChatReal(friend) // Cargamos el chat real al pulsar un amigo
+
+            val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+            prefs.edit().putString("lastChatFriendId", friend.id).apply()
+
+            escucharChatReal(friend)
             binding.drawerLayout.closeDrawer(GravityCompat.START)
         }
         binding.recyclerFriends.layoutManager = LinearLayoutManager(this)
@@ -180,7 +152,6 @@ class ChatSplitActivity : AppCompatActivity() {
     private fun escucharChatReal(friend: Friend) {
         binding.chatTitleName.text = friend.name
         chatListener?.remove()
-// --- NUEVO: Escuchar estado del amigo seleccionado ---
         friendStatusListener?.let { friendStatusRef?.removeEventListener(it) } // Limpiar anterior
 
         friendStatusRef = com.google.firebase.database.FirebaseDatabase
@@ -191,7 +162,6 @@ class ChatSplitActivity : AppCompatActivity() {
         friendStatusListener = object : com.google.firebase.database.ValueEventListener {
             override fun onDataChange(snapshot: com.google.firebase.database.DataSnapshot) {
                 val estado = snapshot.getValue(String::class.java) ?: "offline"
-                // Si está online, mostramos el indicador en la cabecera del chat
                 binding.chatTitleStatus.visibility = if (estado == "online") View.VISIBLE else View.GONE
             }
             override fun onCancelled(error: com.google.firebase.database.DatabaseError) {}
@@ -211,11 +181,9 @@ class ChatSplitActivity : AppCompatActivity() {
                     val receptor = doc.getString("idreceptor") ?: ""
                     val leido = doc.getBoolean("leido") ?: false
 
-                    // 1. Filtrado de mensajes para mostrar en pantalla
                     if ((emisor == currentUserId && receptor == friend.id) ||
                         (emisor == friend.id && receptor == currentUserId)) {
 
-                        // Dentro de escucharChatReal, donde haces el messagesList.add(...)
                         messagesList.add(ChatMessage(
                             senderId = emisor,
                             receiverId = receptor,
@@ -226,19 +194,15 @@ class ChatSplitActivity : AppCompatActivity() {
                             imageUrl = doc.getString("imageUrl") // <--- ¡AÑADE ESTA LÍNEA!
                         ))
 
-                        // 2. LÓGICA CLAVE: Si el mensaje es para MÍ, viene de ESTE AMIGO y no está LEÍDO...
                         if (receptor == currentUserId && emisor == friend.id && !leido) {
-                            // ...lo preparamos para marcar como leído en el servidor
                             batch.update(doc.reference, "leido", true)
                             hayCambiosPorMarcar = true
                         }
                     }
                 }
 
-                // 3. Ejecutamos la actualización en Firebase si hay mensajes nuevos
                 if (hayCambiosPorMarcar) {
                     batch.commit().addOnSuccessListener {
-                        // Opcional: Log o acción tras marcar como leído
                     }
                 }
 
@@ -313,6 +277,25 @@ class ChatSplitActivity : AppCompatActivity() {
                             // --- FIN LÓGICA DE CONTEO ---
 
                             friendsAdapter.updateData(listaAmigos)
+
+                            if (listaAmigos.isNotEmpty() && selectedFriendId == null) {
+                                val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+                                val lastId = prefs.getString("lastChatFriendId", null)
+
+                                // 1. Intentamos buscar al último con el que se habló
+                                val friendToOpen = listaAmigos.find { it.id == lastId }
+                                // 2. Si no existe o es nulo, cogemos al primero de la lista
+                                    ?: listaAmigos.firstOrNull()
+
+                                friendToOpen?.let { firstFriend ->
+                                    selectedFriendId = firstFriend.id
+                                    // Esto activa el chat automáticamente
+                                    escucharChatReal(firstFriend)
+
+                                    // Opcional: Si quieres que el drawer sepa que está seleccionado
+                                    // podrías añadir una variable en tu adapter para resaltar el item
+                                }
+                            }
                         }
                 }
             }

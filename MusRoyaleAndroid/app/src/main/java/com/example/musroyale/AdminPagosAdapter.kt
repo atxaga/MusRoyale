@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 class AdminPagosAdapter(
     private val solicitudes: List<SolicitudPago>,
     private val onAprobarClick: (SolicitudPago) -> Unit,
-    private val onRechazarClick: (SolicitudPago) -> Unit // <--- Añadido el parámetro faltante
+    private val onRechazarClick: (SolicitudPago) -> Unit
 ) : RecyclerView.Adapter<AdminPagosAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -29,7 +29,6 @@ class AdminPagosAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = solicitudes[position]
 
-        // Configuración visual según si es Retirada o Ingreso
         if (item.status == "retirada") {
             holder.txtMontoAdmin.text = "- ${String.format("%.2f", item.monto)} €"
             holder.txtMontoAdmin.setTextColor(Color.parseColor("#FF5252")) // Rojo
@@ -42,7 +41,6 @@ class AdminPagosAdapter(
 
         holder.txtInfo.text = item.username
 
-        // Asignación de clics
         holder.btnAprobar.setOnClickListener { onAprobarClick(item) }
         holder.btnRechazar.setOnClickListener { onRechazarClick(item) }
     }

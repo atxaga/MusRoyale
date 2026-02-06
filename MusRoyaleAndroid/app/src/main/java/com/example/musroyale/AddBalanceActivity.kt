@@ -28,7 +28,6 @@ class AddBalanceActivity : AppCompatActivity() {
         }
 
         binding.bottomLeftButton.setOnClickListener {
-            // Limpiamos la cantidad: cambiamos comas por puntos
             val cantidadRaw = binding.etAmount.text.toString()
             val cantidadLimpia = cantidadRaw.replace(",", ".")
 
@@ -51,7 +50,6 @@ class AddBalanceActivity : AppCompatActivity() {
         db.collection("Users").document(uid).get()
             .addOnSuccessListener { snapshot ->
                 if (snapshot.exists()) {
-                    // Leemos "dinero" como String
                     val saldo = snapshot.getString("dinero") ?: "0"
                     binding.textBalanceAmount.text = "$saldo €"
                     binding.rightText.text = "$saldo €"
@@ -73,12 +71,10 @@ class AddBalanceActivity : AppCompatActivity() {
         val db = FirebaseFirestore.getInstance()
         val userRef = db.collection("users").document(uid)
 
-        // Convertimos el monto que viene de la web a número
         val montoNumerico = montoASumar?.toDoubleOrNull() ?: 0.0
 
         db.runTransaction { transaction ->
             val snapshot = transaction.get(userRef)
-            // Leemos el String actual de Firebase
             val saldoActualString = snapshot.getString("dinero") ?: "0"
             val saldoActualNumerico = saldoActualString.toDoubleOrNull() ?: 0.0
 

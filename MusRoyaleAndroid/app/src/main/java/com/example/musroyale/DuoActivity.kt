@@ -35,10 +35,8 @@ class DuoActivity : BaseActivity() {
         idPartidaRecibida = intent.getStringExtra("idPartida")
 
         if (idPartidaRecibida != null) {
-            // MODO RECEPTOR: Ya hay una partida, solo escuchamos
             escucharComoReceptor(idPartidaRecibida!!)
         } else {
-            // MODO EMISOR: No hay partida, podemos crear una
             setupVistasNuevoEmisor()
         }
         var prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
@@ -51,7 +49,6 @@ class DuoActivity : BaseActivity() {
         binding.btnPlus.visibility = View.VISIBLE
         binding.etApuestaValue.visibility = View.VISIBLE
 
-        // Lógica de los botones de apuesta (±5)
         setupApuestaButtons()
 
         binding.btnBack.setOnClickListener {
@@ -66,7 +63,6 @@ class DuoActivity : BaseActivity() {
         binding.btnPlay.setOnClickListener {
             val apuesta = binding.etApuestaValue.text.toString()
             Toast.makeText(this, "Partida hasten: $apuesta fitxa", Toast.LENGTH_SHORT).show()
-            // Aquí iría la lógica para crear la partida en Firebase
         }
     }
 
@@ -91,7 +87,6 @@ class DuoActivity : BaseActivity() {
         }
         if (uid.isEmpty()) return
 
-        // 1. Obtener lista de IDs de amigos
         db.collection("Users").document(uid).get().addOnSuccessListener { snapshot ->
             val idsAmigos = snapshot.get("amigos") as? List<String> ?: emptyList()
             if (idsAmigos.isEmpty()) {
@@ -99,7 +94,6 @@ class DuoActivity : BaseActivity() {
                 return@addOnSuccessListener
             }
 
-            // 2. Obtener datos de esos amigos de Firestore
             db.collection("Users")
                 .whereIn(com.google.firebase.firestore.FieldPath.documentId(), idsAmigos).get()
                 .addOnSuccessListener { query ->
@@ -111,7 +105,6 @@ class DuoActivity : BaseActivity() {
                         )
                     }
 
-                    // 3. Consultar Realtime DB para ordenar por Online/Offline
                     realtimeDb.getReference("estado_usuarios").get()
                         .addOnSuccessListener { stateSnapshot ->
                             val online = mutableListOf<Map<String, String>>()
@@ -126,7 +119,6 @@ class DuoActivity : BaseActivity() {
 
                             val listaOrdenada = online + offline
 
-                            // 4. Mostrar el diálogo con la lista ya ordenada
                             val dialogView =
                                 layoutInflater.inflate(R.layout.dialog_friends_list, null)
                             val rv = dialogView.findViewById<RecyclerView>(R.id.rvInviteFriends)
@@ -160,13 +152,10 @@ class DuoActivity : BaseActivity() {
         db.collection("PartidaDuo").document(idPartida)
             .addSnapshotListener { doc, e ->
                 if (e != null || doc == null || !doc.exists()) {
-                    // Si la partida se borra (el emisor cancela), volvemos al Main o reseteamos
                     finish()
                     return@addSnapshotListener
                 }
 
-                // --- BLOQUEO DE UI PARA EL RECEPTOR ---
-                // Ocultamos todo lo que permita "crear" o "modificar" la partida
                 binding.btnPlay.visibility = View.GONE
                 binding.btnInviteFriend.visibility = View.GONE
                 binding.layoutGuestProfile.visibility = View.VISIBLE
@@ -185,7 +174,6 @@ class DuoActivity : BaseActivity() {
                 if (onartua) {
                     val emisorId = doc.getString("idemisor") ?: ""
 
-                    // Cargamos los datos de quien nos invitó
                     db.collection("Users").document(emisorId).get().addOnSuccessListener { u ->
                         binding.tvGuestName.text = u.getString("username") ?: "Laguna"
                         val avatar = u.getString("avatarActual") ?: "avadef"
@@ -199,7 +187,6 @@ class DuoActivity : BaseActivity() {
                         binding.itxaroten.text = "Emisorak partida hastea itxaroten..."
                     }
 
-                    // SI EL EMISOR PULSA "JOKATU"
                     if (jokatu) {
                         irAPartida(idPartida)
                     }
@@ -210,22 +197,16 @@ class DuoActivity : BaseActivity() {
     private fun escucharComoEmisor(idPartida: String) {
         db.collection("PartidaDuo").document(idPartida)
             .addSnapshotListener { doc, e ->
-                // --- DETECTAR RECHAZO O BORRADO ---
                 if (e != null) return@addSnapshotListener
 
                 if (doc == null || !doc.exists()) {
-                    // Si el documento ya no existe, es que el receptor ha rechazado (btnDeclineInvite)
-                    // o el tiempo de 10s se ha agotado.
-                    Toast.makeText(this, "Gonbidapena ukatu da edo iraungi da", Toast.LENGTH_SHORT)
-                        .show()
-                    setupVistasNuevoEmisor() // Volvemos al estado inicial (botón de invitar visible)
+                    setupVistasNuevoEmisor()
                     return@addSnapshotListener
                 }
 
                 val onartua = doc.getBoolean("onartua") ?: false
 
                 if (onartua) {
-                    // ... (El código de cuando acepta se queda igual)
                     binding.btnInviteFriend.visibility = View.GONE
                     binding.layoutGuestProfile.visibility = View.VISIBLE
 
@@ -233,15 +214,8 @@ class DuoActivity : BaseActivity() {
                     db.collection("Users").document(idReceptor).get().addOnSuccessListener { u ->
                         binding.tvGuestName.text = u.getString("username") ?: "Laguna"
                         binding.itxaroten.text = "Laguna prest dago jolasteko!"
-
-                        // IMPORTANTE: Cargar también el avatar del receptor aquí
                         val avatar = u.getString("avatarActual") ?: "avadef"
                         binding.ivGuestAvatar.setImageResource(getResIdFromName(this, avatar))
-                    }
-
-                    binding.btnRemoveGuest.setOnClickListener {
-                        db.collection("PartidaDuo").document(idPartida).delete()
-                        // El propio listener detectará el borrado arriba y llamará a setupVistasNuevoEmisor()
                     }
 
                     binding.btnPlay.visibility = View.VISIBLE
@@ -252,18 +226,16 @@ class DuoActivity : BaseActivity() {
                             .addOnSuccessListener { irAPartida(idPartida) }
                     }
                 } else {
-                    // Esperando aceptación
                     binding.btnInviteFriend.visibility = View.GONE
                     binding.layoutGuestProfile.visibility = View.VISIBLE
                     binding.tvGuestName.text = "Itxaroten..."
-                    binding.itxaroten.text = "Gonbidapena bidalita..."
+                    binding.itxaroten.text = "Gonbidapena bidalita..." // Aquí se queda fijo
                     binding.btnPlay.isEnabled = false
                     binding.btnPlay.alpha = 0.5f
+                }
 
-                    // Botón para que el EMISOR cancele la invitación si se arrepiente
-                    binding.btnRemoveGuest.setOnClickListener {
-                        db.collection("PartidaDuo").document(idPartida).delete()
-                    }
+                binding.btnRemoveGuest.setOnClickListener {
+                    db.collection("PartidaDuo").document(idPartida).delete()
                 }
             }
     }
@@ -335,7 +307,6 @@ class DuoActivity : BaseActivity() {
                     override fun onCancelled(error: com.google.firebase.database.DatabaseError) {}
                 })
 
-            // AQUÍ ESTABA EL ERROR: Ahora llama a invitarAmigo
             holder.btn.setOnClickListener {
                 invitarAmigo(userId)
             }
@@ -358,7 +329,7 @@ class DuoActivity : BaseActivity() {
                 idPartidaActiva = idPartidaGenerada
                 esemisor = true
                 escucharComoEmisor(idPartidaGenerada)
-                onInvite(userid) // Cierra el diálogo
+                onInvite(userid)
             }
         }
 

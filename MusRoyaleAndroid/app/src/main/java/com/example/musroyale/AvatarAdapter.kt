@@ -29,7 +29,6 @@ class AvatarAdapter(
         val nombreDesdeDB = avatares[position] // Ej: "rey.png"
         val context = holder.itemView.context
 
-        // 1. Quitamos el .png solo para buscar el recurso local
         val cleanName = nombreDesdeDB.replace(".png", "")
         val resId = context.resources.getIdentifier(cleanName, "drawable", context.packageName)
 
@@ -37,7 +36,6 @@ class AvatarAdapter(
             holder.ivAvatar.setImageResource(resId)
         }
 
-        // 2. Comparamos el nombre completo (con .png) para resaltar el actual
         if (nombreDesdeDB == avatarActual) {
             holder.ivAvatar.strokeWidth = 10f
             holder.ivAvatar.strokeColor = ColorStateList.valueOf(Color.parseColor("#FFD700"))

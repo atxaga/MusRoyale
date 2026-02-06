@@ -45,7 +45,6 @@ class ChatAdapter(private val messages: List<ChatMessage>) :
             val timeString = sdfTime.format(Date(message.timestamp))
 
             if (message.isMine) {
-                // --- MENSAJE MÍO ---
                 binding.layoutSent.visibility = View.VISIBLE
                 binding.layoutReceived.visibility = View.GONE
                 binding.timeSent.text = timeString
@@ -62,7 +61,6 @@ class ChatAdapter(private val messages: List<ChatMessage>) :
                 binding.imgStatus.setImageResource(if (message.leido) R.drawable.leido else R.drawable.noleido)
 
             } else {
-                // --- MENSAJE RECIBIDO ---
                 binding.layoutReceived.visibility = View.VISIBLE
                 binding.layoutSent.visibility = View.GONE
                 binding.timeReceived.text = timeString
@@ -127,7 +125,6 @@ class ChatAdapter(private val messages: List<ChatMessage>) :
                 android.util.Log.e("ChatAdapter", "Error al guardar: ${e.message}")
             }
         }
-        // Función auxiliar para decodificar y mostrar
         private fun cargarImagenBase64(base64String: String, imageView: android.widget.ImageView) {
             try {
                 val cleanBase64 = base64String.replace("\\s".toRegex(), "")
@@ -136,8 +133,8 @@ class ChatAdapter(private val messages: List<ChatMessage>) :
                 Glide.with(imageView.context)
                     .asBitmap()
                     .load(imageBytes)
-                    .override(800, 800) // Coincide con la resolución de subida
-                    .fitCenter()       // Mantiene la proporción original de la foto
+                    .override(800, 800)
+                    .fitCenter()
                     .into(imageView)
             } catch (e: Exception) {
                 android.util.Log.e("ChatAdapter", "Error: ${e.message}")

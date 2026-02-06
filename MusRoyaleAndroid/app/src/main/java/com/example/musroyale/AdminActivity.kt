@@ -52,10 +52,8 @@ class AdminActivity : AppCompatActivity() {
 
     private fun confirmarAccion(solicitud: SolicitudPago) {
         if (solicitud.status == "retirada") {
-            // CASO RETIRADA: Solo cambiar estado (el dinero se quitó al pedirla)
             actualizarEstadoAprobado(solicitud)
         } else {
-            // CASO RECARGA: Hay que ingresar el dinero al usuario
             ingresarSaldoRecarga(solicitud)
         }
     }
@@ -67,7 +65,6 @@ class AdminActivity : AppCompatActivity() {
                 val dineroActualString = document.getString("dinero") ?: "0.00"
                 val dineroActualDouble = dineroActualString.replace(",", ".").toDoubleOrNull() ?: 0.00
 
-                // SUMAMOS el saldo porque es una recarga
                 val nuevoSaldo = dineroActualDouble + solicitud.monto
                 val saldoFormateado = String.format(java.util.Locale.US, "%.2f", nuevoSaldo)
 
@@ -92,10 +89,8 @@ class AdminActivity : AppCompatActivity() {
             .setMessage("Ziur zaude ukatu nahi duzula?")
             .setPositiveButton("Bai") { _, _ ->
                 if (solicitud.status == "retirada") {
-                    // Si rechazas retirada, devuelves lo que se le quitó
                     devolverDinero(solicitud)
                 } else {
-                    // Si rechazas recarga, no hay nada que devolver
                     actualizarEstadoRechazado(solicitud)
                 }
             }.setNegativeButton("Utzi", null).show()
@@ -130,20 +125,17 @@ class AdminActivity : AppCompatActivity() {
                 val emailDestino = userDoc.getString("email")
                 if (emailDestino != null) {
 
-                    // Definimos el texto y el color según el estado
                     val (textoEuskera, colorHex) = if (estado == "Aprobada") {
                         "ONARTUA" to "#2e7d32" // Verde
                     } else {
                         "EZEZTATUA" to "#d32f2f"  // Rojo
                     }
 
-                    // Llamamos a la función enviando el nuevo parámetro de color
                     enviarEmailConEmailJS(emailDestino, textoEuskera, monto, colorHex)
                 }
             }
     }
 
-    // Actualiza la firma de la función para recibir el color
     private fun enviarEmailConEmailJS(emailUsuario: String, estado: String, monto: String, color: String) {
         val url = "https://api.emailjs.com/api/v1.0/email/send"
 
@@ -156,11 +148,10 @@ class AdminActivity : AppCompatActivity() {
         templateParams.put("to_email", emailUsuario)
         templateParams.put("status", estado)
         templateParams.put("amount", monto)
-        templateParams.put("color", color) // <--- ENVIAMOS EL COLOR AQUÍ
+        templateParams.put("color", color)
 
         jsonBody.put("template_params", templateParams)
 
-        // ... resto del código de Volley igual ...
         val queue = Volley.newRequestQueue(this)
         val stringRequest = object : com.android.volley.toolbox.StringRequest(
             Method.POST, url,
