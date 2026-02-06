@@ -178,16 +178,14 @@ class PartidaActivity : AppCompatActivity() {
                             val datuak = serverMsg.substringAfter("INFO:")
                             listaEsperaJugadores.clear()
 
-                            val bloques = datuak.split(",") // "1ID1234_0" , "1ID5678_1" ...
+                            val bloques = datuak.split(",")
                             bloques.forEach { bloque ->
                                 val trimmed = bloque.trim()
-                                if (trimmed.contains("_")) { // Usando "_" como separador entre ID y ZerbiID
-                                    val partes = trimmed.split("_")
-                                    val t = partes[0].first().toString().toInt()
-                                    val id = partes[0].substring(1)
-                                    val zId = partes[1].toInt()
-
-                                    jokalarienInfo(t, id, zId)
+                                if (trimmed.length > 1) {
+                                    val t = trimmed.first().toString().toInt()
+                                    val id = trimmed.substring(1, trimmed.length - 1)
+                                    val zid = trimmed.last().toString().toInt()
+                                    jokalarienInfo(t, id, zid)
                                 }
                             }
                         }
