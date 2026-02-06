@@ -21,6 +21,7 @@
 
         <FrameLayout
             android:layout_width="wrap_content"
+
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp">
 
@@ -28,12 +29,11 @@
                 android:layout_width="75dp"
                 android:layout_height="75dp"
                 android:layout_gravity="center"
-                android:background="@drawable/bg_free_gold_gradient"
                 android:alpha="0.25"/>
 
             <ImageView
-                android:layout_width="65dp"
-                android:layout_height="65dp"
+                android:layout_width="165dp"
+                android:layout_height="165dp"
                 android:layout_gravity="center"
                 android:src="@drawable/addreward" />
         </FrameLayout>

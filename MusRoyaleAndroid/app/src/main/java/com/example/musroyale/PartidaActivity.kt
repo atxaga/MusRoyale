@@ -25,6 +25,8 @@ class PartidaActivity : AppCompatActivity() {
     }
 
     private val serverHost = "35.174.61.97"
+    private val db = com.google.firebase.firestore.FirebaseFirestore.getInstance()
+
     private val serverPort = 13000
     private val connectTimeoutMs = 20000
     private val currentCards = mutableListOf<String>()
@@ -38,6 +40,9 @@ class PartidaActivity : AppCompatActivity() {
 
     private var ordagoOn: Boolean = false
     private var envidoOn: Boolean = false
+
+    private val listaEsperaJugadores = mutableListOf<Pair<Int, String>>() // Guarda Talde e ID
+    private var miTalde: Int = -1
     private var decisionContinuation: kotlinx.coroutines.CancellableContinuation<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -138,6 +143,7 @@ class PartidaActivity : AppCompatActivity() {
                 val reader = BufferedReader(InputStreamReader(socket.getInputStream()))
                 val writer = socket.getOutputStream().bufferedWriter()
 
+
                 val received = intent.getStringExtra(EXTRA_PARAM)
                 Log.e("PartidaActivity", "Enviando al servidor: $received")
                 writer.write(received)
@@ -146,6 +152,14 @@ class PartidaActivity : AppCompatActivity() {
 
                 withContext(Dispatchers.Main) {
                     roundLabel.text = "BILATZEN..."
+                }
+                val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+                val nireid = prefs.getString("userRegistrado", "") ?: ""
+
+                if (nireid.isNotEmpty()) {
+                    writer.write(nireid)
+                    writer.newLine()
+                    writer.flush()
                 }
                 while (true) {
 
@@ -157,6 +171,20 @@ class PartidaActivity : AppCompatActivity() {
                             if (partes.size >= 3) {
                                 withContext(Dispatchers.Main) {
                                     runOnUiThread { mostrarDecision(partes[1].toInt(), partes[2]) }
+                                }
+                            }
+                        }
+                        serverMsg.startsWith("INFO:") -> {
+                            val datuak = serverMsg.substringAfter("INFO:")
+                            listaEsperaJugadores.clear()
+
+                            val bloques = datuak.split(",")
+                            bloques.forEach { bloque ->
+                                val trimmed = bloque.trim()
+                                if (trimmed.length > 1) {
+                                    val t = trimmed.first().toString().toInt()
+                                    val id = trimmed.substring(1)
+                                    jokalarienInfo(t, id)
                                 }
                             }
                         }
@@ -266,6 +294,89 @@ class PartidaActivity : AppCompatActivity() {
                 socket?.close()
             }
         }
+    }
+    private fun jokalarienInfo(taldea: Int, jokalariID: String) {
+        // 1. Añadimos el jugador que acaba de llegar a la lista
+        listaEsperaJugadores.add(Pair(taldea, jokalariID))
+
+        // 2. Solo empezamos a posicionar cuando tengamos los 4 jugadores
+        if (listaEsperaJugadores.size == 4) {
+            val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+            val miId = prefs.getString("userRegistrado", "") ?: ""
+
+            // 3. Buscamos nuestro propio equipo (miTalde)
+            miTalde = listaEsperaJugadores.find { it.second == miId }?.first ?: -1
+
+            val rivales = mutableListOf<String>()
+            var compañeroID = ""
+
+            // 4. Clasificamos a los otros 3 jugadores
+            for (jugador in listaEsperaJugadores) {
+                val id = jugador.second
+                val t = jugador.first
+
+                if (id == miId) {
+                    // Yo siempre voy abajo
+                    cargarInfoEnVista(id, "Bottom")
+                } else if (t == miTalde) {
+                    // Si tiene mi equipo y no soy yo, es mi pareja
+                    compañeroID = id
+                } else {
+                    // Si es del otro equipo, es rival
+                    rivales.add(id)
+                }
+            }
+
+            // 5. Asignamos las vistas finales
+            if (compañeroID.isNotEmpty()) {
+                cargarInfoEnVista(compañeroID, "Top")
+            }
+
+            if (rivales.size >= 2) {
+                cargarInfoEnVista(rivales[0], "Left")
+                cargarInfoEnVista(rivales[1], "Right")
+            }
+
+            // Opcional: Limpiar la lista para la siguiente ronda/partida
+            listaEsperaJugadores.clear()
+        }
+    }
+
+    private fun cargarInfoEnVista(uid: String, posicion: String) {
+        db.collection("Users").document(uid).get()
+            .addOnSuccessListener { document ->
+                if (document != null && document.exists()) {
+                    val nombre = document.getString("username") ?: "Jokalaria"
+                    val avatarName = document.getString("avatarActual") ?: "avatar_default"
+
+                    runOnUiThread {
+                        try {
+                            val txtId = resources.getIdentifier("name$posicion", "id", packageName)
+                            if (txtId != 0) {
+                                findViewById<TextView>(txtId).text = nombre.uppercase()
+                            }
+
+
+                            val imgId = resources.getIdentifier("avatar$posicion", "id", packageName)
+                            if (imgId != 0) {
+                                val avatarImageView = findViewById<ImageView>(imgId)
+
+                                val resDrawableId = resources.getIdentifier(avatarName, "drawable", packageName)
+                                if (resDrawableId != 0) {
+                                    avatarImageView.setImageResource(resDrawableId)
+                                } else {
+                                    avatarImageView.setImageResource(R.drawable.avarat_circle_bg)
+                                }
+                            }
+                        } catch (e: Exception) {
+                            android.util.Log.e("PartidaActivity", "Error actualizando vista $posicion: ${e.message}")
+                        }
+                    }
+                }
+            }
+            .addOnFailureListener { e ->
+                android.util.Log.e("PartidaActivity", "Error al cargar Firestore: ${e.message}")
+            }
     }
 
     private fun mostrarDecision(playerZnb: Int, mensaje: String) {

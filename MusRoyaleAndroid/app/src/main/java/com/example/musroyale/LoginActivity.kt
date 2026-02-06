@@ -8,6 +8,7 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -23,42 +24,30 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        // Inicializar Firestore
         db = FirebaseFirestore.getInstance()
 
         etUsuario = findViewById(R.id.etUsuario)
         etPassword = findViewById(R.id.etPassword)
         btnLogin = findViewById(R.id.btnLogin)
         btnRegister = findViewById(R.id.Erregistrobtn)
-// Comprobar si ya hay un usuario guardado
+
         val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
         val savedUser = prefs.getString("userRegistrado", null)
 
+        // CORRECCIÓN: Si hay usuario, verificamos. NO lanzamos el intent aquí directamente.
         if (savedUser != null) {
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
+            verificarYEntrar(savedUser)
         }
-        btnLogin.setOnClickListener(View.OnClickListener { v: View? -> loginUser() })
-        btnRegister.setOnClickListener(View.OnClickListener { v: View? -> erregistroPantaila() })
+
+        btnLogin.setOnClickListener { loginUser() }
+        btnRegister.setOnClickListener { erregistroPantaila() }
     }
 
-    // ============================
-    // LOGIN
-    // ============================
     private fun loginUser() {
-        val email = etUsuario.getText().toString().trim { it <= ' ' }
-        val password = etPassword.getText().toString().trim { it <= ' ' }
+        val email = etUsuario.text.toString().trim()
+        val password = etPassword.text.toString().trim()
 
-        if (email.isEmpty()) {
-            etUsuario.setError("Erabiltzailearen izena satu behar duzu")
-            etUsuario.requestFocus()
-            return
-        }
-        if (password.isEmpty()) {
-            etPassword.setError("Pasahitza sartu behar duzu")
-            etPassword.requestFocus()
-            return
-        }
+        if (email.isEmpty() || password.isEmpty()) return
 
         val hashedInput = sha256(password)
 
@@ -66,33 +55,46 @@ class LoginActivity : AppCompatActivity() {
             .whereEqualTo("email", email)
             .whereEqualTo("password", hashedInput)
             .get()
-            .addOnSuccessListener({ queryDocumentSnapshots ->
+            .addOnSuccessListener { queryDocumentSnapshots ->
                 if (!queryDocumentSnapshots.isEmpty()) {
-                    // User Aurkituta
-                    val userDoc: DocumentSnapshot = queryDocumentSnapshots.getDocuments().get(0)
-                    Toast.makeText(
-                        this,
-                        "Bienvenido " + userDoc.getString("email"),
-                        Toast.LENGTH_SHORT
-
-                    ).show()
+                    val userDoc = queryDocumentSnapshots.documents[0]
                     val userId = userDoc.id
-                    val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
-                    prefs.edit().putString("userRegistrado", userId).apply()
 
-                    startActivity(Intent(this, MainActivity::class.java))
-
+                    // CORRECCIÓN: Solo llamamos a verificarYEntrar.
+                    // Ella se encarga de guardar en prefs y saltar de pantalla.
+                    verificarYEntrar(userId)
                 } else {
                     Toast.makeText(this, "Email edo pasahitza okerrak", Toast.LENGTH_LONG).show()
                 }
-            })
-            .addOnFailureListener({ e ->
-                Toast.makeText(
-                    this,
-                    "Error: " + e.toString(),
-                    Toast.LENGTH_LONG
-                ).show()
-            })
+            }
+    }
+    private fun verificarYEntrar(userId: String) {
+        val database = FirebaseDatabase.getInstance("https://musroyale-488aa-default-rtdb.europe-west1.firebasedatabase.app/")
+        val estadoRef = database.getReference("estado_usuarios/$userId")
+
+        estadoRef.get().addOnSuccessListener { snapshot ->
+            val estado = snapshot.getValue(String::class.java)
+
+            if (estado == "online") {
+                // BLOQUEO: Ya hay alguien dentro
+                Toast.makeText(this, "Saioa hasita dago beste gailu batean", Toast.LENGTH_LONG).show()
+
+                // Opcional: Limpiar prefs si el usuario estaba guardado pero alguien le quitó la sesión
+                val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+                prefs.edit().remove("userRegistrado").apply()
+            } else {
+                // LIBRE: Guardamos sesión y entramos
+                val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+                prefs.edit().putString("userRegistrado", userId).apply()
+
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+        }.addOnFailureListener {
+            // Si falla la red, por seguridad le dejamos entrar o manejamos el error
+            Toast.makeText(this, "Konexio errorea", Toast.LENGTH_SHORT).show()
+        }
     }
     fun erregistroPantaila(){
         val intent = Intent(this, RegistroActivity::class.java)
