@@ -319,8 +319,8 @@ class PartidaActivity : AppCompatActivity() {
 
                 when {
                     id == miId -> cargarInfoEnVista(id, "Bottom")
-                    zId == idDerecha -> cargarInfoEnVista(id, "Right")
-                    zId == idIzquierda -> cargarInfoEnVista(id, "Left")
+                    zId == idDerecha -> cargarInfoEnVista(id, "Left")
+                    zId == idIzquierda -> cargarInfoEnVista(id, "Right")
                     else -> cargarInfoEnVista(id, "Top")
                 }
             }
