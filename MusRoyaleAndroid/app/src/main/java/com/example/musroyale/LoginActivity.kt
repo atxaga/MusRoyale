@@ -20,7 +20,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var btnLogin: Button
     private lateinit var btnRegister: TextView
     private lateinit var db: FirebaseFirestore
-
+    private lateinit var loadingOverlay: View
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -30,12 +30,14 @@ class LoginActivity : AppCompatActivity() {
         etPassword = findViewById(R.id.etPassword)
         btnLogin = findViewById(R.id.btnLogin)
         btnRegister = findViewById(R.id.Erregistrobtn)
+        loadingOverlay = findViewById(R.id.loadingOverlay)
 
         val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
         val savedUser = prefs.getString("userRegistrado", null)
 
         // CORRECCIÓN: Si hay usuario, verificamos. NO lanzamos el intent aquí directamente.
         if (savedUser != null) {
+            showLoading(true)
             verificarYEntrar(savedUser)
         }
 
@@ -47,7 +49,13 @@ class LoginActivity : AppCompatActivity() {
         val email = etUsuario.text.toString().trim()
         val password = etPassword.text.toString().trim()
 
-        if (email.isEmpty() || password.isEmpty()) return
+        if (email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(this, "Bete eremu guztiak", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // 1. ACTIVAR OVERLAY al dar al botón
+        showLoading(true)
 
         val hashedInput = sha256(password)
 
@@ -59,15 +67,18 @@ class LoginActivity : AppCompatActivity() {
                 if (!queryDocumentSnapshots.isEmpty()) {
                     val userDoc = queryDocumentSnapshots.documents[0]
                     val userId = userDoc.id
-
-                    // CORRECCIÓN: Solo llamamos a verificarYEntrar.
-                    // Ella se encarga de guardar en prefs y saltar de pantalla.
                     verificarYEntrar(userId)
                 } else {
+                    showLoading(false)
                     Toast.makeText(this, "Email edo pasahitza okerrak", Toast.LENGTH_LONG).show()
                 }
             }
+            .addOnFailureListener {
+                showLoading(false)
+                Toast.makeText(this, "Errorea zerbitzarira konektatzean", Toast.LENGTH_SHORT).show()
+            }
     }
+
     private fun verificarYEntrar(userId: String) {
         val database = FirebaseDatabase.getInstance("https://musroyale-488aa-default-rtdb.europe-west1.firebasedatabase.app/")
         val estadoRef = database.getReference("estado_usuarios/$userId")
@@ -76,14 +87,12 @@ class LoginActivity : AppCompatActivity() {
             val estado = snapshot.getValue(String::class.java)
 
             if (estado == "online") {
-                // BLOQUEO: Ya hay alguien dentro
+                showLoading(false)
                 Toast.makeText(this, "Saioa hasita dago beste gailu batean", Toast.LENGTH_LONG).show()
 
-                // Opcional: Limpiar prefs si el usuario estaba guardado pero alguien le quitó la sesión
                 val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
                 prefs.edit().remove("userRegistrado").apply()
             } else {
-                // LIBRE: Guardamos sesión y entramos
                 val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
                 prefs.edit().putString("userRegistrado", userId).apply()
 
@@ -92,9 +101,13 @@ class LoginActivity : AppCompatActivity() {
                 finish()
             }
         }.addOnFailureListener {
-            // Si falla la red, por seguridad le dejamos entrar o manejamos el error
+            // 5. DESACTIVAR si falla el Realtime Database
+            showLoading(false)
             Toast.makeText(this, "Konexio errorea", Toast.LENGTH_SHORT).show()
         }
+    }
+    private fun showLoading(show: Boolean) {
+        loadingOverlay.visibility = if (show) View.VISIBLE else View.GONE
     }
     fun erregistroPantaila(){
         val intent = Intent(this, RegistroActivity::class.java)
