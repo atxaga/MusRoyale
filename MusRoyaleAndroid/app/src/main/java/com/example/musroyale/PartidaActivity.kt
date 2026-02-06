@@ -24,7 +24,7 @@ class PartidaActivity : AppCompatActivity() {
         const val EXTRA_CODE = "com.example.musroyale.EXTRA_CODE"
     }
 
-    private val serverHost = "34.233.112.247"
+    private val serverHost = "35.174.61.97"
     private val serverPort = 13000
     private val connectTimeoutMs = 20000
     private val currentCards = mutableListOf<String>()

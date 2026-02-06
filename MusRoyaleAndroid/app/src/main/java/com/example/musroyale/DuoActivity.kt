@@ -150,81 +150,11 @@ class DuoActivity : BaseActivity() {
         }
     }
 
-    private fun mostrarDialogoCustom(lista: List<MutableMap<String, String>>) {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_friends_list, null)
-        val rv = dialogView.findViewById<RecyclerView>(R.id.rvInviteFriends)
-        val btnCancel = dialogView.findViewById<Button>(R.id.btnCancelDialog)
-
-        rv.layoutManager = LinearLayoutManager(this)
-
-        // Crear el diálogo
-        val dialog = MaterialAlertDialogBuilder(this)
-            .setView(dialogView)
-            .setBackground(android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT)) // Quita el fondo blanco por defecto
-            .create()
-
-        rv.adapter = InviteAdapter(lista) { userId ->
-            dialog.dismiss()
-        }
-
-        btnCancel.setOnClickListener { dialog.dismiss() }
-
-        dialog.show()
-
-        // Ajustar el tamaño del diálogo para que no pegue a los bordes de la pantalla
-        dialog.window?.setLayout(
-            (resources.displayMetrics.widthPixels * 0.90).toInt(), // 90% del ancho
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-    }
 
     private var esemisor = false
     private var esreceptor = false
     private var idPartidaActiva: String? = null
 
-    private fun decidirRolYEscuchar() {
-        val currentUserId =
-            getSharedPreferences("UserPrefs", MODE_PRIVATE).getString("userRegistrado", null)
-                ?: return
-
-        // Escuchamos TODA la colección buscando partidas donde participemos y no hayan empezado
-        db.collection("PartidaDuo")
-            .whereIn("idreceptor", listOf(currentUserId)) // Buscamos si somos receptores
-            .addSnapshotListener { snapshots, e ->
-                if (e != null) return@addSnapshotListener
-
-                // 1. Lógica para determinar si somos RECEPTORES
-                val partidaReceptor = snapshots?.documents?.find {
-                    it.getString("idreceptor") == currentUserId && it.getBoolean("jokatu") == false
-                }
-
-                if (partidaReceptor != null) {
-                    esreceptor = true
-                    esemisor = false
-                    idPartidaActiva = partidaReceptor.id
-                    escucharComoReceptor(idPartidaActiva!!)
-                    return@addSnapshotListener // Salimos para no ejecutar la lógica de emisor
-                }
-
-                // 2. Si no somos receptores, buscamos si somos EMISORES
-                db.collection("PartidaDuo")
-                    .whereEqualTo("idemisor", currentUserId)
-                    .whereEqualTo("jokatu", false)
-                    .addSnapshotListener { emisorSnaps, _ ->
-                        val partidaEmisor = emisorSnaps?.documents?.firstOrNull()
-
-                        if (partidaEmisor != null) {
-                            esemisor = true
-                            esreceptor = false
-                            idPartidaActiva = partidaEmisor.id
-                            escucharComoEmisor(idPartidaActiva!!)
-                        } else {
-                            // CASO NUEVO: No hay nada en la DB, somos emisor libre
-                            setupVistasNuevoEmisor()
-                        }
-                    }
-            }
-    }
 
     private fun escucharComoReceptor(idPartida: String) {
         db.collection("PartidaDuo").document(idPartida)
