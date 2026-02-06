@@ -269,11 +269,9 @@ class DuoActivity : BaseActivity() {
     }
 
     private fun irAPartida(idPartida: String) {
-        var codigo = "ID_ESKATU"
-        val intent = Intent(this, PartidaActivity::class.java).apply {
-            putExtra("idPartida", idPartida)
-            putExtra("EXTRA_PARAM", codigo)
-        }
+        val codigo = "ID_ESKATU"
+        val intent = Intent(this, PartidaActivity::class.java)
+        intent.putExtra(PartidaActivity.EXTRA_PARAM, codigo)
         db.collection("PartidaDuo").document(idPartida).delete()
         startActivity(intent)
         finish()

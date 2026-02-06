@@ -139,6 +139,7 @@ class PartidaActivity : AppCompatActivity() {
                 val writer = socket.getOutputStream().bufferedWriter()
 
                 val received = intent.getStringExtra(EXTRA_PARAM)
+                Log.e("PartidaActivity", "Enviando al servidor: $received")
                 writer.write(received)
                 writer.newLine()
                 writer.flush()
