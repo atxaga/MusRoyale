@@ -181,11 +181,15 @@ class PartidaActivity : AppCompatActivity() {
                             val bloques = datuak.split(",")
                             bloques.forEach { bloque ->
                                 val trimmed = bloque.trim()
-                                if (trimmed.length > 1) {
-                                    val t = trimmed.first().toString().toInt()
+
+                                if (trimmed.length >= 3) {
+                                    val equipo = trimmed.first().toString().toInt()
+
+                                    val turno = trimmed.last().toString().toInt()
+
                                     val id = trimmed.substring(1, trimmed.length - 1)
-                                    val zid = trimmed.last().toString().toInt()
-                                    jokalarienInfo(t, id, zid)
+
+                                    jokalarienInfo(equipo, id, turno)
                                 }
                             }
                         }
@@ -297,34 +301,40 @@ class PartidaActivity : AppCompatActivity() {
         }
     }
     private fun jokalarienInfo(taldea: Int, jokalariID: String, zerbitzariId: Int) {
+        // Guardamos al jugador en la bolsa
         listaEsperaJugadores.add(Triple(taldea, jokalariID, zerbitzariId))
 
+        // Cuando ya tenemos a los 4 en la bolsa, los ponemos en la mesa
         if (listaEsperaJugadores.size == 4) {
             val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
             val miId = prefs.getString("userRegistrado", "") ?: ""
 
-            val nireInfo = listaEsperaJugadores.find { it.second == miId }
-            val nireZid = nireInfo?.third ?: 0
-            val nireT = nireInfo?.first ?: 1
+            // Busco cuál es MI número de turno (mi zid)
+            val yo = listaEsperaJugadores.find { it.second == miId }
 
-            miTalde = nireT
+            if (yo != null) {
+                val miTurno = yo.third
 
-            val idDerecha = (nireZid + 1) % 4
-            val idIzquierda = (nireZid + 3) % 4
+                val turnoDerecha = (miTurno + 1) % 4
+                val turnoIzquierda = (miTurno + 3) % 4
 
-            for (jugador in listaEsperaJugadores) {
-                val t = jugador.first
-                val id = jugador.second
-                val zId = jugador.third
+                    for (jugador in listaEsperaJugadores) {
+                    val suId = jugador.second
+                    val suTurno = jugador.third
 
-                when {
-                    id == miId -> cargarInfoEnVista(id, "Bottom")
-                    zId == idDerecha -> cargarInfoEnVista(id, "Left")
-                    zId == idIzquierda -> cargarInfoEnVista(id, "Right")
-                    else -> cargarInfoEnVista(id, "Top")
+                    if (suId == miId) {
+                        cargarInfoEnVista(suId, "Bottom") // Yo abajo
+                    } else if (suTurno == turnoDerecha) {
+                        cargarInfoEnVista(suId, "Right")  // El siguiente a la derecha
+                    } else if (suTurno == turnoIzquierda) {
+                        cargarInfoEnVista(suId, "Left")   // El anterior a la izquierda
+                    } else {
+                        cargarInfoEnVista(suId, "Top")    // El que queda, enfrente (pareja)
+                    }
                 }
             }
 
+            listaEsperaJugadores.clear()
         }
     }
 
