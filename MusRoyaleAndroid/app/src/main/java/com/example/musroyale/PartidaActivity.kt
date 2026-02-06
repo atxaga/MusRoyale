@@ -41,7 +41,7 @@ class PartidaActivity : AppCompatActivity() {
     private var ordagoOn: Boolean = false
     private var envidoOn: Boolean = false
 
-    private val listaEsperaJugadores = mutableListOf<Pair<Int, String>>() // Guarda Talde e ID
+    private val listaEsperaJugadores = mutableListOf<Triple<Int, String, Int>>()
     private var miTalde: Int = -1
     private var decisionContinuation: kotlinx.coroutines.CancellableContinuation<String>? = null
 
@@ -178,13 +178,16 @@ class PartidaActivity : AppCompatActivity() {
                             val datuak = serverMsg.substringAfter("INFO:")
                             listaEsperaJugadores.clear()
 
-                            val bloques = datuak.split(",")
+                            val bloques = datuak.split(",") // "1ID1234_0" , "1ID5678_1" ...
                             bloques.forEach { bloque ->
                                 val trimmed = bloque.trim()
-                                if (trimmed.length > 1) {
-                                    val t = trimmed.first().toString().toInt()
-                                    val id = trimmed.substring(1)
-                                    jokalarienInfo(t, id)
+                                if (trimmed.contains("_")) { // Usando "_" como separador entre ID y ZerbiID
+                                    val partes = trimmed.split("_")
+                                    val t = partes[0].first().toString().toInt()
+                                    val id = partes[0].substring(1)
+                                    val zId = partes[1].toInt()
+
+                                    jokalarienInfo(t, id, zId)
                                 }
                             }
                         }
@@ -295,50 +298,35 @@ class PartidaActivity : AppCompatActivity() {
             }
         }
     }
-    private fun jokalarienInfo(taldea: Int, jokalariID: String) {
-        // 1. Añadimos el jugador que acaba de llegar a la lista
-        listaEsperaJugadores.add(Pair(taldea, jokalariID))
+    private fun jokalarienInfo(taldea: Int, jokalariID: String, zerbitzariId: Int) {
+        listaEsperaJugadores.add(Triple(taldea, jokalariID, zerbitzariId))
 
-        // 2. Solo empezamos a posicionar cuando tengamos los 4 jugadores
         if (listaEsperaJugadores.size == 4) {
             val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
             val miId = prefs.getString("userRegistrado", "") ?: ""
 
-            // 3. Buscamos nuestro propio equipo (miTalde)
-            miTalde = listaEsperaJugadores.find { it.second == miId }?.first ?: -1
+            val nireInfo = listaEsperaJugadores.find { it.second == miId }
+            val nireZid = nireInfo?.third ?: 0
+            val nireT = nireInfo?.first ?: 1
 
-            val rivales = mutableListOf<String>()
-            var compañeroID = ""
+            miTalde = nireT
 
-            // 4. Clasificamos a los otros 3 jugadores
+            val idDerecha = (nireZid + 1) % 4
+            val idIzquierda = (nireZid + 3) % 4
+
             for (jugador in listaEsperaJugadores) {
-                val id = jugador.second
                 val t = jugador.first
+                val id = jugador.second
+                val zId = jugador.third
 
-                if (id == miId) {
-                    // Yo siempre voy abajo
-                    cargarInfoEnVista(id, "Bottom")
-                } else if (t == miTalde) {
-                    // Si tiene mi equipo y no soy yo, es mi pareja
-                    compañeroID = id
-                } else {
-                    // Si es del otro equipo, es rival
-                    rivales.add(id)
+                when {
+                    id == miId -> cargarInfoEnVista(id, "Bottom")
+                    zId == idDerecha -> cargarInfoEnVista(id, "Right")
+                    zId == idIzquierda -> cargarInfoEnVista(id, "Left")
+                    else -> cargarInfoEnVista(id, "Top")
                 }
             }
 
-            // 5. Asignamos las vistas finales
-            if (compañeroID.isNotEmpty()) {
-                cargarInfoEnVista(compañeroID, "Top")
-            }
-
-            if (rivales.size >= 2) {
-                cargarInfoEnVista(rivales[0], "Left")
-                cargarInfoEnVista(rivales[1], "Right")
-            }
-
-            // Opcional: Limpiar la lista para la siguiente ronda/partida
-            listaEsperaJugadores.clear()
         }
     }
 
@@ -347,7 +335,7 @@ class PartidaActivity : AppCompatActivity() {
             .addOnSuccessListener { document ->
                 if (document != null && document.exists()) {
                     val nombre = document.getString("username") ?: "Jokalaria"
-                    val avatarName = document.getString("avatarActual") ?: "avatar_default"
+                    val avatarName = document.getString("avatarActual") ?: "avadef.png"
 
                     runOnUiThread {
                         try {
