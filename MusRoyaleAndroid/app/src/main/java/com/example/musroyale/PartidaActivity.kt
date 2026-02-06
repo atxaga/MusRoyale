@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -24,7 +25,7 @@ class PartidaActivity : AppCompatActivity() {
         const val EXTRA_CODE = "com.example.musroyale.EXTRA_CODE"
     }
 
-    private val serverHost = "35.174.61.97"
+    private val serverHost = "3.234.215.132"
     private val db = com.google.firebase.firestore.FirebaseFirestore.getInstance()
 
     private val serverPort = 13000
@@ -44,6 +45,10 @@ class PartidaActivity : AppCompatActivity() {
     private val listaEsperaJugadores = mutableListOf<Triple<Int, String, Int>>()
     private var miTalde: Int = -1
     private var decisionContinuation: kotlinx.coroutines.CancellableContinuation<String>? = null
+    private lateinit var goian: FrameLayout
+    private lateinit var behean: FrameLayout
+    private lateinit var eskuin: FrameLayout
+    private lateinit var ezker: FrameLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,6 +96,15 @@ class PartidaActivity : AppCompatActivity() {
         bottomCard2 = findViewById(R.id.bottomCard2)
         bottomCard3 = findViewById(R.id.bottomCard3)
         bottomCard4 = findViewById(R.id.bottomCard4)
+        goian= findViewById(R.id.goian)
+        behean= findViewById(R.id.cardsBottomFrame)
+        eskuin= findViewById(R.id.eskuina)
+        ezker= findViewById(R.id.ezkerra)
+
+        goian.visibility=View.GONE
+        behean.visibility=View.GONE
+        eskuin.visibility=View.GONE
+        ezker.visibility=View.GONE
 
         setupCardClick(bottomCard1, 0)
         setupCardClick(bottomCard2, 1)
@@ -101,6 +115,7 @@ class PartidaActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnMus).setOnClickListener {
             decisionContinuation?.resume("mus", null)
         }
+
         findViewById<Button>(R.id.btnPasar).setOnClickListener {
             decisionContinuation?.resume("paso", null)
         }
@@ -197,8 +212,13 @@ class PartidaActivity : AppCompatActivity() {
                         serverMsg == "CARDS" -> {
                             withContext(Dispatchers.Main) {
                                 roundLabel.text = "BANATZEN"
+                                goian.visibility=View.VISIBLE
+                                behean.visibility=View.VISIBLE
+                                eskuin.visibility=View.VISIBLE
+                                ezker.visibility=View.VISIBLE
                             }
                             recibirCartas(reader, 4)
+
                         }
 
                         serverMsg == "TURN" -> {
@@ -301,15 +321,12 @@ class PartidaActivity : AppCompatActivity() {
         }
     }
     private fun jokalarienInfo(taldea: Int, jokalariID: String, zerbitzariId: Int) {
-        // Guardamos al jugador en la bolsa
         listaEsperaJugadores.add(Triple(taldea, jokalariID, zerbitzariId))
 
-        // Cuando ya tenemos a los 4 en la bolsa, los ponemos en la mesa
         if (listaEsperaJugadores.size == 4) {
             val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
             val miId = prefs.getString("userRegistrado", "") ?: ""
 
-            // Busco cuál es MI número de turno (mi zid)
             val yo = listaEsperaJugadores.find { it.second == miId }
 
             if (yo != null) {
@@ -343,7 +360,9 @@ class PartidaActivity : AppCompatActivity() {
             .addOnSuccessListener { document ->
                 if (document != null && document.exists()) {
                     val nombre = document.getString("username") ?: "Jokalaria"
-                    val avatarName = document.getString("avatarActual") ?: "avadef.png"
+
+                    var avatarName = document.getString("avatarActual") ?: "avadef"
+                    avatarName = avatarName.replace(".png", "").replace(".jpg", "")
 
                     runOnUiThread {
                         try {
@@ -352,26 +371,27 @@ class PartidaActivity : AppCompatActivity() {
                                 findViewById<TextView>(txtId).text = nombre.uppercase()
                             }
 
-
+                            // Actualizar Avatar
                             val imgId = resources.getIdentifier("avatar$posicion", "id", packageName)
                             if (imgId != 0) {
                                 val avatarImageView = findViewById<ImageView>(imgId)
 
+                                // Buscamos el dibujo sin el .png
                                 val resDrawableId = resources.getIdentifier(avatarName, "drawable", packageName)
+
                                 if (resDrawableId != 0) {
                                     avatarImageView.setImageResource(resDrawableId)
                                 } else {
+                                    // Si no lo encuentra, ponemos uno por defecto (asegúrate de que este nombre existe)
                                     avatarImageView.setImageResource(R.drawable.avarat_circle_bg)
+                                    Log.e("PartidaActivity", "No se encontró el drawable: $avatarName")
                                 }
                             }
                         } catch (e: Exception) {
-                            android.util.Log.e("PartidaActivity", "Error actualizando vista $posicion: ${e.message}")
+                            Log.e("PartidaActivity", "Error en vista $posicion: ${e.message}")
                         }
                     }
                 }
-            }
-            .addOnFailureListener { e ->
-                android.util.Log.e("PartidaActivity", "Error al cargar Firestore: ${e.message}")
             }
     }
 

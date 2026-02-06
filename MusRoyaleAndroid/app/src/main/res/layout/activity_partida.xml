@@ -214,7 +214,7 @@
 
             <TextView
                 android:id="@+id/nameTop"
-                android:text="Jugador 2"
+                android:text="Itxaroten..."
                 android:textColor="@android:color/white"
                 android:textStyle="bold"
                 android:shadowColor="#000000"
@@ -228,14 +228,15 @@
 
             <ImageView
                 android:id="@+id/avatarTop"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@drawable/avarat_circle_bg"
+                android:layout_width="66dp"
+                android:layout_height="66dp"
                 android:padding="2dp"
-                android:src="@drawable/avarat_circle_bg" />
+                android:src="@drawable/iconodef" />
         </LinearLayout>
 
         <FrameLayout
+            android:id="@+id/goian"
+            android:visibility="gone"
             android:layout_width="200dp"
             android:layout_height="120dp"
             app:layout_constraintTop_toBottomOf="@id/infoTop"
@@ -324,15 +325,14 @@
 
             <ImageView
                 android:id="@+id/avatarLeft"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:background="@drawable/avarat_circle_bg"
+                android:layout_width="66dp"
+                android:layout_height="66dp"
                 android:padding="2dp"
-                android:src="@drawable/avarat_circle_bg" />
+                android:src="@drawable/iconodef" />
 
             <TextView
                 android:id="@+id/nameLeft"
-                android:text="Jugador 3"
+                android:text="Itxaroten..."
                 android:textColor="@android:color/white"
                 android:textStyle="bold"
                 android:shadowColor="#000000"
@@ -346,6 +346,8 @@
         </LinearLayout>
 
         <FrameLayout
+            android:id="@+id/ezkerra"
+            android:visibility="gone"
             android:layout_width="150dp"
             android:layout_height="220dp"
             app:layout_constraintTop_toBottomOf="@id/infoLeft"
@@ -423,6 +425,7 @@
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+
         app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
@@ -435,7 +438,7 @@
 
             <TextView
                 android:id="@+id/nameRight"
-                android:text="Jugador 4"
+                android:text="Itxaroten..."
                 android:textColor="@android:color/white"
                 android:textStyle="bold"
                 android:shadowColor="#000000"
@@ -449,16 +452,17 @@
 
             <ImageView
                 android:id="@+id/avatarRight"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:background="@drawable/avarat_circle_bg"
+                android:layout_width="66dp"
+                android:layout_height="66dp"
                 android:padding="2dp"
-                android:src="@drawable/avarat_circle_bg" />
+                android:src="@drawable/iconodef" />
         </LinearLayout>
 
         <FrameLayout
+            android:id="@+id/eskuina"
             android:layout_width="150dp"
             android:layout_height="200dp"
+            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/infoRight"
             app:layout_constraintEnd_toEndOf="parent">
             <TextView
@@ -569,11 +573,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingBottom="56dp"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <FrameLayout
+
+            android:visibility="gone"
             android:paddingBottom="30dp"
             android:id="@+id/cardsBottomFrame"
             android:layout_width="350dp"
@@ -692,7 +699,8 @@
                     android:adjustViewBounds="true" />
             </com.google.android.material.card.MaterialCardView>
 
-        </FrameLayout>
+        </FrameLayout
+            >
 
         <LinearLayout
             android:id="@+id/infoBottom"
@@ -707,15 +715,14 @@
 
             <ImageView
                 android:id="@+id/avatarBottom"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:background="@drawable/avarat_circle_bg"
+                android:layout_width="66dp"
+                android:layout_height="66dp"
                 android:padding="2dp"
-                android:src="@drawable/avarat_circle_bg" />
+                android:src="@drawable/iconodef" />
 
             <TextView
                 android:id="@+id/nameBottom"
-                android:text="Jugador 1"
+                android:text="Itxaroten..."
                 android:textColor="@android:color/white"
                 android:textStyle="bold"
                 android:textSize="18sp"
