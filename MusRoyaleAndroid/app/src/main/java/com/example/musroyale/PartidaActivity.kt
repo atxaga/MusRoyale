@@ -10,6 +10,7 @@ import android.view.WindowManager
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.ProgressBar
 import android.widget.Toast
@@ -57,6 +58,7 @@ class PartidaActivity : AppCompatActivity() {
     private lateinit var behean: FrameLayout
     private lateinit var eskuin: FrameLayout
     private lateinit var ezker: FrameLayout
+    private var visualTimer: android.os.CountDownTimer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,7 +96,6 @@ class PartidaActivity : AppCompatActivity() {
             layoutSelector.visibility = View.VISIBLE
             layoutSelector.alpha = 0f
             layoutSelector.animate().alpha(1f).setDuration(200)
-
             puntosApostar = 2
             txtCantidad.text = "2"
         }
@@ -117,11 +118,19 @@ class PartidaActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnConfirmarEnvido).setOnClickListener {
             decisionContinuation?.resume(puntosApostar.toString(), null)
             layoutSelector.visibility = View.GONE
+            gameTimer?.cancel()    // Para tu lógica
+            visualTimer?.cancel()  // Para la estética
+            findViewById<ProgressBar>(R.id.progressBottom).visibility = View.GONE
+
         }
 
         findViewById<Button>(R.id.btnOrdago).setOnClickListener {
             decisionContinuation?.resume("ordago", null)
             layoutSelector.visibility = View.GONE
+            gameTimer?.cancel()    // Para tu lógica
+            visualTimer?.cancel()  // Para la estética
+             findViewById<ProgressBar>(R.id.progressBottom).visibility = View.GONE
+
         }
         txtUtzi.setOnClickListener {
             val view = layoutInflater.inflate(R.layout.dialog_custom_exit, null)
@@ -167,20 +176,40 @@ class PartidaActivity : AppCompatActivity() {
         // --- LISTENERS DE LOS BOTONES CON R.ID ---
         findViewById<Button>(R.id.btnMus).setOnClickListener {
             decisionContinuation?.resume("mus", null)
+            gameTimer?.cancel()    // Para tu lógica
+            visualTimer?.cancel()  // Para la estética
+            findViewById<ProgressBar>(R.id.progressBottom).visibility = View.GONE
+
         }
 
         findViewById<Button>(R.id.btnPasar).setOnClickListener {
             decisionContinuation?.resume("paso", null)
+            gameTimer?.cancel()    // Para tu lógica
+            visualTimer?.cancel()  // Para la estética
+            findViewById<ProgressBar>(R.id.progressBottom).visibility = View.GONE
+
         }
         findViewById<Button>(R.id.btnDeskartea).setOnClickListener {
             val discardString = buildDiscardString()
             decisionContinuation?.resume(discardString, null)
+            gameTimer?.cancel()    // Para tu lógica
+            visualTimer?.cancel()  // Para la estética
+            findViewById<ProgressBar>(R.id.progressBottom).visibility = View.GONE
+
         }
         findViewById<Button>(R.id.btnEnvido).setOnClickListener {
             decisionContinuation?.resume("2", null)
+            gameTimer?.cancel()    // Para tu lógica
+            visualTimer?.cancel()  // Para la estética
+            findViewById<ProgressBar>(R.id.progressBottom).visibility = View.GONE
+
         }
         findViewById<Button>(R.id.btnQuiero).setOnClickListener {
             decisionContinuation?.resume("quiero", null)
+            gameTimer?.cancel()    // Para tu lógica
+            visualTimer?.cancel()  // Para la estética
+            findViewById<ProgressBar>(R.id.progressBottom).visibility = View.GONE
+
         }
 
 
@@ -240,6 +269,17 @@ class PartidaActivity : AppCompatActivity() {
                                 }
                             }
                         }
+                        serverMsg.startsWith("TURN;") -> {
+                            val partes = serverMsg.split(";")
+                            if (partes.size >= 3) {
+                                val uid = partes[1]
+                                val zid = partes[2].toIntOrNull() ?: 0
+
+                                withContext(Dispatchers.Main) {
+                                    progressBakoitza(uid, zid)
+                                }
+                            }
+                        }
                         serverMsg.startsWith("INFO:") -> {
                             val datuak = serverMsg.substringAfter("INFO:")
                             listaEsperaJugadores.clear()
@@ -262,6 +302,8 @@ class PartidaActivity : AppCompatActivity() {
 
                         serverMsg == "CARDS" -> {
                             withContext(Dispatchers.Main) {
+                                findViewById<LinearLayout>(R.id.layoutSalaEspera).visibility =
+                                    View.GONE
                                 roundLabel.text = "BANATZEN"
                                 goian.visibility=View.VISIBLE
                                 behean.visibility=View.VISIBLE
@@ -275,7 +317,7 @@ class PartidaActivity : AppCompatActivity() {
                         serverMsg == "TURN" -> {
                             withContext(Dispatchers.Main) {
                                 toggleDecisionButtons(visible = true)
-                                startTurnTimer("paso")
+                                startTurnTimer("mus")
                                 Toast.makeText(this@PartidaActivity, "Zure txanda!", Toast.LENGTH_SHORT).show()
                             }
 
@@ -356,7 +398,14 @@ class PartidaActivity : AppCompatActivity() {
                                 findViewById<TextView>(R.id.rightScoreBox2).text = right2
                             }
                         }
+                        serverMsg == "CODIGO" -> {
+                            withContext(Dispatchers.Main) {
+                                findViewById<LinearLayout>(R.id.layoutSalaEspera).visibility = View.VISIBLE
+                                findViewById<TextView>(R.id.txtCodigoPartida).text = reader.readLine() ?: "1111"
+                            }
+                            }
                         serverMsg == "PEDIR_CODIGO" -> {
+
                             val kodea = intent.getStringExtra(EXTRA_CODE) ?: ""
                             writer.write(kodea)
                             writer.newLine()
@@ -404,6 +453,50 @@ class PartidaActivity : AppCompatActivity() {
             } finally {
                 socket?.close()
             }
+        }
+    }
+    private fun progressBakoitza(uid: String, zid: Int) {
+        // 1. Cancelar cualquier animación visual previa de turnos de otros
+        // Usamos un timer diferente para que no cancele tu lógica de juego
+        // (Asegúrate de declarar 'private var visualTimer: android.os.CountDownTimer? = null' arriba)
+        visualTimer?.cancel()
+
+        val posiciones = listOf("Bottom", "Left", "Top", "Right")
+        posiciones.forEach { pos ->
+            val id = resources.getIdentifier("progress$pos", "id", packageName)
+            if (id != 0) {
+                val pb = findViewById<ProgressBar>(id)
+                pb.visibility = View.GONE
+            }
+        }
+
+        val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        val miId = prefs.getString("userRegistrado", "") ?: ""
+        val yo = listaEsperaJugadores.find { it.second == miId }
+        val miTurnoServer = yo?.third ?: 0
+
+        val posicionActiva = when (zid) {
+            miTurnoServer -> "Bottom"
+            (miTurnoServer + 1) % 4 -> "Right"
+            (miTurnoServer + 3) % 4 -> "Left"
+            else -> "Top"
+        }
+
+        val activePbId = resources.getIdentifier("progress$posicionActiva", "id", packageName)
+        val activePb = findViewById<ProgressBar>(activePbId)
+
+        if (activePb != null) {
+            activePb.visibility = View.VISIBLE
+            activePb.progress = 100
+
+            visualTimer = object : android.os.CountDownTimer(10000, 100) {
+                override fun onTick(millisUntilFinished: Long) {
+                    activePb.progress = (millisUntilFinished / 100).toInt()
+                }
+                override fun onFinish() {
+                    activePb.visibility = View.GONE
+                }
+            }.start()
         }
     }
     private fun getAnchorIdForServerId(serverId: Int): Int {
@@ -639,26 +732,19 @@ class PartidaActivity : AppCompatActivity() {
     private var gameTimer: android.os.CountDownTimer? = null
 
     private fun startTurnTimer(autoResponse: String) {
-        // Cancelar timer anterior si existe
         gameTimer?.cancel()
-
-        val progressBar = findViewById<ProgressBar>(R.id.progressBottom) // Solo el tuyo
+        val progressBar = findViewById<ProgressBar>(R.id.progressBottom)
         progressBar.visibility = View.VISIBLE
 
         gameTimer = object : android.os.CountDownTimer(10000, 100) {
             override fun onTick(millisUntilFinished: Long) {
-                val progress = (millisUntilFinished / 100).toInt()
-                progressBar.progress = progress
+                progressBar.progress = (millisUntilFinished / 100).toInt()
             }
 
             override fun onFinish() {
-                progressBar.progress = 0
-                progressBar.visibility = View.INVISIBLE
-
-                // Si el tiempo se agota, forzamos la decisión automática
+                progressBar.visibility = View.GONE
                 decisionContinuation?.let {
                     if (it.isActive) {
-                        Log.d("TIMER", "Tiempo agotado. Enviando: $autoResponse")
                         it.resume(autoResponse, null)
                     }
                 }

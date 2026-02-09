@@ -239,6 +239,8 @@
                     android:background="@drawable/circle_shape"
                     android:indeterminate="false"
                     android:max="100"
+                    android:visibility="gone"
+
                     android:progress="100"
                     android:progressDrawable="@drawable/circular_progress_bar" />
 
@@ -355,6 +357,8 @@
                     android:background="@drawable/circle_shape"
                     android:indeterminate="false"
                     android:max="100"
+                    android:visibility="gone"
+
                     android:progress="100"
                     android:progressDrawable="@drawable/circular_progress_bar" />
 
@@ -500,6 +504,8 @@
                     android:layout_height="match_parent"
                     android:background="@drawable/circle_shape"
                     android:indeterminate="false"
+                    android:visibility="gone"
+
                     android:max="100"
                     android:progress="100"
                     android:progressDrawable="@drawable/circular_progress_bar" />
@@ -782,6 +788,8 @@
                     android:layout_height="match_parent"
                     android:background="@drawable/circle_shape"
                     android:indeterminate="false"
+                    android:visibility="gone"
+
                     android:max="100"
                     android:progress="100"
                     android:progressDrawable="@drawable/circular_progress_bar" />
@@ -854,7 +862,7 @@
             android:id="@+id/txtCodigoPartida"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0000"
+            android:text="121212"
             android:textColor="#FFEB3B"
             android:textSize="48sp"
             android:textStyle="bold"
@@ -1006,7 +1014,7 @@
             android:id="@+id/btnEnvidoMas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Envido"
+            android:text="Envido++"
             android:visibility="gone"
             android:backgroundTint="#FF9800"
             android:layout_margin="4dp"
