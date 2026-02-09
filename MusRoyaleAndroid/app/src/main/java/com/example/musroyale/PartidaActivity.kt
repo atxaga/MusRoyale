@@ -1,11 +1,16 @@
 package com.example.musroyale
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
+import android.view.Gravity
 import android.view.View
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.PopupWindow
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -17,6 +22,7 @@ import java.io.InputStreamReader
 import java.net.InetSocketAddress
 import java.net.Socket
 import android.widget.TextView
+import kotlin.unaryMinus
 
 class PartidaActivity : AppCompatActivity() {
 
@@ -352,6 +358,38 @@ class PartidaActivity : AppCompatActivity() {
                             writer.newLine()
                             writer.flush()
                         }
+                        serverMsg == "ERABAKIA" -> {
+                            val erabakia = reader.readLine() ?: ""
+
+                            try {
+                                val parts = erabakia.split(",", limit = 3)
+                                if (parts.size >= 3) {
+                                    val uid = parts[0].trim()
+                                    val serverId = parts[1].trim().toIntOrNull() ?: 0
+                                    var mensaje = parts[2].trim()
+                                    if (mensaje.endsWith("PARES")){
+                                        if (mensaje.startsWith("jokuaDaukat")){
+                                            mensaje = "PARES DAUKAT"
+                                        }else{
+                                            mensaje = "PARES EZ DUT"
+                                        }
+                                    }else if (mensaje.endsWith("JUEGO")){
+                                        if (mensaje.startsWith("jokuaDaukat")){
+                                            mensaje = "JUEGO DAUKAT"
+                                        }else{
+                                            mensaje = "JUEGO EZ DUT"
+                                        }
+                                    }
+                                    withContext(Dispatchers.Main) {
+                                        showErabakiaPopup(serverId, uid, mensaje)
+                                    }
+                                } else {
+                                    Log.e("PartidaActivity", "ERABAKIA formato inesperado: $erabakia")
+                                }
+                            } catch (e: Exception) {
+                                Log.e("PartidaActivity", "Error procesando ERABAKIA: ${e.message}")
+                            }
+                        }
                     }
                 }
             } catch (e: Exception) {
@@ -361,6 +399,52 @@ class PartidaActivity : AppCompatActivity() {
                 }
             } finally {
                 socket?.close()
+            }
+        }
+    }
+    private fun getAnchorIdForServerId(serverId: Int): Int {
+        return when (serverId) {
+            0 -> R.id.infoBottom
+            1 -> R.id.infoLeft
+            2 -> R.id.infoTop
+            3 -> R.id.infoRight
+            else -> R.id.infoBottom
+        }
+    }
+    private fun showErabakiaPopup(serverId: Int, uid: String, mensaje: String) {
+        runOnUiThread {
+            try {
+                val anchorId = getAnchorIdForServerId(serverId)
+                val anchorView = findViewById<View>(anchorId) ?: return@runOnUiThread
+
+                val popupView = layoutInflater.inflate(R.layout.popup_erabakia, null)
+                val tv = popupView.findViewById<TextView>(R.id.popupText)
+                tv.text = "${uid}: ${mensaje}"
+
+                val popup = PopupWindow(
+                    popupView,
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    false
+                ).apply {
+                    elevation = 12f
+                    isOutsideTouchable = true
+                    isTouchable = false
+                }
+
+                // Intentar mostrar encima del ancla (offset negativo)
+                val yOffset = -anchorView.height - 16
+                val xOffset = 0
+
+                // showAsDropDown puede situarlo justo encima usando offset negativo
+                popup.showAsDropDown(anchorView, xOffset, yOffset, Gravity.CENTER)
+
+                // Cerrar después de 3 segundos
+                Handler(Looper.getMainLooper()).postDelayed({
+                    if (popup.isShowing) popup.dismiss()
+                }, 3000)
+            } catch (e: Exception) {
+                Log.e("PartidaActivity", "Error mostrando popup ERABAKIA: ${e.message}")
             }
         }
     }
