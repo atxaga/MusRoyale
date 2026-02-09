@@ -264,11 +264,13 @@ class PartidaActivity : AppCompatActivity() {
                         }
                         serverMsg.startsWith("TURN;") -> {
                             val partes = serverMsg.split(";")
-                            if (partes.size >= 3) {
-                                val uid = partes[1]
-                                val zid = partes[2].toIntOrNull() ?: 0
-                                turnoID = uid
+                            if (partes.size >= 2) {
+                                val uidConTurno = partes[1]
+                                turnoID = uidConTurno
 
+                                runOnUiThread {
+                                    activarBarraPorID(uidConTurno)
+                                }
                             }
                         }
                         serverMsg.startsWith("INFO:") -> {
@@ -286,7 +288,7 @@ class PartidaActivity : AppCompatActivity() {
 
                                     val id = trimmed.substring(1, trimmed.length - 1)
 
-                                    jokalarienInfo(equipo, id, turno,turnoID)
+                                    jokalarienInfo(equipo, id, turno)
                                 }
                             }
                         }
@@ -504,7 +506,7 @@ class PartidaActivity : AppCompatActivity() {
 
     private var countDownTimer: CountDownTimer? = null
 
-    private fun jokalarienInfo(taldea: Int, jokalariID: String, zerbitzariId: Int, turnoActualId: String) {
+    private fun jokalarienInfo(taldea: Int, jokalariID: String, zerbitzariId: Int) {
         if (listaEsperaJugadores.none { it.second == jokalariID }) {
             listaEsperaJugadores.add(Triple(taldea, jokalariID, zerbitzariId))
         }
@@ -533,21 +535,40 @@ class PartidaActivity : AppCompatActivity() {
 
                     cargarInfoEnVista(suId, posicion)
 
-                    // Si este jugador es el que tiene el turno actual según el servidor
-                    if (suId == turnoActualId) {
-                        runOnUiThread {
-                            activarTemporizador(posicion)
-                        }
-                    }
+
                 }
             }
         }
     }
 
-    private fun activarTemporizador(posicion: String) {
-        countDownTimer?.cancel() // Detener cualquier contador previo
+    private fun activarBarraPorID(idJugadorConTurno: String) {
+        val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        val miId = prefs.getString("userRegistrado", "") ?: ""
 
-        // Mapeo de IDs de tu layout XML
+        val yo = listaEsperaJugadores.find { it.second == miId }
+        val el = listaEsperaJugadores.find { it.second == idJugadorConTurno }
+
+        if (yo != null && el != null) {
+            val miTurno = yo.third
+            val suTurno = el.third
+
+            val posicion = when {
+                idJugadorConTurno == miId -> "Bottom"
+                suTurno == (miTurno + 1) % 4 -> "Right"
+                suTurno == (miTurno + 3) % 4 -> "Left"
+                else -> "Top"
+            }
+            activarTemporizador(posicion)
+        }
+    }
+
+    private fun activarTemporizador(posicion: String) {
+        countDownTimer?.cancel()
+
+        // Resetear TODAS las barras para que no se solapen
+        val ids = listOf(R.id.progressBottom, R.id.progressTop, R.id.progressLeft, R.id.progressRight)
+        ids.forEach { id -> findViewById<ProgressBar>(id)?.visibility = View.INVISIBLE }
+
         val progressId = when (posicion) {
             "Bottom" -> R.id.progressBottom
             "Top" -> R.id.progressTop
@@ -557,12 +578,6 @@ class PartidaActivity : AppCompatActivity() {
         }
 
         val pb = progressId?.let { findViewById<ProgressBar>(it) }
-
-        // Resetear todas las barras primero para que solo se vea la del turno actual
-        listOf(R.id.progressBottom, R.id.progressTop, R.id.progressLeft, R.id.progressRight).forEach { id ->
-            findViewById<ProgressBar>(id)?.visibility = View.INVISIBLE
-        }
-
         pb?.apply {
             visibility = View.VISIBLE
             progress = 100
@@ -574,9 +589,7 @@ class PartidaActivity : AppCompatActivity() {
                 val progreso = (millisUntilFinished.toFloat() / 10000 * 100).toInt()
                 pb?.progress = progreso
             }
-
             override fun onFinish() {
-                pb?.progress = 0
                 pb?.visibility = View.INVISIBLE
             }
         }.start()
