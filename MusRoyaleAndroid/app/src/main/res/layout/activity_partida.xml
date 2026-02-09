@@ -239,7 +239,7 @@
                     android:background="@drawable/circle_shape"
                     android:indeterminate="false"
                     android:max="100"
-                    android:visibility="gone"
+                    android:visibility="invisible"
 
                     android:progress="100"
                     android:progressDrawable="@drawable/circular_progress_bar" />
@@ -357,7 +357,7 @@
                     android:background="@drawable/circle_shape"
                     android:indeterminate="false"
                     android:max="100"
-                    android:visibility="gone"
+                    android:visibility="invisible"
 
                     android:progress="100"
                     android:progressDrawable="@drawable/circular_progress_bar" />
@@ -504,7 +504,7 @@
                     android:layout_height="match_parent"
                     android:background="@drawable/circle_shape"
                     android:indeterminate="false"
-                    android:visibility="gone"
+                    android:visibility="invisible"
 
                     android:max="100"
                     android:progress="100"
@@ -788,7 +788,7 @@
                     android:layout_height="match_parent"
                     android:background="@drawable/circle_shape"
                     android:indeterminate="false"
-                    android:visibility="gone"
+                    android:visibility="invisible"
 
                     android:max="100"
                     android:progress="100"
@@ -899,10 +899,11 @@
         app:layout_constraintEnd_toEndOf="parent">
         <LinearLayout
             android:id="@+id/layoutSelectorEnvido"
-            android:layout_width="wrap_content"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center"
+            android:layout_marginBottom="30dp"
             android:visibility="gone"
             android:padding="12dp"
             android:background="@drawable/bg_envido_selector">
