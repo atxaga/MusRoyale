@@ -755,8 +755,7 @@
         android:orientation="vertical"
         android:elevation="100dp"
         android:clickable="true"
-        android:focusable="true"
-        android:visibility="gone">
+        android:focusable="true">
 
         <TextView
             android:layout_width="wrap_content"

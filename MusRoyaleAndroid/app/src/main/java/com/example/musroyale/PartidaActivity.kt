@@ -31,7 +31,7 @@ class PartidaActivity : AppCompatActivity() {
         const val EXTRA_CODE = "com.example.musroyale.EXTRA_CODE"
     }
 
-    private val serverHost = "44.201.95.49"
+    private val serverHost = "3.234.215.132"
     private val db = com.google.firebase.firestore.FirebaseFirestore.getInstance()
 
     private val serverPort = 13000
@@ -176,7 +176,7 @@ class PartidaActivity : AppCompatActivity() {
             decisionContinuation?.resume(discardString, null)
         }
         findViewById<Button>(R.id.btnEnvido).setOnClickListener {
-            decisionContinuation?.resume("2", null)
+            decisionContinuation?.resume(txtCantidad.toString(), null)
         }
         findViewById<Button>(R.id.btnQuiero).setOnClickListener {
             decisionContinuation?.resume("quiero", null)
@@ -362,7 +362,7 @@ class PartidaActivity : AppCompatActivity() {
                             val erabakia = reader.readLine() ?: ""
 
                             try {
-                                val parts = erabakia.split(";", limit = 3)
+                                val parts = erabakia.split(",", limit = 3)
                                 if (parts.size >= 3) {
                                     val uid = parts[0].trim()
                                     val serverId = parts[1].trim().toIntOrNull() ?: 0
@@ -414,25 +414,12 @@ class PartidaActivity : AppCompatActivity() {
     private fun showErabakiaPopup(serverId: Int, uid: String, mensaje: String) {
         runOnUiThread {
             try {
-                val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
-                val miId = prefs.getString("userRegistrado", "") ?: ""
-
-                val yo = listaEsperaJugadores.find { it.second == miId }
-                val miTurno = yo?.third ?: 0
-
-                val posicionRelativa = when {
-                    serverId == miTurno -> "Bottom"
-                    serverId == (miTurno + 1) % 4 -> "Right"
-                    serverId == (miTurno + 3) % 4 -> "Left"
-                    else -> "Top"
-                }
-
-                val anchorId = resources.getIdentifier("info$posicionRelativa", "id", packageName)
+                val anchorId = getAnchorIdForServerId(serverId)
                 val anchorView = findViewById<View>(anchorId) ?: return@runOnUiThread
 
                 val popupView = layoutInflater.inflate(R.layout.popup_erabakia, null)
                 val tv = popupView.findViewById<TextView>(R.id.popupText)
-                tv.text = mensaje.uppercase()
+                tv.text = "${uid}: ${mensaje}"
 
                 val popup = PopupWindow(
                     popupView,
@@ -445,9 +432,14 @@ class PartidaActivity : AppCompatActivity() {
                     isTouchable = false
                 }
 
+                // Intentar mostrar encima del ancla (offset negativo)
                 val yOffset = -anchorView.height - 16
-                popup.showAsDropDown(anchorView, 0, yOffset, Gravity.CENTER)
+                val xOffset = 0
 
+                // showAsDropDown puede situarlo justo encima usando offset negativo
+                popup.showAsDropDown(anchorView, xOffset, yOffset, Gravity.CENTER)
+
+                // Cerrar después de 3 segundos
                 Handler(Looper.getMainLooper()).postDelayed({
                     if (popup.isShowing) popup.dismiss()
                 }, 3000)
@@ -456,7 +448,6 @@ class PartidaActivity : AppCompatActivity() {
             }
         }
     }
-
     private fun jokalarienInfo(taldea: Int, jokalariID: String, zerbitzariId: Int) {
         listaEsperaJugadores.add(Triple(taldea, jokalariID, zerbitzariId))
 
@@ -487,6 +478,8 @@ class PartidaActivity : AppCompatActivity() {
                     }
                 }
             }
+
+            listaEsperaJugadores.clear()
         }
     }
 
