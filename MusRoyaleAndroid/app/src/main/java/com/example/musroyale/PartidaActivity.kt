@@ -38,7 +38,8 @@ class PartidaActivity : AppCompatActivity() {
     private lateinit var bottomCard3: ImageView
     private lateinit var bottomCard4: ImageView
     private lateinit var roundLabel: TextView
-
+    private var puntosApostar = 2
+    private lateinit var layoutSelector: android.widget.LinearLayout // Usamos el nombre completo si hay dudas con los imports
     private var ordagoOn: Boolean = false
     private var envidoOn: Boolean = false
 
@@ -69,7 +70,52 @@ class PartidaActivity : AppCompatActivity() {
                 txtUtzi.visibility = View.GONE
             }
         }
+        // Dentro de onCreate()
+        layoutSelector = findViewById(R.id.layoutSelectorEnvido)
+        val txtCantidad = findViewById<TextView>(R.id.txtCantidadEnvido)
 
+        // --- LÓGICA DEL SELECTOR BEIGE (ENVITE) ---
+
+        // 1. Mostrar el selector al pulsar ENVIDO
+        findViewById<Button>(R.id.btnEnvido).setOnClickListener {
+            // Escondemos botones exteriores
+            it.visibility = View.GONE
+            findViewById<Button>(R.id.btnOrdago).visibility = View.GONE
+            findViewById<Button>(R.id.btnPasar).visibility = View.GONE
+
+            // Mostramos panel beige con animación
+            layoutSelector.visibility = View.VISIBLE
+            layoutSelector.alpha = 0f
+            layoutSelector.animate().alpha(1f).setDuration(200)
+
+            puntosApostar = 2
+            txtCantidad.text = "2"
+        }
+
+        // 2. Botones de + y -
+        findViewById<Button>(R.id.btnPlus).setOnClickListener {
+            if (puntosApostar < 40) {
+                puntosApostar++
+                txtCantidad.text = puntosApostar.toString()
+            }
+        }
+
+        findViewById<Button>(R.id.btnMinus).setOnClickListener {
+            if (puntosApostar > 2) {
+                puntosApostar--
+                txtCantidad.text = puntosApostar.toString()
+            }
+        }
+
+        findViewById<Button>(R.id.btnConfirmarEnvido).setOnClickListener {
+            decisionContinuation?.resume(puntosApostar.toString(), null)
+            layoutSelector.visibility = View.GONE
+        }
+
+        findViewById<Button>(R.id.btnOrdago).setOnClickListener {
+            decisionContinuation?.resume("ordago", null)
+            layoutSelector.visibility = View.GONE
+        }
         txtUtzi.setOnClickListener {
             val view = layoutInflater.inflate(R.layout.dialog_custom_exit, null)
             val dialog = android.app.Dialog(this)
@@ -124,14 +170,12 @@ class PartidaActivity : AppCompatActivity() {
             decisionContinuation?.resume(discardString, null)
         }
         findViewById<Button>(R.id.btnEnvido).setOnClickListener {
-            decisionContinuation?.resume("2", null)
+            decisionContinuation?.resume(txtCantidad.toString(), null)
         }
         findViewById<Button>(R.id.btnQuiero).setOnClickListener {
             decisionContinuation?.resume("quiero", null)
         }
-        findViewById<Button>(R.id.btnOrdago).setOnClickListener {
-            decisionContinuation?.resume("ordago", null)
-        }
+
 
         partidaHasi()
     }
@@ -480,10 +524,20 @@ class PartidaActivity : AppCompatActivity() {
 
     private fun toggleEnvidoButtons(visible: Boolean) {
         val estado = if (visible) View.VISIBLE else View.GONE
-        findViewById<Button>(R.id.btnEnvido).visibility = if (ordagoOn) View.GONE else estado
-        findViewById<Button>(R.id.btnPasar).visibility = estado
-        findViewById<Button>(R.id.btnQuiero).visibility = if (envidoOn || ordagoOn) estado else View.GONE
-        findViewById<Button>(R.id.btnOrdago).visibility = if (ordagoOn) View.GONE else estado
+
+        if (!visible) {
+            layoutSelector.visibility = View.GONE
+            findViewById<Button>(R.id.btnEnvido).visibility = View.GONE
+            findViewById<Button>(R.id.btnOrdago).visibility = View.GONE
+            findViewById<Button>(R.id.btnPasar).visibility = View.GONE
+            findViewById<Button>(R.id.btnQuiero).visibility = View.GONE
+        } else {
+            // Al empezar turno, mostramos botones base (Envido y Órdago visibles si no hay Órdago previo)
+            findViewById<Button>(R.id.btnEnvido).visibility = if (ordagoOn) View.GONE else View.VISIBLE
+            findViewById<Button>(R.id.btnOrdago).visibility = if (ordagoOn) View.GONE else View.VISIBLE
+            findViewById<Button>(R.id.btnPasar).visibility = View.VISIBLE
+            findViewById<Button>(R.id.btnQuiero).visibility = if (envidoOn || ordagoOn) View.VISIBLE else View.GONE
+        }
     }
 
     private fun buildDiscardString(): String {

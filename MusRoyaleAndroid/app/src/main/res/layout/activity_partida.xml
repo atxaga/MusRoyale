@@ -75,7 +75,7 @@
                     android:layout_height="32dp"
                     android:background="@drawable/bg_score_box_1"
                     android:gravity="center"
-                    android:text="1"
+                    android:text="0"
                     android:textColor="#FFFFFF"
                     android:textStyle="bold" />
 
@@ -85,7 +85,7 @@
                     android:layout_height="32dp"
                     android:background="@drawable/bg_score_box_2"
                     android:gravity="center"
-                    android:text="2"
+                    android:text="0"
                     android:textColor="#FFFFFF"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -746,7 +746,59 @@
             android:visibility="invisible"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:id="@+id/layoutSalaEspera"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#E6000000"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:elevation="100dp"
+        android:clickable="true"
+        android:focusable="true">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PARTIDA PRIBATUA"
+            android:textColor="#D7CCC8"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sartzeko kodea:"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/txtCodigoPartida"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0000"
+            android:textColor="#FFEB3B"
+            android:textSize="48sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.2"
+            android:layout_marginVertical="10dp"/>
+
+        <ProgressBar
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:indeterminateTint="#D7CCC8"/>
+
+        <TextView
+            android:id="@+id/txtContadorEspera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Jokalariak zain: 1 / 4"
+            android:textColor="#BCAAA4"
+            android:layout_marginTop="16dp"
+            android:textSize="14sp"/>
+    </LinearLayout>
 
 
     <LinearLayout
@@ -760,7 +812,78 @@
         android:elevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
+        <LinearLayout
+            android:id="@+id/layoutSelectorEnvido"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:visibility="gone"
+            android:padding="12dp"
+            android:background="@drawable/bg_envido_selector">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginBottom="8dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnMinus"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:text="-"
+                    android:textSize="28sp"
+                    android:textColor="#3E2723" />
+
+                <TextView
+                    android:id="@+id/txtCantidadEnvido"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:text="2"
+                    android:textColor="#3E2723"
+                    android:textSize="36sp"
+                    android:gravity="center"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnPlus"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:text="+"
+                    android:textSize="28sp"
+                    android:textColor="#3E2723" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnConfirmarEnvido"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="OK"
+                    android:backgroundTint="#5D4037"
+                    android:textColor="#FFFFFF"
+                    android:layout_marginEnd="8dp"
+                    app:cornerRadius="8dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnOrdago"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ORDAGO!"
+                    android:backgroundTint="#BF360C"
+                    android:textColor="#FFFFFF"
+                    app:cornerRadius="8dp" />
+            </LinearLayout>
+        </LinearLayout>
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnMus"
             android:layout_width="0dp"
@@ -813,15 +936,7 @@
             android:layout_margin="4dp"
             app:cornerRadius="8dp" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnOrdago"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Ordago"
-            android:visibility="gone"
-            android:backgroundTint="#FF9800"
-            android:layout_margin="4dp"
-            app:cornerRadius="8dp" />
+
     </LinearLayout>
 
 
