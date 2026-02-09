@@ -226,12 +226,31 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
-            <ImageView
-                android:id="@+id/avatarTop"
-                android:layout_width="66dp"
-                android:layout_height="66dp"
-                android:padding="2dp"
-                android:src="@drawable/iconodef" />
+            <FrameLayout
+                android:layout_width="86dp"
+                android:layout_height="86dp"
+                android:layout_gravity="center">
+
+                <ProgressBar
+                    android:id="@+id/progressTop"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/circle_shape"
+                    android:indeterminate="false"
+                    android:max="100"
+                    android:progress="100"
+                    android:progressDrawable="@drawable/circular_progress_bar" />
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/avatarTop"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_gravity="center"
+                    android:padding="2dp"
+                    android:src="@drawable/iconodef"
+                    app:shapeAppearanceOverlay="@style/CircleImage" />
+            </FrameLayout>
         </LinearLayout>
 
         <FrameLayout
@@ -323,12 +342,31 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
-                android:id="@+id/avatarLeft"
-                android:layout_width="66dp"
-                android:layout_height="66dp"
-                android:padding="2dp"
-                android:src="@drawable/iconodef" />
+            <FrameLayout
+                android:layout_width="86dp"
+                android:layout_height="86dp"
+                android:layout_gravity="center">
+
+                <ProgressBar
+                    android:id="@+id/progressLeft"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/circle_shape"
+                    android:indeterminate="false"
+                    android:max="100"
+                    android:progress="100"
+                    android:progressDrawable="@drawable/circular_progress_bar" />
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/avatarLeft"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_gravity="center"
+                    android:padding="2dp"
+                    android:src="@drawable/iconodef"
+                    app:shapeAppearanceOverlay="@style/CircleImage" />
+            </FrameLayout>
 
             <TextView
                 android:id="@+id/nameLeft"
@@ -450,12 +488,31 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
-            <ImageView
-                android:id="@+id/avatarRight"
-                android:layout_width="66dp"
-                android:layout_height="66dp"
-                android:padding="2dp"
-                android:src="@drawable/iconodef" />
+            <FrameLayout
+                android:layout_width="86dp"
+                android:layout_height="86dp"
+                android:layout_gravity="center">
+
+                <ProgressBar
+                    android:id="@+id/progressRight"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/circle_shape"
+                    android:indeterminate="false"
+                    android:max="100"
+                    android:progress="100"
+                    android:progressDrawable="@drawable/circular_progress_bar" />
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/avatarRight"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_gravity="center"
+                    android:padding="2dp"
+                    android:src="@drawable/iconodef"
+                    app:shapeAppearanceOverlay="@style/CircleImage" />
+            </FrameLayout>
         </LinearLayout>
 
         <FrameLayout
@@ -713,12 +770,31 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <ImageView
-                android:id="@+id/avatarBottom"
-                android:layout_width="66dp"
-                android:layout_height="66dp"
-                android:padding="2dp"
-                android:src="@drawable/iconodef" />
+            <FrameLayout
+                android:layout_width="86dp"
+                android:layout_height="86dp"
+                android:layout_gravity="center">
+
+                <ProgressBar
+                    android:id="@+id/progressBottom"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/circle_shape"
+                    android:indeterminate="false"
+                    android:max="100"
+                    android:progress="100"
+                    android:progressDrawable="@drawable/circular_progress_bar" />
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/avatarBottom"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_gravity="center"
+                    android:padding="2dp"
+                    android:src="@drawable/iconodef"
+                    app:shapeAppearanceOverlay="@style/CircleImage" />
+            </FrameLayout>
 
             <TextView
                 android:id="@+id/nameBottom"
@@ -755,6 +831,7 @@
         android:orientation="vertical"
         android:elevation="100dp"
         android:clickable="true"
+        android:visibility="gone"
         android:focusable="true">
 
         <TextView
@@ -918,6 +995,15 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnEnvido"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Envido"
+            android:visibility="gone"
+            android:backgroundTint="#FF9800"
+            android:layout_margin="4dp"
+            app:cornerRadius="8dp" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnEnvidoMas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Envido"

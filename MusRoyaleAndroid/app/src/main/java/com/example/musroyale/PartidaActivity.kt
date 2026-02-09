@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.PopupWindow
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -83,7 +84,7 @@ class PartidaActivity : AppCompatActivity() {
         // --- LÓGICA DEL SELECTOR BEIGE (ENVITE) ---
 
         // 1. Mostrar el selector al pulsar ENVIDO
-        findViewById<Button>(R.id.btnEnvido).setOnClickListener {
+        findViewById<Button>(R.id.btnEnvidoMas).setOnClickListener {
             // Escondemos botones exteriores
             it.visibility = View.GONE
             findViewById<Button>(R.id.btnOrdago).visibility = View.GONE
@@ -274,6 +275,7 @@ class PartidaActivity : AppCompatActivity() {
                         serverMsg == "TURN" -> {
                             withContext(Dispatchers.Main) {
                                 toggleDecisionButtons(visible = true)
+                                startTurnTimer("paso")
                                 Toast.makeText(this@PartidaActivity, "Zure txanda!", Toast.LENGTH_SHORT).show()
                             }
 
@@ -293,6 +295,7 @@ class PartidaActivity : AppCompatActivity() {
                         serverMsg == "ALL_MUS" -> {
                             withContext(Dispatchers.Main) {
                                 findViewById<Button>(R.id.btnDeskartea).visibility = View.VISIBLE
+                                startTurnTimer("0-1-2-3*")
                             }
 
                             val deskarteRespuesta = kotlinx.coroutines.suspendCancellableCoroutine<String> { cont ->
@@ -315,6 +318,7 @@ class PartidaActivity : AppCompatActivity() {
                             withContext(Dispatchers.Main) {
                                 roundLabel.text = serverMsg
                                 toggleEnvidoButtons(visible = true)
+                                startTurnTimer("paso")
                                 Toast.makeText(this@PartidaActivity, "$serverMsg jolasten!", Toast.LENGTH_SHORT).show()
                             }
 
@@ -625,12 +629,42 @@ class PartidaActivity : AppCompatActivity() {
         } else {
             // Al empezar turno, mostramos botones base (Envido y Órdago visibles si no hay Órdago previo)
             findViewById<Button>(R.id.btnEnvido).visibility = if (ordagoOn) View.GONE else View.VISIBLE
+            findViewById<Button>(R.id.btnEnvidoMas).visibility = if (ordagoOn) View.GONE else View.VISIBLE
+
             findViewById<Button>(R.id.btnOrdago).visibility = if (ordagoOn) View.GONE else View.VISIBLE
             findViewById<Button>(R.id.btnPasar).visibility = View.VISIBLE
             findViewById<Button>(R.id.btnQuiero).visibility = if (envidoOn || ordagoOn) View.VISIBLE else View.GONE
         }
     }
+    private var gameTimer: android.os.CountDownTimer? = null
 
+    private fun startTurnTimer(autoResponse: String) {
+        // Cancelar timer anterior si existe
+        gameTimer?.cancel()
+
+        val progressBar = findViewById<ProgressBar>(R.id.progressBottom) // Solo el tuyo
+        progressBar.visibility = View.VISIBLE
+
+        gameTimer = object : android.os.CountDownTimer(10000, 100) {
+            override fun onTick(millisUntilFinished: Long) {
+                val progress = (millisUntilFinished / 100).toInt()
+                progressBar.progress = progress
+            }
+
+            override fun onFinish() {
+                progressBar.progress = 0
+                progressBar.visibility = View.INVISIBLE
+
+                // Si el tiempo se agota, forzamos la decisión automática
+                decisionContinuation?.let {
+                    if (it.isActive) {
+                        Log.d("TIMER", "Tiempo agotado. Enviando: $autoResponse")
+                        it.resume(autoResponse, null)
+                    }
+                }
+            }
+        }.start()
+    }
     private fun buildDiscardString(): String {
         if (selectedIndices.isEmpty()) return "*"
         val seleccionadas = selectedIndices.map { currentCards[it] }
