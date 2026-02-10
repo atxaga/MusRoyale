@@ -897,140 +897,177 @@
         android:elevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
+
         <LinearLayout
             android:id="@+id/layoutSelectorEnvido"
-            android:layout_width="300dp"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center"
-            android:layout_marginBottom="30dp"
-            android:visibility="gone"
-            android:padding="12dp"
-            android:background="@drawable/bg_envido_selector">
+            android:padding="16dp"
+            android:elevation="12dp"
+            android:background="@drawable/bg_envido_selector_moderno">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center"
-                android:layout_marginBottom="8dp">
+                android:layout_marginBottom="16dp">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnMinus"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:text="-"
-                    android:textSize="28sp"
-                    android:textColor="#3E2723" />
+                    android:textSize="20sp"
+                    android:insetLeft="0dp"
+                    android:insetTop="0dp"
+                    android:insetRight="0dp"
+                    android:insetBottom="0dp"
+                    app:cornerRadius="24dp"
+                    app:backgroundTint="#E6D5B8"
+                    android:textColor="#3E2723"
+                    style="@style/Widget.MaterialComponents.Button.UnelevatedButton"/>
 
                 <TextView
                     android:id="@+id/txtCantidadEnvido"
-                    android:layout_width="80dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:text="2"
-                    android:textColor="#3E2723"
-                    android:textSize="36sp"
+                    android:textColor="#E6D5B8"
+                    android:textSize="42sp"
                     android:gravity="center"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnPlus"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:text="+"
-                    android:textSize="28sp"
-                    android:textColor="#3E2723" />
+                    android:textSize="20sp"
+                    android:insetLeft="0dp"
+                    android:insetTop="0dp"
+                    android:insetRight="0dp"
+                    android:insetBottom="0dp"
+                    app:cornerRadius="24dp"
+                    app:backgroundTint="#E6D5B8"
+                    android:textColor="#3E2723"
+                    style="@style/Widget.MaterialComponents.Button.UnelevatedButton"/>
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center">
+                android:orientation="horizontal">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnConfirmarEnvido"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="54dp"
+                    android:layout_weight="1"
                     android:text="OK"
-                    android:backgroundTint="#5D4037"
-                    android:textColor="#FFFFFF"
-                    android:layout_marginEnd="8dp"
-                    app:cornerRadius="8dp" />
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginEnd="6dp"
+                    app:backgroundTint="#E6D5B8"
+                    android:textColor="#3E2723"
+                    app:cornerRadius="27dp" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnOrdago"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="ORDAGO!"
-                    android:backgroundTint="#BF360C"
+                    android:layout_width="0dp"
+                    android:layout_height="54dp"
+                    android:layout_weight="1"
+                    android:text="ÓRDAGO"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="#BF360C"
                     android:textColor="#FFFFFF"
-                    app:cornerRadius="8dp" />
+                    app:cornerRadius="27dp" />
             </LinearLayout>
         </LinearLayout>
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnMus"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="70dp"
             android:layout_weight="1"
             android:text="Mus"
-            android:backgroundTint="#4CAF50"
+            android:textStyle="bold"
             android:layout_margin="4dp"
             android:visibility="gone"
-            app:cornerRadius="8dp" />
+            app:backgroundTint="#3E2723"
+            android:textColor="#E6D5B8"
+            app:cornerRadius="15dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnPasar"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="70dp"
             android:layout_weight="1"
             android:text="Paso"
-            android:backgroundTint="#F44336"
-            android:visibility="gone"
+            android:textStyle="bold"
             android:layout_margin="4dp"
-            app:cornerRadius="8dp" />
+            android:visibility="gone"
+            app:backgroundTint="#E6D5B8"
+            android:textColor="#3E2723"
+            app:cornerRadius="15dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnDeskartea"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            android:layout_weight="1"
             android:text="Deskartatu"
-            android:visibility="gone"
-            android:backgroundTint="#FF9800"
+            android:textStyle="bold"
             android:layout_margin="4dp"
-            app:cornerRadius="8dp" />
+            android:visibility="gone"
+            app:backgroundTint="#3E2723"
+            android:textColor="#E6D5B8"
+            app:cornerRadius="15dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnEnvido"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            android:layout_weight="1"
             android:text="Envido"
-            android:visibility="gone"
-            android:backgroundTint="#FF9800"
+            android:textStyle="bold"
             android:layout_margin="4dp"
-            app:cornerRadius="8dp" />
+            android:visibility="gone"
+            app:backgroundTint="#E6D5B8"
+            android:textColor="#3E2723"
+            app:cornerRadius="15dp" />
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnEnvidoMas"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            android:layout_weight="1.2"
             android:text="Envido++"
-            android:visibility="gone"
-            android:backgroundTint="#FF9800"
+            android:textStyle="bold"
             android:layout_margin="4dp"
-            app:cornerRadius="8dp" />
+            android:visibility="gone"
+            app:backgroundTint="#3E2723"
+            android:textColor="#E6D5B8"
+            app:cornerRadius="15dp"
+            app:icon="@android:drawable/ic_menu_add"
+            app:iconTint="#E6D5B8" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnQuiero"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            android:layout_weight="1"
             android:text="Quiero"
-            android:visibility="gone"
-            android:backgroundTint="#FF9800"
+            android:textStyle="bold"
             android:layout_margin="4dp"
-            app:cornerRadius="8dp" />
-
+            android:visibility="gone"
+            app:backgroundTint="#3E2723"
+            android:textColor="#E6D5B8"
+            app:cornerRadius="15dp" />
 
     </LinearLayout>
 

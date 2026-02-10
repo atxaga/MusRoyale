@@ -34,7 +34,7 @@ class PartidaActivity : AppCompatActivity() {
         const val EXTRA_CODE = "com.example.musroyale.EXTRA_CODE"
     }
 
-    private val serverHost = "44.201.95.49"
+    private val serverHost = "98.82.112.35"
     private val db = com.google.firebase.firestore.FirebaseFirestore.getInstance()
 
     private val serverPort = 13000
@@ -90,10 +90,11 @@ class PartidaActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnEnvidoMas).setOnClickListener {
             // Escondemos botones exteriores
             it.visibility = View.GONE
-            findViewById<Button>(R.id.btnOrdago).visibility = View.GONE
             findViewById<Button>(R.id.btnPasar).visibility = View.GONE
+            findViewById<Button>(R.id.btnEnvido).visibility = View.GONE
+            findViewById<Button>(R.id.btnEnvidoMas).visibility = View.GONE
 
-            // Mostramos panel beige con animación
+
             layoutSelector.visibility = View.VISIBLE
             layoutSelector.alpha = 0f
             layoutSelector.animate().alpha(1f).setDuration(200)
@@ -264,6 +265,10 @@ class PartidaActivity : AppCompatActivity() {
                         }
                         serverMsg.startsWith("TURN;") -> {
                             val partes = serverMsg.split(";")
+                            withContext(Dispatchers.Main) {
+                                Toast.makeText(this@PartidaActivity, partes.toString(), Toast.LENGTH_LONG).show()
+
+                            }
                             if (partes.size >= 2) {
                                 val uidConTurno = partes[1]
                                 turnoID = uidConTurno
@@ -271,6 +276,8 @@ class PartidaActivity : AppCompatActivity() {
                                 runOnUiThread {
                                     activarBarraPorID(uidConTurno)
                                 }
+
+
                             }
                         }
                         serverMsg.startsWith("INFO:") -> {
@@ -723,15 +730,15 @@ class PartidaActivity : AppCompatActivity() {
         if (!visible) {
             layoutSelector.visibility = View.GONE
             findViewById<Button>(R.id.btnEnvido).visibility = View.GONE
-            findViewById<Button>(R.id.btnOrdago).visibility = View.GONE
             findViewById<Button>(R.id.btnPasar).visibility = View.GONE
+            findViewById<Button>(R.id.btnEnvidoMas).visibility = View.GONE
+
             findViewById<Button>(R.id.btnQuiero).visibility = View.GONE
         } else {
             // Al empezar turno, mostramos botones base (Envido y Órdago visibles si no hay Órdago previo)
             findViewById<Button>(R.id.btnEnvido).visibility = if (ordagoOn) View.GONE else View.VISIBLE
             findViewById<Button>(R.id.btnEnvidoMas).visibility = if (ordagoOn) View.GONE else View.VISIBLE
 
-            findViewById<Button>(R.id.btnOrdago).visibility = if (ordagoOn) View.GONE else View.VISIBLE
             findViewById<Button>(R.id.btnPasar).visibility = View.VISIBLE
             findViewById<Button>(R.id.btnQuiero).visibility = if (envidoOn || ordagoOn) View.VISIBLE else View.GONE
         }
