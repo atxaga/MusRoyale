@@ -894,7 +894,6 @@
         android:gravity="center"
         android:padding="16dp"
         android:translationZ="100dp"
-        android:visibility="gone"
         android:elevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -905,6 +904,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center"
+            android:visibility="gone"
             android:padding="16dp"
             android:elevation="12dp"
             android:background="@drawable/bg_envido_selector_moderno">
@@ -993,7 +993,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnMus"
             android:layout_width="0dp"
-            android:layout_height="70dp"
+            android:layout_height="50dp"
             android:layout_weight="1"
             android:text="Mus"
             android:textStyle="bold"
@@ -1006,7 +1006,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnPasar"
             android:layout_width="0dp"
-            android:layout_height="70dp"
+            android:layout_height="50dp"
             android:layout_weight="1"
             android:text="Paso"
             android:textStyle="bold"
@@ -1019,7 +1019,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnDeskartea"
             android:layout_width="0dp"
-            android:layout_height="70dp"
+            android:layout_height="50dp"
             android:layout_weight="1"
             android:text="Deskartatu"
             android:textStyle="bold"
@@ -1032,7 +1032,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnEnvido"
             android:layout_width="0dp"
-            android:layout_height="70dp"
+            android:layout_height="50dp"
             android:layout_weight="1"
             android:text="Envido"
             android:textStyle="bold"
@@ -1045,7 +1045,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnEnvidoMas"
             android:layout_width="0dp"
-            android:layout_height="70dp"
+            android:layout_height="50dp"
             android:layout_weight="1.2"
             android:text="Envido++"
             android:textStyle="bold"
@@ -1060,7 +1060,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnQuiero"
             android:layout_width="0dp"
-            android:layout_height="70dp"
+            android:layout_height="50dp"
             android:layout_weight="1"
             android:text="Quiero"
             android:textStyle="bold"

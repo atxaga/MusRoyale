@@ -57,9 +57,7 @@ class MainActivity : BaseActivity() {
             startActivity(Intent(this, CryptoPaymentActivity::class.java))
         }
         binding.btnAddOro.setOnClickListener { mostrarDialogoCompraOro() }
-        if (currentUserId != null) {
-            validarSesionUnica(currentUserId!!)
-        }
+
         if (currentUserId != null) escucharNotificacionesChat()
         cargarDatosUser()
         escucharSolicitudes()
@@ -69,11 +67,8 @@ class MainActivity : BaseActivity() {
         val database = FirebaseDatabase.getInstance("https://musroyale-488aa-default-rtdb.europe-west1.firebasedatabase.app/")
         val sessionRef = database.getReference("sesiones_activas/$uid")
 
-        // 1. Primero escribimos nuestro ID.
-        // Usamos addOnSuccessListener para asegurar que el ID está puesto antes de nada.
         sessionRef.setValue(sessionID).addOnSuccessListener {
 
-            // 2. SOLO CUANDO EL ID SE HA GUARDADO, activamos la presencia online
             configurarSistemaPresencia(uid)
 
             // 3. Empezamos a escuchar cambios por si otro dispositivo entra

@@ -25,6 +25,8 @@ import java.io.InputStreamReader
 import java.net.InetSocketAddress
 import java.net.Socket
 import android.widget.TextView
+import com.google.ai.client.generativeai.GenerativeModel
+import kotlinx.coroutines.delay
 import kotlin.unaryMinus
 
 class PartidaActivity : AppCompatActivity() {
@@ -423,7 +425,6 @@ class PartidaActivity : AppCompatActivity() {
                             }
                             }
                         serverMsg == "PEDIR_CODIGO" -> {
-
                             val kodea = intent.getStringExtra(EXTRA_CODE) ?: ""
                             writer.write(kodea)
                             writer.newLine()
@@ -474,15 +475,8 @@ class PartidaActivity : AppCompatActivity() {
         }
     }
 
-    private fun getAnchorIdForServerId(serverId: Int): Int {
-        return when (serverId) {
-            0 -> R.id.infoBottom
-            1 -> R.id.infoLeft
-            2 -> R.id.infoTop
-            3 -> R.id.infoRight
-            else -> R.id.infoBottom
-        }
-    }
+
+
     private fun showErabakiaPopup(serverId: Int, uid: String, mensaje: String) {
         runOnUiThread {
             try {
