@@ -41,7 +41,13 @@ class PartidaActivity : AppCompatActivity() {
     private val connectTimeoutMs = 20000
     private val currentCards = mutableListOf<String>()
     private val selectedIndices = mutableSetOf<Int>()
-
+    // Dentro de la clase, antes del onCreate
+    private lateinit var btnMus: com.google.android.material.button.MaterialButton
+    private lateinit var btnPasar: com.google.android.material.button.MaterialButton
+    private lateinit var btnEnvido: com.google.android.material.button.MaterialButton
+    private lateinit var btnEnvidoMas: com.google.android.material.button.MaterialButton
+    private lateinit var btnQuiero: com.google.android.material.button.MaterialButton
+    private lateinit var btnDeskartea: com.google.android.material.button.MaterialButton
     private lateinit var bottomCard1: ImageView
     private lateinit var bottomCard2: ImageView
     private lateinit var bottomCard3: ImageView
@@ -66,6 +72,14 @@ class PartidaActivity : AppCompatActivity() {
         // Establecer el layout directamente
         setContentView(R.layout.activity_partida)
 
+        btnMus = findViewById(R.id.btnMus)
+        btnPasar = findViewById(R.id.btnPasar)
+        btnEnvido = findViewById(R.id.btnEnvido)
+        btnEnvidoMas = findViewById(R.id.btnEnvidoMas)
+        btnQuiero = findViewById(R.id.btnQuiero)
+        btnDeskartea = findViewById(R.id.btnDeskartea)
+        layoutSelector = findViewById(R.id.layoutSelectorEnvido)
+
         val iconoAjustes = findViewById<ImageView>(R.id.salir)
         val txtUtzi = findViewById<TextView>(R.id.txtPartidaUtzi)
         roundLabel = findViewById(R.id.roundLabel)
@@ -87,17 +101,21 @@ class PartidaActivity : AppCompatActivity() {
         // --- LÓGICA DEL SELECTOR BEIGE (ENVITE) ---
 
         // 1. Mostrar el selector al pulsar ENVIDO
-        findViewById<Button>(R.id.btnEnvidoMas).setOnClickListener {
-            // Escondemos botones exteriores
-            it.visibility = View.GONE
-            findViewById<Button>(R.id.btnPasar).visibility = View.GONE
-            findViewById<Button>(R.id.btnEnvido).visibility = View.GONE
-            findViewById<Button>(R.id.btnEnvidoMas).visibility = View.GONE
+        btnEnvidoMas.setOnClickListener {
+            // Ocultamos la fila de botones principal
+            btnPasar.visibility = View.GONE
+            btnEnvido.visibility = View.GONE
+            btnEnvidoMas.visibility = View.GONE
+            btnQuiero.visibility = View.GONE
 
-
+            // Mostramos el selector con animación
             layoutSelector.visibility = View.VISIBLE
             layoutSelector.alpha = 0f
-            layoutSelector.animate().alpha(1f).setDuration(200)
+            layoutSelector.animate()
+                .alpha(1f)
+                .setDuration(250)
+                .start()
+
             puntosApostar = 2
             txtCantidad.text = "2"
         }
@@ -174,34 +192,38 @@ class PartidaActivity : AppCompatActivity() {
         setupCardClick(bottomCard4, 3)
 
         // --- LISTENERS DE LOS BOTONES CON R.ID ---
-        findViewById<Button>(R.id.btnMus).setOnClickListener {
+        btnMus.setOnClickListener {
             decisionContinuation?.resume("mus", null)
 
             findViewById<ProgressBar>(R.id.progressBottom).visibility = View.GONE
+            ocultarTodo()
 
         }
 
-        findViewById<Button>(R.id.btnPasar).setOnClickListener {
+        btnPasar.setOnClickListener {
             decisionContinuation?.resume("paso", null)
             findViewById<ProgressBar>(R.id.progressBottom).visibility = View.GONE
+            ocultarTodo()
+
 
         }
-        findViewById<Button>(R.id.btnDeskartea).setOnClickListener {
+        btnDeskartea.setOnClickListener {
             val discardString = buildDiscardString()
             decisionContinuation?.resume(discardString, null)
 
             findViewById<ProgressBar>(R.id.progressBottom).visibility = View.GONE
+            ocultarTodo()
 
         }
-        findViewById<Button>(R.id.btnEnvido).setOnClickListener {
+        btnEnvido.setOnClickListener {
             decisionContinuation?.resume("2", null)
-
+            ocultarTodo()
             findViewById<ProgressBar>(R.id.progressBottom).visibility = View.GONE
 
         }
-        findViewById<Button>(R.id.btnQuiero).setOnClickListener {
+        btnQuiero.setOnClickListener {
             decisionContinuation?.resume("quiero", null)
-
+            ocultarTodo()
             findViewById<ProgressBar>(R.id.progressBottom).visibility = View.GONE
 
         }
@@ -265,10 +287,7 @@ class PartidaActivity : AppCompatActivity() {
                         }
                         serverMsg.startsWith("TURN;") -> {
                             val partes = serverMsg.split(";")
-                            withContext(Dispatchers.Main) {
-                                Toast.makeText(this@PartidaActivity, partes.toString(), Toast.LENGTH_LONG).show()
 
-                            }
                             if (partes.size >= 2) {
                                 val uidConTurno = partes[1]
                                 turnoID = uidConTurno
@@ -336,7 +355,7 @@ class PartidaActivity : AppCompatActivity() {
 
                         serverMsg == "ALL_MUS" -> {
                             withContext(Dispatchers.Main) {
-                                findViewById<Button>(R.id.btnDeskartea).visibility = View.VISIBLE
+                                btnDeskartea.visibility = View.VISIBLE
                                 startTurnTimer("0-1-2-3*")
                             }
 
@@ -350,7 +369,7 @@ class PartidaActivity : AppCompatActivity() {
 
                             withContext(Dispatchers.Main) {
                                 limpiarCartasDescartadas()
-                                findViewById<Button>(R.id.btnDeskartea).visibility = View.GONE
+                                btnDeskartea.visibility = View.GONE
                             }
                             recibirCartas(reader, 4)
                         }
@@ -373,10 +392,9 @@ class PartidaActivity : AppCompatActivity() {
                             writer.flush()
 
                             withContext(Dispatchers.Main) {
-                                findViewById<Button>(R.id.btnEnvido).visibility = View.GONE
-                                findViewById<Button>(R.id.btnQuiero).visibility = View.GONE
-                                findViewById<Button>(R.id.btnPasar).visibility = View.GONE
-                                findViewById<Button>(R.id.btnOrdago).visibility = View.GONE
+                                btnEnvido.visibility = View.GONE
+                                btnQuiero.visibility = View.GONE
+                                btnPasar.visibility = View.GONE
                             }
                             ordagoOn = false
                             envidoOn = false
@@ -717,30 +735,55 @@ class PartidaActivity : AppCompatActivity() {
             views[index].alpha = 1f
         }
     }
-
+    private fun ocultarTodo() {
+        runOnUiThread {
+            btnMus.visibility = View.GONE
+            btnPasar.visibility = View.GONE
+            btnEnvido.visibility = View.GONE
+            btnEnvidoMas.visibility = View.GONE
+            btnQuiero.visibility = View.GONE
+            btnDeskartea.visibility = View.GONE
+            layoutSelector.visibility = View.GONE
+            findViewById<ProgressBar>(R.id.progressBottom).visibility = View.GONE
+        }
+    }
     private fun toggleDecisionButtons(visible: Boolean) {
-        val estado = if (visible) View.VISIBLE else View.GONE
-        findViewById<Button>(R.id.btnMus).visibility = estado
-        findViewById<Button>(R.id.btnPasar).visibility = estado
+        runOnUiThread {
+            val estado = if (visible) View.VISIBLE else View.GONE
+            btnMus.visibility = estado
+            btnPasar.visibility = estado
+            // Asegurarnos de que el resto estén ocultos
+            if (visible) {
+                btnEnvido.visibility = View.GONE
+                btnEnvidoMas.visibility = View.GONE
+                btnQuiero.visibility = View.GONE
+                layoutSelector.visibility = View.GONE
+            }
+        }
     }
 
     private fun toggleEnvidoButtons(visible: Boolean) {
-        val estado = if (visible) View.VISIBLE else View.GONE
+        runOnUiThread {
+            if (!visible) {
+                btnEnvido.visibility = View.GONE
+                btnEnvidoMas.visibility = View.GONE
+                btnPasar.visibility = View.GONE
+                btnQuiero.visibility = View.GONE
+                layoutSelector.visibility = View.GONE
+            } else {
+                // Lógica de juego:
+                btnPasar.visibility = View.VISIBLE
 
-        if (!visible) {
-            layoutSelector.visibility = View.GONE
-            findViewById<Button>(R.id.btnEnvido).visibility = View.GONE
-            findViewById<Button>(R.id.btnPasar).visibility = View.GONE
-            findViewById<Button>(R.id.btnEnvidoMas).visibility = View.GONE
+                // Si no hay órdago previo, permitimos apostar
+                btnEnvido.visibility = if (ordagoOn) View.GONE else View.VISIBLE
+                btnEnvidoMas.visibility = if (ordagoOn) View.GONE else View.VISIBLE
 
-            findViewById<Button>(R.id.btnQuiero).visibility = View.GONE
-        } else {
-            // Al empezar turno, mostramos botones base (Envido y Órdago visibles si no hay Órdago previo)
-            findViewById<Button>(R.id.btnEnvido).visibility = if (ordagoOn) View.GONE else View.VISIBLE
-            findViewById<Button>(R.id.btnEnvidoMas).visibility = if (ordagoOn) View.GONE else View.VISIBLE
+                // Solo mostramos "Quiero" si alguien ha envidado o pedido órdago antes
+                btnQuiero.visibility = if (envidoOn || ordagoOn) View.VISIBLE else View.GONE
 
-            findViewById<Button>(R.id.btnPasar).visibility = View.VISIBLE
-            findViewById<Button>(R.id.btnQuiero).visibility = if (envidoOn || ordagoOn) View.VISIBLE else View.GONE
+                // Asegurarnos de que el botón de Mus esté oculto en esta fase
+                btnMus.visibility = View.GONE
+            }
         }
     }
     private var gameTimer: android.os.CountDownTimer? = null
