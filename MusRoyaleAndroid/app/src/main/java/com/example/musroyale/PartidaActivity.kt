@@ -104,7 +104,9 @@ class PartidaActivity : AppCompatActivity() {
                 txtUtzi.visibility = View.GONE
             }
         }
-        // Dentro de onCreate()
+        // De
+        // ntro de onCreate()
+
         layoutSelector = findViewById(R.id.layoutSelectorEnvido)
         val txtCantidad = findViewById<TextView>(R.id.txtCantidadEnvido)
 
@@ -283,8 +285,6 @@ class PartidaActivity : AppCompatActivity() {
                 while (true) {
                     val serverMsg = reader.readLine() ?: break
                     withContext(Dispatchers.Main) {
-                        findViewById<MaterialCardView>(R.id.cardRondaCentral).visibility =
-                            View.GONE
                         findViewById<TextView>(R.id.txtRondaActual).text = "MUS"
                     }
 
