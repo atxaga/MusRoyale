@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
@@ -60,6 +61,7 @@ class MainActivity : BaseActivity() {
 
         if (currentUserId != null) escucharNotificacionesChat()
         cargarDatosUser()
+        validarSesionUnica(currentUserId!!)
         escucharSolicitudes()
     }
 
@@ -99,11 +101,8 @@ class MainActivity : BaseActivity() {
     }
 
     fun configurarSistemaPresencia(uid: String) {
-        // 1. Referencia a Realtime Database (la base de datos rápida)
         val database = FirebaseDatabase.getInstance("https://musroyale-488aa-default-rtdb.europe-west1.firebasedatabase.app/")
         val miEstadoRef = database.getReference("estado_usuarios/$uid")
-
-        // 2. Escuchar la conexión del sistema
         val connectedRef = database.getReference(".info/connected")
 
         connectedRef.addValueEventListener(object : com.google.firebase.database.ValueEventListener {
@@ -111,11 +110,15 @@ class MainActivity : BaseActivity() {
                 val conectado = snapshot.getValue(Boolean::class.java) ?: false
 
                 if (conectado) {
-                    // Si el servidor detecta que pierdo internet, me pone offline automáticamente
+                    // Si pierdo conexión, Firebase me pone offline automáticamente
                     miEstadoRef.onDisconnect().setValue("offline")
 
-                    // Ahora mismo estoy online
-                    miEstadoRef.setValue("online")
+                    // Forzamos el estado online
+                    miEstadoRef.setValue("online").addOnSuccessListener {
+                        Log.d("Presencia", "Usuario $uid ahora está ONLINE")
+                    }.addOnFailureListener {
+                        Log.e("Presencia", "Error al poner online: ${it.message}")
+                    }
                 }
             }
             override fun onCancelled(error: com.google.firebase.database.DatabaseError) {}

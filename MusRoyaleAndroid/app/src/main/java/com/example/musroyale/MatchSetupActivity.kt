@@ -22,20 +22,65 @@ class MatchSetupActivity : AppCompatActivity() {
 
         binding = ActivityMatchSetupBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setupApuestaLogica()
 
         binding.btnBack.setOnClickListener {
             finish()
 
         }
         binding.btnPlay.setOnClickListener {
-            val valueToSend = "PUBLICA"
-            val intent = Intent(this, PartidaActivity::class.java)
-            intent.putExtra(PartidaActivity.EXTRA_PARAM, valueToSend)
-            startActivity(intent)
+            // 1. Determinar el modo de juego
+
+
+            // 2. Leer la apuesta como número (Double para comparar con el saldo)
+            val apuesta = binding.etApuestaValue.text.toString().toDoubleOrNull() ?: 0.0
+
+            val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+            val uid = prefs.getString("userRegistrado", "") ?: ""
+
+            if (uid.isEmpty()) return@setOnClickListener
+
+            val db = com.google.firebase.firestore.FirebaseFirestore.getInstance()
+            db.collection("Users").document(uid).get().addOnSuccessListener { document ->
+                if (document != null && document.exists()) {
+
+                    val dineroStr = document.getString("dinero") ?: "0"
+                    val dineroActual = dineroStr.replace(",", ".").toDoubleOrNull() ?: 0.0
+
+                    if (dineroActual >= apuesta) {
+                        val intent = Intent(this, PartidaActivity::class.java).apply {
+                            putExtra(PartidaActivity.EXTRA_PARAM, "PUBLICA")
+                            putExtra("APUESTA_CANTIDAD", apuesta.toInt())
+                        }
+                        startActivity(intent)
+                    } else {
+                        // NO TIENE SALDO: Formateamos el mensaje para que se vea bien (ej: 17.70)
+                        val saldoFormateado = "%.2f".format(java.util.Locale.US, dineroActual)
+                        Snackbar.make(
+                            binding.root,
+                            "Ez duzu nahiko diru! (Saldo: $saldoFormateado €)",
+                            Snackbar.LENGTH_LONG
+                        ).setBackgroundTint(
+                            ContextCompat.getColor(
+                                this,
+                                android.R.color.holo_red_dark
+                            )
+                        )
+                            .show()
+                    }
+
+                } else {
+                    Snackbar.make(
+                        binding.root,
+                        "Errorea: Erabiltzailea ez da aurkitu",
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                }
+            }.addOnFailureListener { e ->
+                Snackbar.make(binding.root, "Errorea konexioan: ${e.message}", Snackbar.LENGTH_LONG)
+                    .show()
+            }
         }
-        setupApuestaLogica()
-
-
     }
     // En tu Activity
     private fun setupApuestaLogica() {

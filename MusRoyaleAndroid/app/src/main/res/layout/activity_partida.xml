@@ -265,21 +265,25 @@
             app:layout_constraintEnd_toEndOf="parent">
             <TextView
                 android:id="@+id/statusTop"
+                android:visibility="gone"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#FFEB3B"
+                android:text="MUS!"
+                android:textColor="#4E342E"
                 android:textStyle="bold"
-                android:textSize="20sp"
+                android:textSize="12sp"
                 android:letterSpacing="0.1"
                 android:gravity="center"
-                android:background="@drawable/bg_status_bubble"
-                android:elevation="15dp"
-                android:translationZ="20dp"
-                android:visibility="gone"
+                android:paddingHorizontal="28dp"
+                android:paddingVertical="12dp"
+                android:minWidth="120dp"
+                android:background="@drawable/bg_status_elegant"
+                android:elevation="6dp"
                 app:layout_constraintBottom_toTopOf="@id/infoTop"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginBottom="8dp" />
+                android:layout_marginBottom="16dp" />
 
             <ImageView
                 android:id="@+id/upCard1"
@@ -399,19 +403,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="MUS!"
-                android:textColor="#FFEB3B"
+                android:textColor="#4E342E"
                 android:textStyle="bold"
-                android:textSize="20sp"
+                android:visibility="gone"
+
+                android:textSize="12sp"
                 android:letterSpacing="0.1"
                 android:gravity="center"
-                android:background="@drawable/bg_status_bubble"
-                android:elevation="15dp"
-                android:translationZ="20dp"
-                android:visibility="gone"
+                android:paddingHorizontal="28dp"
+                android:paddingVertical="12dp"
+                android:minWidth="120dp"
+                android:background="@drawable/bg_status_elegant"
+                android:elevation="6dp"
                 app:layout_constraintBottom_toTopOf="@id/infoTop"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginBottom="8dp" />
+                android:layout_marginBottom="16dp" />
 
             <ImageView
                 android:id="@+id/leftCard1"
@@ -533,19 +540,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="MUS!"
-                android:textColor="#FFEB3B"
+                android:visibility="gone"
+
+                android:textColor="#4E342E"
                 android:textStyle="bold"
-                android:textSize="20sp"
+                android:textSize="12sp"
                 android:letterSpacing="0.1"
                 android:gravity="center"
-                android:background="@drawable/bg_status_bubble"
-                android:elevation="15dp"
-                android:translationZ="20dp"
-                android:visibility="gone"
+                android:paddingHorizontal="28dp"
+                android:paddingVertical="12dp"
+                android:minWidth="120dp"
+                android:background="@drawable/bg_status_elegant"
+                android:elevation="6dp"
                 app:layout_constraintBottom_toTopOf="@id/infoTop"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginBottom="8dp" />
+                android:layout_marginBottom="16dp" />
 
             <ImageView
                 android:id="@+id/rightCard1"
@@ -643,11 +653,12 @@
 
         <FrameLayout
 
-            android:visibility="gone"
             android:paddingBottom="30dp"
             android:id="@+id/cardsBottomFrame"
             android:layout_width="350dp"
             android:layout_height="200dp"
+            android:visibility="gone"
+
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
@@ -656,20 +667,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="MUS!"
-                android:textColor="#FFEB3B"
+                android:textColor="#4E342E"
                 android:textStyle="bold"
-                android:textSize="20sp"
+                android:textSize="12sp"
+                android:visibility="gone"
+
                 android:letterSpacing="0.1"
                 android:gravity="center"
-                android:background="@drawable/bg_status_bubble"
-                android:elevation="15dp"
-                android:translationZ="20dp"
-                android:visibility="gone"
+                android:paddingHorizontal="28dp"
+                android:paddingVertical="12dp"
+                android:minWidth="120dp"
+                android:background="@drawable/bg_status_elegant"
+                android:elevation="6dp"
                 app:layout_constraintBottom_toTopOf="@id/infoTop"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginBottom="8dp" />
-
+                android:layout_marginBottom="16dp" />
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardContainer1"
                 android:layout_width="86dp"
@@ -830,6 +843,204 @@
             android:visibility="invisible"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/marcadorPro"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="15dp"
+        app:strokeColor="#FFD700"
+        app:strokeWidth="1.5dp"
+        android:visibility="gone"
+        app:cardBackgroundColor="#CC092B0C"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="PARTIDAREN EMAITZAK"
+                android:textColor="#FFD700"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:letterSpacing="0.2"
+                android:paddingBottom="12dp"
+                android:alpha="0.9" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingVertical="4dp">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="HANDIA"
+                        android:textColor="#F5F5F5"
+                        android:textSize="12sp"
+                        android:letterSpacing="0.05"
+                        android:fontFamily="sans-serif-medium" />
+                    <TextView
+                        android:id="@+id/valHaundia"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:text="1"
+                        android:textColor="#FFFFFF"
+                        android:gravity="center"
+                        android:textStyle="bold"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="0.5dp" android:background="#44FFD700" android:layout_marginVertical="2dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingVertical="4dp">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="TXIKIA"
+                        android:textColor="#F5F5F5"
+                        android:textSize="12sp"
+                        android:fontFamily="sans-serif-medium" />
+                    <TextView
+                        android:id="@+id/valTxikia"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:text="1"
+                        android:textColor="#FFFFFF"
+                        android:gravity="center"
+                        android:textStyle="bold"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="0.5dp" android:background="#44FFD700" android:layout_marginVertical="2dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingVertical="4dp">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="PAREAK"
+                        android:textColor="#F5F5F5"
+                        android:textSize="12sp"
+                        android:fontFamily="sans-serif-medium" />
+                    <TextView
+                        android:id="@+id/valPareak"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:text="1"
+                        android:textColor="#FFFFFF"
+                        android:gravity="center"
+                        android:textStyle="bold"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="0.5dp" android:background="#44FFD700" android:layout_marginVertical="2dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingVertical="4dp">
+                    <TextView
+                        android:id="@+id/labelJokua"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="JOKUA"
+                        android:textColor="#F5F5F5"
+                        android:textSize="12sp"
+                        android:fontFamily="sans-serif-medium" />
+                    <TextView
+                        android:id="@+id/valJokua"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:text="1"
+                        android:textColor="#FFFFFF"
+                        android:gravity="center"
+                        android:textStyle="bold"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardRondaCentral"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="#CC1B5E20"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="0dp"
+        android:visibility="gone"
+        app:strokeWidth="1.5dp"
+        app:strokeColor="#80FFFFFF"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="100dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp"
+            android:paddingVertical="12dp"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="UNEKO JOKOA"
+                android:textColor="#BDBDBD"
+                android:textSize="10sp"
+                android:letterSpacing="0.2"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtRondaActual"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MUS"
+                android:textColor="#FFFFFF"
+                android:textSize="22sp"
+                android:textStyle="bold|italic"
+                android:textAllCaps="true"
+                android:shadowColor="#80000000"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="2" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
     <LinearLayout
         android:id="@+id/layoutSalaEspera"
         android:layout_width="match_parent"
@@ -875,14 +1086,7 @@
             android:layout_marginTop="20dp"
             android:indeterminateTint="#D7CCC8"/>
 
-        <TextView
-            android:id="@+id/txtContadorEspera"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Jokalariak zain: 1 / 4"
-            android:textColor="#BCAAA4"
-            android:layout_marginTop="16dp"
-            android:textSize="14sp"/>
+
     </LinearLayout>
 
 
@@ -1029,18 +1233,6 @@
             android:textColor="#E6D5B8"
             app:cornerRadius="15dp" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnEnvido"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_weight="1"
-            android:text="Envido"
-            android:textStyle="bold"
-            android:layout_margin="4dp"
-            android:visibility="gone"
-            app:backgroundTint="#E6D5B8"
-            android:textColor="#3E2723"
-            app:cornerRadius="15dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnEnvidoMas"

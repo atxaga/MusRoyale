@@ -118,7 +118,17 @@ class EditProfileFragment : Fragment() {
 
                     // Estadísticas (Incluyendo las nuevas)
                     binding.tvMoney.text = "${snapshot.getString("dinero") ?: "0.00"} €"
-                    binding.tvGamesPlayed.text = snapshot.getString("partidasJugadas") ?: "0"
+                    // 1. Obtenemos los valores como Long de forma segura
+                    val guztiak = snapshot.getLong("partidak") ?: 0L
+                    val irabaziak = snapshot.getLong("partidaIrabaziak") ?: 0L
+
+// 2. Calculamos las derrotas
+                    val galduak = guztiak - irabaziak
+
+// 3. Asignamos a los TextViews convirtiendo siempre a String
+                    binding.tvGamesPlayed.text = guztiak.toString()
+                    binding.tvWins.text = irabaziak.toString()
+                    binding.tvLosses.text = galduak.toString()
 
                     // Nuevos campos del XML anterior
                     // binding.tvWins.text = snapshot.getString("victorias") ?: "0"

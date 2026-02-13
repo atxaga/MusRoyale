@@ -194,37 +194,6 @@
                             android:textSize="12sp"
                             android:textStyle="bold" />
 
-                        <com.google.android.material.button.MaterialButtonToggleGroup
-                            android:id="@+id/toggleGroupReyes"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            app:singleSelection="true"
-                            app:selectionRequired="true"
-                            app:checkedButton="@+id/btnFourKings">
-
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/btnFourKings"
-                                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                                android:layout_width="0dp"
-                                android:layout_height="55dp"
-                                android:layout_weight="1"
-                                android:text="4 Errege"
-                                android:textColor="@color/toggle_text_selector"
-                                app:backgroundTint="@color/toggle_bg_selector"
-                                app:strokeColor="#8D6E63" />
-
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/btnEightKings"
-                                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                                android:layout_width="0dp"
-                                android:layout_height="55dp"
-                                android:layout_weight="1"
-                                android:text="8 Errege"
-                                android:textColor="@color/toggle_text_selector"
-                                app:backgroundTint="@color/toggle_bg_selector"
-                                app:strokeColor="#8D6E63" />
-                        </com.google.android.material.button.MaterialButtonToggleGroup>
 
                         <TextView
                             android:id="@+id/apostuaLabel"

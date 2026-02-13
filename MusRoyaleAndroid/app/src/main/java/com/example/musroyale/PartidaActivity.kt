@@ -1,5 +1,7 @@
 package com.example.musroyale
 
+import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
@@ -26,7 +28,9 @@ import java.net.InetSocketAddress
 import java.net.Socket
 import android.widget.TextView
 import com.google.ai.client.generativeai.GenerativeModel
+import com.google.android.material.card.MaterialCardView
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.unaryMinus
 
 class PartidaActivity : AppCompatActivity() {
@@ -36,7 +40,7 @@ class PartidaActivity : AppCompatActivity() {
         const val EXTRA_CODE = "com.example.musroyale.EXTRA_CODE"
     }
 
-    private val serverHost = "98.82.112.35"
+    private val serverHost = "3.237.21.174"
     private val db = com.google.firebase.firestore.FirebaseFirestore.getInstance()
 
     private val serverPort = 13000
@@ -46,7 +50,7 @@ class PartidaActivity : AppCompatActivity() {
     // Dentro de la clase, antes del onCreate
     private lateinit var btnMus: com.google.android.material.button.MaterialButton
     private lateinit var btnPasar: com.google.android.material.button.MaterialButton
-    private lateinit var btnEnvido: com.google.android.material.button.MaterialButton
+
     private lateinit var btnEnvidoMas: com.google.android.material.button.MaterialButton
     private lateinit var btnQuiero: com.google.android.material.button.MaterialButton
     private lateinit var btnDeskartea: com.google.android.material.button.MaterialButton
@@ -67,7 +71,11 @@ class PartidaActivity : AppCompatActivity() {
     private lateinit var behean: FrameLayout
     private lateinit var eskuin: FrameLayout
     private lateinit var ezker: FrameLayout
+    private var puntosEquipo1 = 0
+    private var puntosEquipo2 = 0
     private var turnoID = ""
+    private var apuestaRealizada = 0
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,7 +84,7 @@ class PartidaActivity : AppCompatActivity() {
 
         btnMus = findViewById(R.id.btnMus)
         btnPasar = findViewById(R.id.btnPasar)
-        btnEnvido = findViewById(R.id.btnEnvido)
+
         btnEnvidoMas = findViewById(R.id.btnEnvidoMas)
         btnQuiero = findViewById(R.id.btnQuiero)
         btnDeskartea = findViewById(R.id.btnDeskartea)
@@ -106,7 +114,7 @@ class PartidaActivity : AppCompatActivity() {
         btnEnvidoMas.setOnClickListener {
             // Ocultamos la fila de botones principal
             btnPasar.visibility = View.GONE
-            btnEnvido.visibility = View.GONE
+
             btnEnvidoMas.visibility = View.GONE
             btnQuiero.visibility = View.GONE
 
@@ -183,6 +191,7 @@ class PartidaActivity : AppCompatActivity() {
         eskuin= findViewById(R.id.eskuina)
         ezker= findViewById(R.id.ezkerra)
 
+
         goian.visibility=View.GONE
         behean.visibility=View.GONE
         eskuin.visibility=View.GONE
@@ -217,12 +226,7 @@ class PartidaActivity : AppCompatActivity() {
             ocultarTodo()
 
         }
-        btnEnvido.setOnClickListener {
-            decisionContinuation?.resume("2", null)
-            ocultarTodo()
-            findViewById<ProgressBar>(R.id.progressBottom).visibility = View.GONE
 
-        }
         btnQuiero.setOnClickListener {
             decisionContinuation?.resume("quiero", null)
             ocultarTodo()
@@ -230,6 +234,8 @@ class PartidaActivity : AppCompatActivity() {
 
         }
 
+// Dentro de onCreate
+        apuestaRealizada = intent.getIntExtra("APUESTA_CANTIDAD", 0)
 
         partidaHasi()
     }
@@ -256,8 +262,7 @@ class PartidaActivity : AppCompatActivity() {
                 val reader = BufferedReader(InputStreamReader(socket.getInputStream()))
                 val writer = socket.getOutputStream().bufferedWriter()
 
-
-                val received = intent.getStringExtra(EXTRA_PARAM)
+                val received = intent.getStringExtra(EXTRA_PARAM) ?: "PUBLICA"
                 Log.e("PartidaActivity", "Enviando al servidor: $received")
                 writer.write(received)
                 writer.newLine()
@@ -269,70 +274,113 @@ class PartidaActivity : AppCompatActivity() {
                 val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
                 val nireid = prefs.getString("userRegistrado", "") ?: ""
 
-                if (nireid.isNotEmpty()) {
-                    writer.write(nireid)
-                    writer.newLine()
-                    writer.flush()
+                if (intent.getStringExtra(EXTRA_PARAM) != "UNIRSE_PRIVADA") {
+                    if (nireid.isNotEmpty()) {
+                        writer.write(nireid)
+                        writer.newLine()
+                        writer.flush()
+                    }
                 }
-                while (true) {
 
+                while (true) {
                     val serverMsg = reader.readLine() ?: break
+                    findViewById<MaterialCardView>(R.id.cardRondaCentral).visibility = View.VISIBLE
+                    findViewById<TextView>(R.id.txtRondaActual).text = "MUS"
+
 
                     when {
                         serverMsg.startsWith("ACTION:") -> {
                             val partes = serverMsg.split(":")
                             if (partes.size >= 3) {
                                 withContext(Dispatchers.Main) {
-                                    runOnUiThread { mostrarDecision(partes[1].toInt(), partes[2]) }
+                                    // Eliminado runOnUiThread innecesario porque ya estamos en Dispatchers.Main
+                                    mostrarDecision(partes[1].toInt(), partes[2])
                                 }
                             }
                         }
+
                         serverMsg.startsWith("TURN;") -> {
                             val partes = serverMsg.split(";")
-
                             if (partes.size >= 2) {
                                 val uidConTurno = partes[1]
                                 turnoID = uidConTurno
-
-                                runOnUiThread {
+                                withContext(Dispatchers.Main) {
+                                    ocultarTodasLasBarras()
                                     activarBarraPorID(uidConTurno)
                                 }
-
-
                             }
                         }
+
+                        serverMsg.startsWith("RONDA:") -> {
+                            val ronda = serverMsg.substringAfter("RONDA:")
+                            withContext(Dispatchers.Main) {
+                                findViewById<MaterialCardView>(R.id.cardRondaCentral).visibility = View.VISIBLE
+                                roundLabel.text = ronda
+                                findViewById<TextView>(R.id.txtRondaActual).text = ronda
+                            }
+                        }
+
+                        serverMsg.startsWith("LABURPENA:") -> {
+                            val laburpena = serverMsg.substringAfter("LABURPENA:")
+                            val partes = laburpena.split(",")
+                            if (partes.size >= 3) {
+                                val jokua = partes[0].trim()
+                                val puntos = partes[1].trim()
+                                val ganador = partes[2].trim().toIntOrNull() ?: 0
+
+                                withContext(Dispatchers.Main) {
+                                    actualizarMarcadorResumen(jokua, puntos, ganador)
+                                }
+
+                                if (jokua.uppercase().contains("JUEGO") || jokua.uppercase().contains("PUNTO") ||
+                                    jokua.uppercase().contains("JOKUA") || jokua.uppercase().contains("PUNTUA")) {
+                                    delay(5000)
+                                }
+                            }
+                        }
+
                         serverMsg.startsWith("INFO:") -> {
                             val datuak = serverMsg.substringAfter("INFO:")
                             listaEsperaJugadores.clear()
-
                             val bloques = datuak.split(",")
                             bloques.forEach { bloque ->
                                 val trimmed = bloque.trim()
-
                                 if (trimmed.length >= 3) {
                                     val equipo = trimmed.first().toString().toInt()
-
                                     val turno = trimmed.last().toString().toInt()
-
                                     val id = trimmed.substring(1, trimmed.length - 1)
-
                                     jokalarienInfo(equipo, id, turno)
                                 }
+                            }
+
+                            withContext(Dispatchers.Main) {
+                                if (miTalde == 1) {
+                                    findViewById<TextView>(R.id.leftTeamName).text = "Etxekoak (NI)"
+                                    findViewById<TextView>(R.id.rightTeamName).text = "Kanpokoak"
+                                } else {
+                                    findViewById<TextView>(R.id.leftTeamName).text = "Kanpokoak"
+                                    findViewById<TextView>(R.id.rightTeamName).text = "Etxekoak (NI)"
+                                }
+                            }
+
+                            val yo = listaEsperaJugadores.find { it.second == nireid }
+                            if (yo != null) {
+                                miTalde = yo.first
                             }
                         }
 
                         serverMsg == "CARDS" -> {
                             withContext(Dispatchers.Main) {
-                                findViewById<LinearLayout>(R.id.layoutSalaEspera).visibility =
-                                    View.GONE
+                                findViewById<MaterialCardView>(R.id.cardRondaCentral).visibility = View.VISIBLE
+                                cobrarApuestaAlEmpezar()
+                                findViewById<LinearLayout>(R.id.layoutSalaEspera).visibility = View.GONE
                                 roundLabel.text = "BANATZEN"
-                                goian.visibility=View.VISIBLE
-                                behean.visibility=View.VISIBLE
-                                eskuin.visibility=View.VISIBLE
-                                ezker.visibility=View.VISIBLE
+                                goian.visibility = View.VISIBLE
+                                behean.visibility = View.VISIBLE
+                                eskuin.visibility = View.VISIBLE
+                                ezker.visibility = View.VISIBLE
                             }
                             recibirCartas(reader, 4)
-
                         }
 
                         serverMsg == "TURN" -> {
@@ -342,7 +390,7 @@ class PartidaActivity : AppCompatActivity() {
                                 Toast.makeText(this@PartidaActivity, "Zure txanda!", Toast.LENGTH_SHORT).show()
                             }
 
-                            val respuesta = kotlinx.coroutines.suspendCancellableCoroutine<String> { cont ->
+                            val respuesta = suspendCancellableCoroutine<String> { cont ->
                                 decisionContinuation = cont
                             }
 
@@ -361,7 +409,7 @@ class PartidaActivity : AppCompatActivity() {
                                 startTurnTimer("0-1-2-3*")
                             }
 
-                            val deskarteRespuesta = kotlinx.coroutines.suspendCancellableCoroutine<String> { cont ->
+                            val deskarteRespuesta = suspendCancellableCoroutine<String> { cont ->
                                 decisionContinuation = cont
                             }
 
@@ -376,7 +424,6 @@ class PartidaActivity : AppCompatActivity() {
                             recibirCartas(reader, 4)
                         }
 
-                        // Agrupamos las fases de juego
                         serverMsg == "GRANDES" || serverMsg == "PEQUEÑAS" || serverMsg == "PARES" || serverMsg == "JUEGO" || serverMsg == "PUNTO" -> {
                             withContext(Dispatchers.Main) {
                                 roundLabel.text = serverMsg
@@ -385,7 +432,7 @@ class PartidaActivity : AppCompatActivity() {
                                 Toast.makeText(this@PartidaActivity, "$serverMsg jolasten!", Toast.LENGTH_SHORT).show()
                             }
 
-                            val respuesta = kotlinx.coroutines.suspendCancellableCoroutine<String> { cont ->
+                            val respuesta = suspendCancellableCoroutine<String> { cont ->
                                 decisionContinuation = cont
                             }
 
@@ -393,8 +440,10 @@ class PartidaActivity : AppCompatActivity() {
                             writer.newLine()
                             writer.flush()
 
+                            // CORRECCIÓN CRÍTICA: Todo esto en Main para evitar el crash al cambiar de ronda
                             withContext(Dispatchers.Main) {
-                                btnEnvido.visibility = View.GONE
+                                ocultarTodo()
+                                // Aseguramos que los botones específicos también se oculten
                                 btnQuiero.visibility = View.GONE
                                 btnPasar.visibility = View.GONE
                             }
@@ -406,60 +455,63 @@ class PartidaActivity : AppCompatActivity() {
                         serverMsg == "ENVIDO" -> envidoOn = true
 
                         serverMsg == "PUNTUAKJASO" -> {
-                            val left1 = reader.readLine()
-                            val left2 = reader.readLine()
-                            val right1 = reader.readLine()
-                            val right2 = reader.readLine()
+                            val l1 = reader.readLine()
+                            val l2 = reader.readLine()
+                            val r1 = reader.readLine()
+                            val r2 = reader.readLine()
                             withContext(Dispatchers.Main) {
                                 roundLabel.text = "Puntuazioa"
-                                findViewById<TextView>(R.id.leftScoreBox1).text = left1
-                                findViewById<TextView>(R.id.leftScoreBox2).text = left2
-                                findViewById<TextView>(R.id.rightScoreBox1).text = right1
-                                findViewById<TextView>(R.id.rightScoreBox2).text = right2
+                                findViewById<TextView>(R.id.leftScoreBox1).text = l1
+                                findViewById<TextView>(R.id.leftScoreBox2).text = l2
+                                findViewById<TextView>(R.id.rightScoreBox1).text = r1
+                                findViewById<TextView>(R.id.rightScoreBox2).text = r2
                             }
                         }
-                        serverMsg == "CODIGO" -> {
+
+                        serverMsg.startsWith("CODIGO:") -> {
+                            val kodea = serverMsg.substringAfter("CODIGO:")
                             withContext(Dispatchers.Main) {
                                 findViewById<LinearLayout>(R.id.layoutSalaEspera).visibility = View.VISIBLE
-                                findViewById<TextView>(R.id.txtCodigoPartida).text = reader.readLine() ?: "1111"
+                                findViewById<TextView>(R.id.txtCodigoPartida).text = kodea
                             }
-                            }
+                        }
+
                         serverMsg == "PEDIR_CODIGO" -> {
                             val kodea = intent.getStringExtra(EXTRA_CODE) ?: ""
                             writer.write(kodea)
                             writer.newLine()
                             writer.flush()
+                            if (nireid.isNotEmpty()) {
+                                writer.write(nireid)
+                                writer.newLine()
+                                writer.flush()
+                            }
                         }
+
                         serverMsg == "ERABAKIA" -> {
                             val erabakia = reader.readLine() ?: ""
-
                             try {
                                 val parts = erabakia.split(";", limit = 3)
                                 if (parts.size >= 3) {
                                     val uid = parts[0].trim()
                                     val serverId = parts[1].trim().toIntOrNull() ?: 0
                                     var mensaje = parts[2].trim()
-                                    if (mensaje.endsWith("PARES")){
-                                        if (mensaje.startsWith("jokuaDaukat")){
-                                            mensaje = "PARES DAUKAT"
-                                        }else{
-                                            mensaje = "PARES EZ DUT"
+
+                                    when {
+                                        mensaje.endsWith("PARES") -> {
+                                            mensaje = if (mensaje.startsWith("jokuaDaukat")) "PARES DAUKAT" else "PARES EZ DUT"
                                         }
-                                    }else if (mensaje.endsWith("JUEGO")){
-                                        if (mensaje.startsWith("jokuaDaukat")){
-                                            mensaje = "JUEGO DAUKAT"
-                                        }else{
-                                            mensaje = "JUEGO EZ DUT"
+                                        mensaje.endsWith("JUEGO") -> {
+                                            mensaje = if (mensaje.startsWith("jokuaDaukat")) "JUEGO DAUKAT" else "JUEGO EZ DUT"
                                         }
                                     }
+
                                     withContext(Dispatchers.Main) {
-                                        showErabakiaPopup(serverId, uid, mensaje)
+                                        showErabakiaPopup(serverId, "", mensaje)
                                     }
-                                } else {
-                                    Log.e("PartidaActivity", "ERABAKIA formato inesperado: $erabakia")
                                 }
                             } catch (e: Exception) {
-                                Log.e("PartidaActivity", "Error procesando ERABAKIA: ${e.message}")
+                                Log.e("PartidaActivity", "Error ERABAKIA: ${e.message}")
                             }
                         }
                     }
@@ -467,16 +519,254 @@ class PartidaActivity : AppCompatActivity() {
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(this@PartidaActivity, "Konexio errorea: ${e.message}", Toast.LENGTH_LONG).show()
-                    Log.e("PartidaActivity", e.message, e)
                 }
             } finally {
                 socket?.close()
             }
         }
     }
+    private fun cobrarApuestaAlEmpezar() {
+        val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        val uid = prefs.getString("userRegistrado", "") ?: ""
+        if (uid.isEmpty()) return
+
+        val userRef = db.collection("Users").document(uid)
+
+        db.runTransaction { transaction ->
+            val snapshot = transaction.get(userRef)
+
+            // 1. Cobrar el dinero
+            val dineroStr = snapshot.getString("dinero") ?: "0"
+            val dineroActual = dineroStr.replace(",", ".").toDoubleOrNull() ?: 0.0
+            val nuevoSaldo = dineroActual - apuestaRealizada.toDouble()
+            val saldoFinalStr = "%.2f".format(java.util.Locale.US, nuevoSaldo)
+
+            transaction.update(userRef, "dinero", saldoFinalStr)
+
+            // 2. Sumar +1 a partidas totales (partidak)
+            val partidasTotales = snapshot.getLong("partidak") ?: 0L
+            transaction.update(userRef, "partidak", partidasTotales + 1)
+
+            null
+        }.addOnSuccessListener {
+            Log.d("Firebase", "Apuesta cobrada y partida registrada.")
+        }.addOnFailureListener { e ->
+            Log.e("Firebase", "Errorea kobratzerakoan: ${e.message}")
+        }
+    }
+    private fun actualizarMarcadorResumen(jokua: String, puntuazioa: String, ganadorRonda: Int) {
+        val marcador = findViewById<MaterialCardView>(R.id.marcadorPro)
+        findViewById<MaterialCardView>(R.id.cardRondaCentral).visibility = View.GONE
+
+        // Convertir la puntuación a Int (asegurándote de que no falle si viene vacío)
+        val puntosNuevos = puntuazioa.toIntOrNull() ?: 0
+
+        // Sumar los puntos al total global del equipo ganador
+        if (ganadorRonda == 1) {
+            puntosEquipo1 += puntosNuevos
+        } else if (ganadorRonda == 2) {
+            puntosEquipo2 += puntosNuevos
+        }
+
+        // Actualizamos el marcador de arriba de 5 en 5 inmediatamente
+        actualizarMarcadorPrincipal()
+
+        // --- El resto de tu lógica para rellenar el marcadorPro ---
+        val colorGanado = Color.parseColor("#4CAF50")
+        val colorPerdido = Color.parseColor("#F44336")
+        val colorResultado = if (ganadorRonda == miTalde) colorGanado else colorPerdido
+
+        val fase = jokua.uppercase().trim()
+
+        when (fase) {
+            "GRANDES" -> {
+                findViewById<TextView>(R.id.valHaundia).apply {
+                    text = puntuazioa
+                    setTextColor(colorResultado)
+                }
+            }
+            "PEQUEÑAS" -> {
+                findViewById<TextView>(R.id.valTxikia).apply {
+                    text = puntuazioa
+                    setTextColor(colorResultado)
+                }
+            }
+            "PARES" -> {
+                findViewById<TextView>(R.id.valPareak).apply {
+                    text = puntuazioa
+                    setTextColor(colorResultado)
+                }
+            }
+            "JUEGO", "PUNTO", "JOKUA", "PUNTUA" -> {
+                val labelJokua = findViewById<TextView>(R.id.labelJokua)
+                val valJokua = findViewById<TextView>(R.id.valJokua)
+                labelJokua.text = if (fase.contains("PUNT")) "PUNTUA" else "JOKUA"
+                valJokua.text = puntuazioa
+                valJokua.setTextColor(colorResultado)
+
+                // Mostrar el resumen flotante (marcadorPro) durante 5 segundos
+                marcador.visibility = View.VISIBLE
+                marcador.alpha = 0f
+                marcador.animate().alpha(1f).setDuration(500).start()
+
+                marcador.postDelayed({
+                    marcador.animate().alpha(0f).setDuration(500).withEndAction {
+                        marcador.visibility = View.GONE
+                    }
+                }, 5000)
+            }
+        }
+    }
+    private fun actualizarMarcadorPrincipal() {
+        // Cálculo para Equipo 1 (Etxekoak - Izquierda)
+        val amarracos1 = puntosEquipo1 / 5
+        val piedras1 = puntosEquipo1 % 5
+
+        findViewById<TextView>(R.id.leftScoreBox1).text = amarracos1.toString()
+        findViewById<TextView>(R.id.leftScoreBox2).text = piedras1.toString()
+
+        // Cálculo para Equipo 2 (Kanpokoak - Derecha)
+        val amarracos2 = puntosEquipo2 / 5
+        val piedras2 = puntosEquipo2 % 5
+
+        findViewById<TextView>(R.id.rightScoreBox1).text = amarracos2.toString()
+        findViewById<TextView>(R.id.rightScoreBox2).text = piedras2.toString()
+
+        // --- COMPROBACIÓN DE VICTORIA (40 puntos) ---
+        if (puntosEquipo1 >= 40 || puntosEquipo2 >= 40) {
+            findViewById<TextView>(R.id.leftScoreBox1).text = "0"
+            findViewById<TextView>(R.id.leftScoreBox2).text = "0"
+            findViewById<TextView>(R.id.rightScoreBox1).text = "0"
+            findViewById<TextView>(R.id.rightScoreBox2).text = "0"
+            val gureTaldeaIrabaziDu = if (puntosEquipo1 >= 40) miTalde == 1 else miTalde == 2
+
+            // Pequeño delay para que el usuario vea los últimos puntos en el marcador
+            Handler(Looper.getMainLooper()).postDelayed({
+                mostrarDialogoFinal(gureTaldeaIrabaziDu)
+            }, 1000)
+        }
+    }
+    private fun resetearTextosMarcador() {
+        findViewById<TextView>(R.id.valHaundia).text = ""
+        findViewById<TextView>(R.id.valTxikia).text = ""
+        findViewById<TextView>(R.id.valPareak).text = ""
+        findViewById<TextView>(R.id.valJokua).text = ""
+    }
+    private fun mostrarDialogoFinal(ganaste: Boolean) {
+        runOnUiThread {
+            val dialog = android.app.Dialog(this)
+            // Asegúrate de que el XML se llame exactamente así
+            val view = layoutInflater.inflate(R.layout.dialog_resultado_final, null)
+            dialog.setContentView(view)
+            dialog.setCancelable(false)
+            dialog.window?.apply {
+                setBackgroundDrawableResource(android.R.color.transparent)
+                setDimAmount(0.90f)
+            }
+
+            val titulo = view.findViewById<TextView>(R.id.txtTituloFinal)
+            val cuerpo = view.findViewById<TextView>(R.id.txtCuerpoFinal) // Asegúrate de que este ID existe en el XML
+            val mensaje = view.findViewById<TextView>(R.id.txtMensajeFinal)
+            val icono = view.findViewById<ImageView>(R.id.imgCopa)
+            val btn = view.findViewById<Button>(R.id.btnIrtenFinal)
+
+            if (ganaste) {
+                titulo.text = "ZORIONAK!"
+                titulo.setTextColor(Color.parseColor("#FFD700")) // Oro
+                val premio = apuestaRealizada * 2
+                cuerpo?.text = "IRABAZIA: +$premio €"
+                mensaje.text = "Partida bikaina!\nBenetako txapeldunak zarete."
+            } else {
+                titulo.text = "GALDU DUZUE"
+                titulo.setTextColor(Color.parseColor("#B0BEC5")) // Zilarra
+                cuerpo?.text = "GALDURA: -$apuestaRealizada €"
+                mensaje.text = "Gaur ez da zuen eguna izan.\nAnimo hurrengorako!"
+                icono.apply {
+                    alpha = 0.5f
+                    rotation = 15f
+                }
+            }
+
+            btn.setOnClickListener {
+                actualizarDineroFirebase(ganaste)
+                dialog.dismiss()
+                var inent = Intent(this@PartidaActivity, MainActivity::class.java)
+                startActivity(inent)
+            }
+
+            dialog.show()
+
+            // Animación Pop-up
+            view.alpha = 0f
+            view.scaleX = 0.5f
+            view.scaleY = 0.5f
+            view.animate()
+                .alpha(1f)
+                .scaleX(1f)
+                .scaleY(1f)
+                .setDuration(700)
+                .setInterpolator(android.view.animation.OvershootInterpolator(1.5f))
+                .start()
+        }
+    }
+
+    private fun actualizarDineroFirebase(ganaste: Boolean) {
+        if (!ganaste) return // Si ha perdido, el dinero ya se le quitó al empezar. No hacemos nada.
+
+        val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        val uid = prefs.getString("userRegistrado", "") ?: ""
+        if (uid.isEmpty()) return
+
+        val userRef = db.collection("Users").document(uid)
+
+        db.runTransaction { transaction ->
+            val snapshot = transaction.get(userRef)
+
+            // 1. Leer saldo actual (que ya tiene la apuesta restada)
+            val dineroStr = snapshot.getString("dinero") ?: "0"
+            val dineroActual = dineroStr.replace(",", ".").toDoubleOrNull() ?: 0.0
+
+            // 2. Sumar el premio (Apuesta original * 2)
+            // Ejemplo: apostó 10, se le quitaron 10. Ahora gana 20 (recupera sus 10 + 10 del rival)
+            val nuevoSaldo = dineroActual + (apuestaRealizada.toDouble() * 2)
+            val saldoFinalStr = "%.2f".format(java.util.Locale.US, nuevoSaldo)
+
+            // 3. Actualizar saldo y contador de victorias
+            transaction.update(userRef, "dinero", saldoFinalStr)
+
+            val victoriasActuales = snapshot.getLong("partidaIrabaziak") ?: 0L
+            transaction.update(userRef, "partidaIrabaziak", victoriasActuales + 1)
+
+            null
+        }.addOnSuccessListener {
+            Log.d("Firebase", "Saria emanda eta garaipena zenbatuta!")
+        }
+    }
 
 
+    // --- CORRECCIÓN DE IDS DE VISTAS (MUY IMPORTANTE PARA EVITAR CRASH) ---
 
+
+// MODIFICA EL BOTÓN DENTRO DE mostrarDialogoFinal
+
+    private fun cuandoPosicion(serverId: Int): String {
+        return when(serverId) {
+            1 -> "Left"
+            2 -> "Top"
+            3 -> "Right"
+            else -> "Bottom"
+        }
+    }
+
+    private fun getAnchorIdForServerId(serverId: Int): Int {
+        return when (serverId) {
+            0 -> R.id.infoBottom  // <-- Asegúrate de que este ID sea exacto al del XML
+            1 -> R.id.infoLeft
+            2 -> R.id.infoTop
+            3 -> R.id.infoRight
+            else -> R.id.infoBottom
+        }
+    }
     private fun showErabakiaPopup(serverId: Int, uid: String, mensaje: String) {
         runOnUiThread {
             try {
@@ -486,39 +776,44 @@ class PartidaActivity : AppCompatActivity() {
                 val yo = listaEsperaJugadores.find { it.second == miId }
                 val miTurno = yo?.third ?: 0
 
-                val posicionRelativa = when {
+                // 1. Determinar la posición relativa
+                val posicion = when {
                     serverId == miTurno -> "Bottom"
                     serverId == (miTurno + 1) % 4 -> "Right"
                     serverId == (miTurno + 3) % 4 -> "Left"
                     else -> "Top"
                 }
 
-                val anchorId = resources.getIdentifier("info$posicionRelativa", "id", packageName)
-                val anchorView = findViewById<View>(anchorId) ?: return@runOnUiThread
+                // 2. Buscar el TextView correspondiente en el layout
+                val viewId = resources.getIdentifier("status$posicion", "id", packageName)
+                val statusTextView = findViewById<TextView>(viewId)
 
-                val popupView = layoutInflater.inflate(R.layout.popup_erabakia, null)
-                val tv = popupView.findViewById<TextView>(R.id.popupText)
-                tv.text = mensaje.uppercase()
+                statusTextView?.apply {
+                    text = mensaje.uppercase()
+                    visibility = View.VISIBLE
+                    alpha = 0f
+                    translationY = 30f // Efecto de subir
 
-                val popup = PopupWindow(
-                    popupView,
-                    WindowManager.LayoutParams.WRAP_CONTENT,
-                    WindowManager.LayoutParams.WRAP_CONTENT,
-                    false
-                ).apply {
-                    elevation = 12f
-                    isOutsideTouchable = true
-                    isTouchable = false
+                    // Animación de entrada
+                    animate()
+                        .alpha(1f)
+                        .translationY(0f)
+                        .setDuration(400)
+                        .withEndAction {
+                            // Se queda 3 segundos y desaparece
+                            postDelayed({
+                                animate()
+                                    .alpha(0f)
+                                    .translationY(-20f) // Efecto de seguir subiendo al irse
+                                    .setDuration(400)
+                                    .withEndAction { visibility = View.GONE }
+                                    .start()
+                            }, 3000)
+                        }
+                        .start()
                 }
-
-                val yOffset = -anchorView.height - 16
-                popup.showAsDropDown(anchorView, 0, yOffset, Gravity.CENTER)
-
-                Handler(Looper.getMainLooper()).postDelayed({
-                    if (popup.isShowing) popup.dismiss()
-                }, 3000)
             } catch (e: Exception) {
-                Log.e("PartidaActivity", "Error mostrando popup ERABAKIA: ${e.message}")
+                Log.e("PartidaActivity", "Error mostrando status: ${e.message}")
             }
         }
     }
@@ -577,17 +872,52 @@ class PartidaActivity : AppCompatActivity() {
                 suTurno == (miTurno + 3) % 4 -> "Left"
                 else -> "Top"
             }
-            activarTemporizador(posicion)
+
+            runOnUiThread {
+                ocultarTodasLasBarras()
+                activarTemporizador(posicion)
+            }
+        }
+    }
+
+    private fun ocultarTodasLasBarras() {
+        countDownTimer?.cancel() // Detener el reloj actual
+
+        val layoutIds = listOf(
+            R.id.progressBottom,
+            R.id.progressTop,
+            R.id.progressLeft,
+            R.id.progressRight
+        )
+
+        layoutIds.forEach { id ->
+            val pb = findViewById<ProgressBar>(id)
+            pb?.apply {
+                visibility = View.INVISIBLE // O GONE si prefieres que no ocupe espacio
+                progress = 0
+            }
         }
     }
 
     private fun activarTemporizador(posicion: String) {
+        // 1. Cancelar el timer anterior si existe para que no siga restando
         countDownTimer?.cancel()
 
-        // Resetear TODAS las barras para que no se solapen
-        val ids = listOf(R.id.progressBottom, R.id.progressTop, R.id.progressLeft, R.id.progressRight)
-        ids.forEach { id -> findViewById<ProgressBar>(id)?.visibility = View.INVISIBLE }
+        // 2. Lista de todas las progress bars para resetearlas
+        val progressBars = listOf(
+            findViewById<ProgressBar>(R.id.progressBottom),
+            findViewById<ProgressBar>(R.id.progressTop),
+            findViewById<ProgressBar>(R.id.progressLeft),
+            findViewById<ProgressBar>(R.id.progressRight)
+        )
 
+        // 3. Ocultar TODAS y ponerlas a 0
+        progressBars.forEach { pb ->
+            pb?.visibility = View.INVISIBLE
+            pb?.progress = 0
+        }
+
+        // 4. Identificar la barra actual
         val progressId = when (posicion) {
             "Bottom" -> R.id.progressBottom
             "Top" -> R.id.progressTop
@@ -596,8 +926,10 @@ class PartidaActivity : AppCompatActivity() {
             else -> null
         }
 
-        val pb = progressId?.let { findViewById<ProgressBar>(it) }
-        pb?.apply {
+        val pbActual = progressId?.let { findViewById<ProgressBar>(it) }
+
+        // 5. Configurar y arrancar la barra del turno actual
+        pbActual?.apply {
             visibility = View.VISIBLE
             progress = 100
             max = 100
@@ -606,13 +938,14 @@ class PartidaActivity : AppCompatActivity() {
         countDownTimer = object : CountDownTimer(10000, 50) {
             override fun onTick(millisUntilFinished: Long) {
                 val progreso = (millisUntilFinished.toFloat() / 10000 * 100).toInt()
-                pb?.progress = progreso
+                pbActual?.progress = progreso
             }
             override fun onFinish() {
-                pb?.visibility = View.INVISIBLE
+                pbActual?.visibility = View.INVISIBLE
             }
         }.start()
     }
+
     private fun cargarInfoEnVista(uid: String, posicion: String) {
         db.collection("Users").document(uid).get()
             .addOnSuccessListener { document ->
@@ -667,39 +1000,28 @@ class PartidaActivity : AppCompatActivity() {
             tv.text = mensaje.uppercase()
             tv.visibility = View.VISIBLE
 
-            when (mensaje.lowercase()) {
-                "mus" -> tv.setTextColor(android.graphics.Color.parseColor("#FFEB3B")) // Amarillo
-                "envido", "2" -> tv.setTextColor(android.graphics.Color.parseColor("#4CAF50")) // Verde
-                "ordago" -> tv.setTextColor(android.graphics.Color.parseColor("#FF5252")) // Rojo
-                else -> tv.setTextColor(android.graphics.Color.WHITE)
-            }
 
             tv.alpha = 0f
             tv.scaleX = 0.5f
             tv.scaleY = 0.5f
             tv.animate()
                 .alpha(1f)
-                .scaleX(1.2f)
-                .scaleY(1.2f)
-                .setDuration(300)
+                .scaleX(1.1f)
+                .scaleY(1.1f)
+                .setDuration(250)
                 .withEndAction {
-                    tv.animate().scaleX(1.0f).scaleY(1.0f).setDuration(100)
+                    tv.animate().scaleX(1f).scaleY(1f).setDuration(100)
                 }
 
-            // 4. Desvanecer después de 3 segundos
-            tv.removeCallbacks(null) // Limpiar callbacks previos si el jugador habla rápido
             tv.postDelayed({
                 tv.animate()
                     .alpha(0f)
-                    .scaleX(0.8f)
-                    .scaleY(0.8f)
                     .setDuration(400)
-                    .withEndAction {
-                        tv.visibility = View.GONE
-                    }
+                    .withEndAction { tv.visibility = View.GONE }
             }, 3000)
         }
     }
+
 
     private suspend fun recibirCartas(reader: BufferedReader, cantidad: Int) {
         currentCards.clear()
@@ -733,7 +1055,7 @@ class PartidaActivity : AppCompatActivity() {
         runOnUiThread {
             btnMus.visibility = View.GONE
             btnPasar.visibility = View.GONE
-            btnEnvido.visibility = View.GONE
+
             btnEnvidoMas.visibility = View.GONE
             btnQuiero.visibility = View.GONE
             btnDeskartea.visibility = View.GONE
@@ -748,7 +1070,7 @@ class PartidaActivity : AppCompatActivity() {
             btnPasar.visibility = estado
             // Asegurarnos de que el resto estén ocultos
             if (visible) {
-                btnEnvido.visibility = View.GONE
+
                 btnEnvidoMas.visibility = View.GONE
                 btnQuiero.visibility = View.GONE
                 layoutSelector.visibility = View.GONE
@@ -759,27 +1081,24 @@ class PartidaActivity : AppCompatActivity() {
     private fun toggleEnvidoButtons(visible: Boolean) {
         runOnUiThread {
             if (!visible) {
-                btnEnvido.visibility = View.GONE
+
                 btnEnvidoMas.visibility = View.GONE
                 btnPasar.visibility = View.GONE
                 btnQuiero.visibility = View.GONE
                 layoutSelector.visibility = View.GONE
             } else {
-                // Lógica de juego:
                 btnPasar.visibility = View.VISIBLE
 
-                // Si no hay órdago previo, permitimos apostar
-                btnEnvido.visibility = if (ordagoOn) View.GONE else View.VISIBLE
-                btnEnvidoMas.visibility = if (ordagoOn) View.GONE else View.VISIBLE
 
-                // Solo mostramos "Quiero" si alguien ha envidado o pedido órdago antes
+                btnEnvidoMas.visibility = View.VISIBLE
+
                 btnQuiero.visibility = if (envidoOn || ordagoOn) View.VISIBLE else View.GONE
 
-                // Asegurarnos de que el botón de Mus esté oculto en esta fase
                 btnMus.visibility = View.GONE
             }
         }
     }
+
     private var gameTimer: android.os.CountDownTimer? = null
 
     private fun startTurnTimer(autoResponse: String) {

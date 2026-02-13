@@ -27,6 +27,7 @@ class DuoActivity : BaseActivity() {
     private val realtimeDb =
         FirebaseDatabase.getInstance("https://musroyale-488aa-default-rtdb.europe-west1.firebasedatabase.app/")
     private var idPartidaRecibida: String? = null
+    private var apuestaDeLaPartida: Int = 0 // Variable global en la clase
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -43,7 +44,6 @@ class DuoActivity : BaseActivity() {
         currentUser = prefs.getString("userRegistrado", null) ?: ""
 
         binding.erregekopuruaLabel.visibility = View.VISIBLE
-        binding.toggleGroupReyes.visibility = View.VISIBLE
         binding.apostuaLabel.visibility = View.VISIBLE
         binding.btnMinus.visibility = View.VISIBLE
         binding.btnPlus.visibility = View.VISIBLE
@@ -61,8 +61,23 @@ class DuoActivity : BaseActivity() {
         }
 
         binding.btnPlay.setOnClickListener {
-            val apuesta = binding.etApuestaValue.text.toString()
-            Toast.makeText(this, "Partida hasten: $apuesta fitxa", Toast.LENGTH_SHORT).show()
+            val apuesta = binding.etApuestaValue.text.toString().toIntOrNull() ?: 0
+
+            // Consultar saldo en Firestore
+            db.collection("Users").document(currentUser).get().addOnSuccessListener { doc ->
+                val dineroStr = doc.getString("dinero") ?: "0"
+                val dineroActual = dineroStr.replace(",", ".").toDoubleOrNull() ?: 0.0
+
+                if (dineroActual >= apuesta) {
+                    // Si tiene dinero, actualizamos Firebase para que el receptor también entre
+                    idPartidaActiva?.let { id ->
+                        db.collection("PartidaDuo").document(id).update("jokatu", true)
+                            .addOnSuccessListener { irAPartida(id) }
+                    }
+                } else {
+                    Toast.makeText(this, "Ez duzu nahiko diru!", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
@@ -159,15 +174,16 @@ class DuoActivity : BaseActivity() {
                 binding.btnPlay.visibility = View.GONE
                 binding.btnInviteFriend.visibility = View.GONE
                 binding.layoutGuestProfile.visibility = View.VISIBLE
-
+                apuestaDeLaPartida = doc.getLong("apuesta")?.toInt() ?: 0
                 // Ocultar selectores de apuestas/reyes si los tienes
-                binding.toggleGroupReyes?.visibility = View.GONE
                 binding.btnPlus?.visibility = View.GONE
                 binding.btnMinus?.visibility = View.GONE
                 binding.apostuwhite.visibility = View.GONE
                 binding.erregekopuruaLabel.visibility = View.GONE
                 binding.apostuaLabel.visibility = View.GONE
 
+                binding.etApuestaValue.setText(apuestaDeLaPartida.toString())
+                binding.etApuestaValue.isEnabled = false // El receptor no puede cambiarla
                 val onartua = doc.getBoolean("onartua") ?: false
                 val jokatu = doc.getBoolean("jokatu") ?: false
 
@@ -203,7 +219,7 @@ class DuoActivity : BaseActivity() {
                     setupVistasNuevoEmisor()
                     return@addSnapshotListener
                 }
-
+                apuestaDeLaPartida = doc.getLong("apuesta")?.toInt() ?: 0
                 val onartua = doc.getBoolean("onartua") ?: false
 
                 if (onartua) {
@@ -242,9 +258,16 @@ class DuoActivity : BaseActivity() {
 
     private fun irAPartida(idPartida: String) {
         val codigo = "ID_ESKATU"
-        val intent = Intent(this, PartidaActivity::class.java)
-        intent.putExtra(PartidaActivity.EXTRA_PARAM, codigo)
+        val intent = Intent(this, PartidaActivity::class.java).apply {
+            putExtra(PartidaActivity.EXTRA_PARAM, codigo)
+            // Pasamos la apuesta recuperada de Firestore
+            putExtra("APUESTA_CANTIDAD", apuestaDeLaPartida)
+        }
+
+        // Solo el emisor debería borrar el documento, o lo borramos al terminar
+        // Si lo borras aquí, asegúrate de que el receptor ya lo haya leído
         db.collection("PartidaDuo").document(idPartida).delete()
+
         startActivity(intent)
         finish()
     }
@@ -313,6 +336,9 @@ class DuoActivity : BaseActivity() {
         }
 
         private fun invitarAmigo(userid: String) {
+            // Leemos la apuesta del EditText del layout
+            val apuestaValor = binding.etApuestaValue.text.toString().toIntOrNull() ?: 0
+
             val nuevaPartidaRef = db.collection("PartidaDuo").document()
             val idPartidaGenerada = nuevaPartidaRef.id
 
@@ -320,12 +346,12 @@ class DuoActivity : BaseActivity() {
                 "idemisor" to currentUser,
                 "idreceptor" to userid,
                 "onartua" to false,
-                "jokatu" to false
+                "jokatu" to false,
+                "apuesta" to apuestaValor // <--- Guardamos la apuesta aquí
             )
 
             nuevaPartidaRef.set(datosPartida).addOnSuccessListener {
-                Toast.makeText(this@DuoActivity, "Gonbidapena bidali da!", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(this@DuoActivity, "Gonbidapena bidali da!", Toast.LENGTH_SHORT).show()
                 idPartidaActiva = idPartidaGenerada
                 esemisor = true
                 escucharComoEmisor(idPartidaGenerada)
