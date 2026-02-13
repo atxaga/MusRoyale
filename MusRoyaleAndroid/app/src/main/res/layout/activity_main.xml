@@ -79,7 +79,7 @@
                 android:orientation="horizontal"
                 app:layout_constraintTop_toTopOf="@id/containerHeaderAvatar"
                 app:layout_constraintStart_toEndOf="@id/containerHeaderAvatar"
-                app:layout_constraintEnd_toStartOf="@id/btnSettings">
+                app:layout_constraintEnd_toStartOf="@id/btnLogout">
                 <TextView
                     android:id="@+id/txtUsername"
                     android:layout_width="wrap_content"
@@ -123,7 +123,7 @@
                 android:visibility="gone"
                 app:tint="#FFD700"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/btnSettings" />
+                app:layout_constraintEnd_toStartOf="@id/btnLogout" />
 
             <LinearLayout
                 android:id="@+id/walletContainer"

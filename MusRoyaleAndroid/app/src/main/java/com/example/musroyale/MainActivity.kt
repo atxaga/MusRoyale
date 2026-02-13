@@ -30,7 +30,9 @@ class MainActivity : BaseActivity() {
     private var userListener: com.google.firebase.firestore.ListenerRegistration? = null
     private var chatNotificationsListener: com.google.firebase.firestore.ListenerRegistration? = null
     private val amigosListeners = mutableMapOf<String, com.google.firebase.database.ValueEventListener>()
-    private val sessionID = java.util.UUID.randomUUID().toString()
+    companion object {
+        val sessionID: String = java.util.UUID.randomUUID().toString()
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -69,18 +71,17 @@ class MainActivity : BaseActivity() {
         val database = FirebaseDatabase.getInstance("https://musroyale-488aa-default-rtdb.europe-west1.firebasedatabase.app/")
         val sessionRef = database.getReference("sesiones_activas/$uid")
 
-        sessionRef.setValue(sessionID).addOnSuccessListener {
-
+        // Usamos MainActivity.sessionID (el estático)
+        sessionRef.setValue(MainActivity.sessionID).addOnSuccessListener {
             configurarSistemaPresencia(uid)
 
-            // 3. Empezamos a escuchar cambios por si otro dispositivo entra
             sessionRef.addValueEventListener(object : com.google.firebase.database.ValueEventListener {
                 override fun onDataChange(snapshot: com.google.firebase.database.DataSnapshot) {
                     val idEnServidor = snapshot.getValue(String::class.java)
 
-                    if (idEnServidor != null && idEnServidor != sessionID) {
-                        // Si el ID cambia, es que alguien más ha tomado el control
-                        Toast.makeText(this@MainActivity, "Beste gailu batean sartu zara. Saioa ixten...", Toast.LENGTH_LONG).show()
+                    // Comparamos contra el ID estático
+                    if (idEnServidor != null && idEnServidor != MainActivity.sessionID) {
+                        Toast.makeText(this@MainActivity, "Beste gailu batean sartu zara...", Toast.LENGTH_LONG).show()
                         logout()
                     }
                 }

@@ -40,7 +40,7 @@ class PartidaActivity : AppCompatActivity() {
         const val EXTRA_CODE = "com.example.musroyale.EXTRA_CODE"
     }
 
-    private val serverHost = "3.237.21.174"
+    private val serverHost = "3.236.148.195"
     private val db = com.google.firebase.firestore.FirebaseFirestore.getInstance()
 
     private val serverPort = 13000
@@ -108,9 +108,7 @@ class PartidaActivity : AppCompatActivity() {
         layoutSelector = findViewById(R.id.layoutSelectorEnvido)
         val txtCantidad = findViewById<TextView>(R.id.txtCantidadEnvido)
 
-        // --- LÓGICA DEL SELECTOR BEIGE (ENVITE) ---
 
-        // 1. Mostrar el selector al pulsar ENVIDO
         btnEnvidoMas.setOnClickListener {
             // Ocultamos la fila de botones principal
             btnPasar.visibility = View.GONE
@@ -284,9 +282,11 @@ class PartidaActivity : AppCompatActivity() {
 
                 while (true) {
                     val serverMsg = reader.readLine() ?: break
-                    findViewById<MaterialCardView>(R.id.cardRondaCentral).visibility = View.VISIBLE
-                    findViewById<TextView>(R.id.txtRondaActual).text = "MUS"
-
+                    withContext(Dispatchers.Main) {
+                        findViewById<MaterialCardView>(R.id.cardRondaCentral).visibility =
+                            View.GONE
+                        findViewById<TextView>(R.id.txtRondaActual).text = "MUS"
+                    }
 
                     when {
                         serverMsg.startsWith("ACTION:") -> {
