@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "com.example.musroyale.app-mergeDebugResources-42:/layout/erregitro_activity.xml",
+        "source": "com.example.musroyale.app-main-45:/layout/erregitro_activity.xml"
+    },
+    {
+        "merged": "com.example.musroyale.app-mergeDebugResources-42:/layout/login_activity.xml",
+        "source": "com.example.musroyale.app-main-45:/layout/login_activity.xml"
+    }
+]

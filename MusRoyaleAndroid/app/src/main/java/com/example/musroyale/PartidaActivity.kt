@@ -40,7 +40,7 @@ class PartidaActivity : AppCompatActivity() {
         const val EXTRA_CODE = "com.example.musroyale.EXTRA_CODE"
     }
 
-    private val serverHost = "3.236.148.195"
+    private val serverHost = "52.72.136.36"
     private val db = com.google.firebase.firestore.FirebaseFirestore.getInstance()
 
     private val serverPort = 13000
