@@ -27,6 +27,9 @@ import java.io.InputStreamReader
 import java.net.InetSocketAddress
 import java.net.Socket
 import android.widget.TextView
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.android.material.card.MaterialCardView
 import kotlinx.coroutines.delay
@@ -201,6 +204,7 @@ class PartidaActivity : AppCompatActivity() {
         setupCardClick(bottomCard2, 1)
         setupCardClick(bottomCard3, 2)
         setupCardClick(bottomCard4, 3)
+        ocultarBarrasSistema()
 
         // --- LISTENERS DE LOS BOTONES CON R.ID ---
         btnMus.setOnClickListener {
@@ -524,6 +528,16 @@ class PartidaActivity : AppCompatActivity() {
                 socket?.close()
             }
         }
+    }
+    private fun ocultarBarrasSistema() {
+        val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
+        windowInsetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) ocultarBarrasSistema()
     }
     private fun cobrarApuestaAlEmpezar() {
         val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
