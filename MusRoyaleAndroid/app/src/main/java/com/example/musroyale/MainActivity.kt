@@ -12,6 +12,9 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.musroyale.databinding.ActivityMainBinding
@@ -150,7 +153,7 @@ class MainActivity : BaseActivity() {
         binding.tabChat.setOnClickListener {
             startActivity(Intent(this, ChatSplitActivity::class.java))
         }
-
+        ocultarBarrasSistema()
         // Posición inicial
         binding.footer.post {
             updateTabUI(binding.tabPlay, binding.imgPlay, animate = false)
@@ -225,7 +228,16 @@ class MainActivity : BaseActivity() {
             .setTransition(androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_FADE)
             .commit()
     }
+    private fun ocultarBarrasSistema() {
+        val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
+        windowInsetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
+    }
 
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) ocultarBarrasSistema()
+    }
 
     private fun cargarDatosUser() {
         if (currentUserId == null) return
