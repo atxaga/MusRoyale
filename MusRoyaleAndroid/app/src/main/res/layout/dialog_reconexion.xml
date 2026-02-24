@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="320dp"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="24dp"
+    app:cardElevation="12dp"
+    app:cardBackgroundColor="#1B5E20"
+    app:strokeWidth="2dp"
+    app:strokeColor="#80FFFFFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:gravity="center">
+
+        <ImageView
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@android:drawable/stat_sys_warning"
+            app:tint="#FFD700"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:id="@+id/txtTituloReconexion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PARTIDA AURKITUA"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.1"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/txtMensajeReconexion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Jokoan zaude oraindik.\nBerriro konektatu nahi duzu?"
+            android:textColor="#BDBDBD"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:layout_marginBottom="24dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnIgnorar"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="6dp"
+                android:text="EZ"
+                android:textColor="#FFFFFF"
+                app:strokeColor="#FFFFFF"
+                app:cornerRadius="12dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnReconectar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="6dp"
+                android:text="BAI"
+                android:textColor="#1B5E20"
+                app:backgroundTint="#FFD700"
+                app:cornerRadius="12dp"
+                android:textStyle="bold"/>
+        </LinearLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

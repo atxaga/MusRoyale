@@ -54,6 +54,7 @@
         <item name="android:textColorPrimary">#3E2723</item>
         <item name="colorAccent">#8D6E63</item>
     </style>
+
     <style name="ShapeAppearance.MaterialComponents.MediumComponent" parent="">
         <item name="cornerSize">20dp</item>
     </style>

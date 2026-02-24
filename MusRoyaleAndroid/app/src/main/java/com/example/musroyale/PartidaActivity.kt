@@ -160,7 +160,7 @@ class PartidaActivity : AppCompatActivity() {
             decisionContinuation?.resume("ordago", null)
             layoutSelector.visibility = View.GONE
 
-             findViewById<ProgressBar>(R.id.progressBottom).visibility = View.GONE
+            findViewById<ProgressBar>(R.id.progressBottom).visibility = View.GONE
 
         }
         txtUtzi.setOnClickListener {
@@ -318,7 +318,7 @@ class PartidaActivity : AppCompatActivity() {
                         serverMsg.startsWith("RONDA:") -> {
                             val ronda = serverMsg.substringAfter("RONDA:")
                             withContext(Dispatchers.Main) {
-                                findViewById<MaterialCardView>(R.id.cardRondaCentral).visibility = View.VISIBLE
+                                findViewById<MaterialCardView>(R.id.containerInfoJuego).visibility = View.VISIBLE
                                 roundLabel.text = ronda
                                 findViewById<TextView>(R.id.txtRondaActual).text = ronda
                             }
@@ -375,7 +375,7 @@ class PartidaActivity : AppCompatActivity() {
 
                         serverMsg == "CARDS" -> {
                             withContext(Dispatchers.Main) {
-                                findViewById<MaterialCardView>(R.id.cardRondaCentral).visibility = View.VISIBLE
+                                findViewById<MaterialCardView>(R.id.containerInfoJuego).visibility = View.VISIBLE
                                 cobrarApuestaAlEmpezar()
                                 findViewById<LinearLayout>(R.id.layoutSalaEspera).visibility = View.GONE
                                 roundLabel.text = "BANATZEN"
@@ -570,7 +570,7 @@ class PartidaActivity : AppCompatActivity() {
     }
     private fun actualizarMarcadorResumen(jokua: String, puntuazioa: String, ganadorRonda: Int) {
         val marcador = findViewById<MaterialCardView>(R.id.marcadorPro)
-        findViewById<MaterialCardView>(R.id.cardRondaCentral).visibility = View.GONE
+        findViewById<MaterialCardView>(R.id.containerInfoJuego).visibility = View.GONE
 
         // Convertir la puntuación a Int (asegurándote de que no falle si viene vacío)
         val puntosNuevos = puntuazioa.toIntOrNull() ?: 0

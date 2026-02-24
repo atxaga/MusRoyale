@@ -1,6 +1,7 @@
 package com.example.musroyale
 
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -12,6 +13,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -68,6 +70,7 @@ class MainActivity : BaseActivity() {
         cargarDatosUser()
         validarSesionUnica(currentUserId!!)
         escucharSolicitudes()
+
     }
 
     private fun validarSesionUnica(uid: String) {
@@ -500,7 +503,7 @@ class MainActivity : BaseActivity() {
     override fun onDestroy() {
         super.onDestroy()
         userListener?.remove()
-        chatNotificationsListener?.remove()
+                chatNotificationsListener?.remove()
 
         // Eliminar todos los listeners de amigos
         amigosListeners.forEach { (id, listener) ->

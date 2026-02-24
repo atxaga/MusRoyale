@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="8dp"
+    app:cardBackgroundColor="#1B5E20"
+    app:strokeWidth="2dp"
+    app:strokeColor="#40FFFFFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:gravity="center">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@android:drawable/ic_dialog_alert"
+            app:tint="#FFD700"
+            android:layout_marginBottom="12dp"/>
+
+        <TextView
+            android:id="@+id/txtTituloAlerta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="KONEXIOA GALDU DA"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/txtMensajeAlerta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Jokalari batek partida utzi du edo zerbitzaria erori da."
+            android:textColor="#E0E0E0"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:layout_marginBottom="20dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAceptarFallo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="HASIERARA BUELTATU"
+            android:textColor="#1B5E20"
+            app:backgroundTint="#FFD700"
+            app:cornerRadius="10dp"
+            android:textStyle="bold"
+            app:rippleColor="#4D000000"/>
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>
