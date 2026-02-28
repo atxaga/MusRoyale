@@ -1,5 +1,5 @@
 MusRayale: Erabiltzaile Gida eta Funtzionamendua
-MusRayale WPF (.NET) teknologian garatutako plataforma digitala da, Euskal Herriko mus joko tradizionala ingurune lehiakor eta moderno batera egokitzen duena. Gida honetan aplikazioaren funtzionamendua zehazten da, kontuaren kudeaketatik hasi eta denbora errealeko jokoaren mekaniketaraino.
+MusRayale Euskal Herriko mus joko tradizionala ingurune lehiakor eta moderno batera egokitzen du. Gida honetan aplikazioaren funtzionamendua zehazten da, kontuaren kudeaketatik hasi eta denbora errealeko jokoaren mekaniketaraino.
 
 🚀 Lehen Urratsak
 1. Autentifikazioa eta Profila
