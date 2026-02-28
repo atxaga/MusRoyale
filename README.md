@@ -1,56 +1,54 @@
-🎴 MusRoyale - Denbora Errealeko Mus Jokoa
-MusRoyale Android plataforma lehiakor bat da, Mus joko tradizionalaren esperientzia estrategikoa mundu digitalera eramaten duena. Proiektu honek denbora errealeko sare-arkitektura eta moneta birtualean oinarritutako sistema ekonomiko bat uztartzen ditu.
+MusRayale: Erabiltzaile Gida eta Funtzionamendua
+MusRayale WPF (.NET) teknologian garatutako plataforma digitala da, Euskal Herriko mus joko tradizionala ingurune lehiakor eta moderno batera egokitzen duena. Gida honetan aplikazioaren funtzionamendua zehazten da, kontuaren kudeaketatik hasi eta denbora errealeko jokoaren mekaniketaraino.
 
-🚀 Ezaugarri Nagusiak
-Denbora Errealeko Multijokalaria: 4 jokalariko partidak (2 vs 2) sinkronizatuta, TCP Socket komunikazio iraunkorraren bidez.
+🚀 Lehen Urratsak
+1. Autentifikazioa eta Profila
+Erregistroa/Login: Erabiltzaileek kontu bat sortu behar dute posta elektroniko eta pasahitz bidez. Behin autentifikatuta, panel nagusira sartuko dira.
 
-Mus Logika Osoa: Jokoaren fase guztien inplementazioa:
+Profilaren Kudeaketa: Profilaren atalean, zure datuak egunera ditzakezu (izena, emaila, pasahitza) eta zure joko-estatistikak kontsultatu: irabazitako/galdutako partidak, jokatutako partida guztiak eta pilatutako saldoa.
 
-Mus (Eskartatze fasea).
+2. Konektibitatea eta Gizarte-Atala
+Lagun Sistema: Beste erabiltzaileak bilatu, lagun-eskaerak bidali eta jasotako gonbidapenak kudea ditzakezu.
 
-Haundia, Txikia, Pareak eta Jokua/Puntua.
+Denbora Errealeko Txata: Zure lagunen zerrendarekin zuzeneko komunikazioa, partidak koordinatzeko edo jokaldiak komentatzeko.
 
-Enbidoen kudeaketa, Órdagoak eta amarracoen kontaketa automatikoa.
+🎮 Joko Modalitateak
+👥 Bikoteak (Lagun batekin jokatzeko)
+Funtzionalitate honek zure zerrendako kontaktu batekin taldea osatzeko aukera ematen du:
 
-Matchmaking Sistema (Partidak Bilatzea):
+Gonbidapena: "Lagunak" ataletik edo "Bikoteak" menutik, konektatuta dagoen lagun bat hautatu eta zure taldera gonbida dezakezu.
 
-Saio Publikoak: Sartu partida azkar batean zure apustuaren arabera.
+Taldea Osatzea: Zure lagunak gonbidapena onartzen duenean, biak taldekide gisa sartuko zarete gela berean (Etxekoak).
 
-Saio Pribatuak: Sortu edo elkartu lagunekin kode baten bidez.
+Aurkarien Bilaketa: Sistemak automatikoki beste bikote bat edo bi jokalari banakako bilatuko ditu 4 jokalariko mahaia osatzeko.
 
-Ekonomia eta Profila:
+⏱️ Partida Azkarra
+Berehala jokatzeko aproposa. Sistemak matchmaking automatikoa egiten du ausazko 4 jokalari elkartzeko.
 
-Diru birtualaren kudeaketa Firebase Firestore bidez.
+🔐 Partida Pribatua (Kodea)
+Anfitrioia: Kode bakar bat sortzen du Pop-up baten bidez.
 
-Avatar pertsonalizatuen aukeraketa.
+Gonbidatuak: Kode hori sartzen dute sarrera-eremuan anfitrioiaren gela pribatuan sartzeko.
 
-Estatistiken historiala (jokatutakoak, irabazitakoak eta galdutakoak).
+🃏 Jokoaren Mekanika (Gameplay)
+Jokoa zerbitzariak sinkronizatutako txanda-ziklo batek gobernatzen du:
 
-Segurtasuna eta Saio-hasiera:
+Mus Fasea:
 
-Saio bakarraren balidazioa Firebase Realtime Database bidez, gailu ezberdinetatik aldi berean sartzea ekiditeko.
+Jokalari bakoitzak 4 karta jasotzen ditu.
 
-Monetizazioa: * Sari-iragarkiak (Rewarded Ads) urre gehigarria lortzeko.
+Guztiek "Mus" hautatzen badute, kartak deskartatu daitezke karta berriak jasotzeko.
 
-Kripto-ordainketen simulazioa saldoa kargatzeko.
+Norbaitek "Paso" hautatzen badu, musa moztu egiten da eta apustuen fasea hasten da.
 
-🛠️ Stack Teknologikoa
-Hizkuntza: Kotlin 1.9+
+Apustu Faseak (Lantzeak):
 
-Arkitektura: MVVM, Coroutines eta LifecycleScope erabiliz prozesu asinkronoak kudeatzeko.
+Apustu-sekuentzia hau gertatzen da: Handia, Txikia, Pareak eta Jokoa/Puntua.
 
-Backend eta Datubaseak:
+Interfazeak botoi dinamikoak gaitzen ditu (Envido, Órdago, Paso, Quiero) zure txanda eta aurkarien ekintzen arabera.
 
-Firebase Firestore: Profilak eta ekonomia.
+Puntuazio Automatizatua:
 
-Firebase Realtime Database: Presentzia sistema eta saioen kontrola.
+Zerbitzariak puntuak automatikoki kalkulatzen ditu eta markagailuan animazioen bidez erakusten dira.
 
-Java Sockets: Latentzia baxuko komunikazioa joko-zerbitzariarekin.
-
-UI/UX:
-
-Material Design osagaiak.
-
-Modu Inmersiboa (Pantaila osoa) joko esperientzia hobetzeko.
-
-Animazio pertsonalizatuak kartetan eta erronden trantsizioetan.
+Puntu-muga lortzean, irabazlea erakusten da eta profilaren estatistikak automatikoki eguneratzen dira.
