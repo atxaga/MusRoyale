@@ -1,54 +1,60 @@
-MusRayale: Erabiltzaile Gida eta Funtzionamendua
-MusRayale Euskal Herriko mus joko tradizionala ingurune lehiakor eta moderno batera egokitzen du. Gida honetan aplikazioaren funtzionamendua zehazten da, kontuaren kudeaketatik hasi eta denbora errealeko jokoaren mekaniketaraino.
+Hona hemen zure GitHub README.md fitxategirako diseinatutako bertsioa, Android Studio-ra egokituta eta formatu profesionalarekin.
 
-🚀 Lehen Urratsak
-1. Autentifikazioa eta Profila
-Erregistroa/Login: Erabiltzaileek kontu bat sortu behar dute posta elektroniko eta pasahitz bidez. Behin autentifikatuta, panel nagusira sartuko dira.
+Kopiatu eta itsatsi ondorengo blokea zure README.md fitxategian:
 
-Profilaren Kudeaketa: Profilaren atalean, zure datuak egunera ditzakezu (izena, emaila, pasahitza) eta zure joko-estatistikak kontsultatu: irabazitako/galdutako partidak, jokatutako partida guztiak eta pilatutako saldoa.
+Markdown
+# 🎴 MusRayale
 
-2. Konektibitatea eta Gizarte-Atala
-Lagun Sistema: Beste erabiltzaileak bilatu, lagun-eskaerak bidali eta jasotako gonbidapenak kudea ditzakezu.
+**MusRayale** Android (Kotlin/Java) teknologian garatutako plataforma digitala da, Euskal Herriko mus joko tradizionala gailu mugikorretara egokitzen duena. Proiektu honek denbora errealeko joko-esperientzia bat eskaintzen du, erabiltzaileek mundu osoko beste jokalari batzuekin edo lagunekin jokatzeko aukera izanik, edonon daudela ere.
 
-Denbora Errealeko Txata: Zure lagunen zerrendarekin zuzeneko komunikazioa, partidak koordinatzeko edo jokaldiak komentatzeko.
+---
 
-🎮 Joko Modalitateak
-👥 Bikoteak (Lagun batekin jokatzeko)
-Funtzionalitate honek zure zerrendako kontaktu batekin taldea osatzeko aukera ematen du:
+## 🚀 Ezaugarri Nagusiak
 
-Gonbidapena: "Lagunak" ataletik edo "Bikoteak" menutik, konektatuta dagoen lagun bat hautatu eta zure taldera gonbida dezakezu.
+* **⚡ Partida Azkarrak:** Aurkitu aurkariak berehala *matchmaking* automatikoarekin.
+* **👥 Bikoteak:** Jokatu lagun batekin taldean partida publikoetan.
+* **🔐 Partida Pribatuak:** Sortu kode bidezko gelak lagunarteko partidetarako.
+* **📈 Estatistika Sistema:** Kontrolatu zure garaipenak, partidak eta saldoa zure profilean.
+* **💬 Txata:** Komunikatu zure lagunekin denbora errealean.
 
-Taldea Osatzea: Zure lagunak gonbidapena onartzen duenean, biak taldekide gisa sartuko zarete gela berean (Etxekoak).
+---
 
-Aurkarien Bilaketa: Sistemak automatikoki beste bikote bat edo bi jokalari banakako bilatuko ditu 4 jokalariko mahaia osatzeko.
+## 🎮 Nola Jokatu (Gameplay)
 
-⏱️ Partida Azkarra
-Berehala jokatzeko aproposa. Sistemak matchmaking automatikoa egiten du ausazko 4 jokalari elkartzeko.
-
-🔐 Partida Pribatua (Kodea)
-Anfitrioia: Kode bakar bat sortzen du Pop-up baten bidez.
-
-Gonbidatuak: Kode hori sartzen dute sarrera-eremuan anfitrioiaren gela pribatuan sartzeko.
-
-🃏 Jokoaren Mekanika (Gameplay)
 Jokoa zerbitzariak sinkronizatutako txanda-ziklo batek gobernatzen du:
 
-Mus Fasea:
-
+### 1. Hasiera eta Mus Fasea
 Jokalari bakoitzak 4 karta jasotzen ditu.
+* **Mus:** Jokalari guztiek "Mus" hautatzen badute, kartak aldatu ditzakezu.
+* **Paso:** Norbaitek "Paso" hautatzen badu, musa moztu egiten da eta apustuen fasea hasten da.
 
-Guztiek "Mus" hautatzen badute, kartak deskartatu daitezke karta berriak jasotzeko.
+### 2. Apustu Faseak (Lantzeak)
+Apustu-sekuentzia hau gertatzen da:
+1.  **Handia**
+2.  **Txikia**
+3.  **Pareak**
+4.  **Jokoa/Puntua**
 
-Norbaitek "Paso" hautatzen badu, musa moztu egiten da eta apustuen fasea hasten da.
+Zure txanda denean, interfazeak botoi dinamikoak gaituko ditu: `Envido`, `Órdago`, `Paso`, `Quiero`.
 
-Apustu Faseak (Lantzeak):
+### 3. Puntuazioa
+Zerbitzariak puntuak automatikoki kalkulatzen ditu eta markagailuan animazioen bidez erakusten dira. Puntu-muga (adibidez, 40 puntu) lortzean, partida amaitzen da.
 
-Apustu-sekuentzia hau gertatzen da: Handia, Txikia, Pareak eta Jokoa/Puntua.
+---
 
-Interfazeak botoi dinamikoak gaitzen ditu (Envido, Órdago, Paso, Quiero) zure txanda eta aurkarien ekintzen arabera.
+## 👥 Bikoteak: Jokatu Lagun Batekin
 
-Puntuazio Automatizatua:
+MusRayale-n zure lagunekin taldea osatzea oso erraza da:
 
-Zerbitzariak puntuak automatikoki kalkulatzen ditu eta markagailuan animazioen bidez erakusten dira.
+1.  Joan **"Lagunak"** atalera.
+2.  Bilatu zure laguna eta bidali **gonbidapena**.
+3.  Lagunak onartzen duenean, **"Bikoteak"** modua aukeratuz, biok taldekide gisa sartuko zarete gela berean.
+4.  Sistemak beste bikote bat bilatuko du partida hasteko.
 
-Puntu-muga lortzean, irabazlea erakusten da eta profilaren estatistikak automatikoki eguneratzen dira.
+---
+
+## 🛠️ Xehetasun Teknikoak
+
+* **Frontend:** Android Studio (Kotlin/Java) Material Design interfazearekin.
+* **Backend:** Sockets/API bidezko komunikazio asinkronoa denbora errealean.
+* **Arkitektura:** Zerbitzari-bezero (Server-Client) eredua jokoaren logikaren osotasuna bermatzeko.
