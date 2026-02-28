@@ -1,8 +1,4 @@
-Hona hemen zure GitHub README.md fitxategirako diseinatutako bertsioa, Android Studio-ra egokituta eta formatu profesionalarekin.
 
-Kopiatu eta itsatsi ondorengo blokea zure README.md fitxategian:
-
-Markdown
 # 🎴 MusRayale
 
 **MusRayale** Android (Kotlin/Java) teknologian garatutako plataforma digitala da, Euskal Herriko mus joko tradizionala gailu mugikorretara egokitzen duena. Proiektu honek denbora errealeko joko-esperientzia bat eskaintzen du, erabiltzaileek mundu osoko beste jokalari batzuekin edo lagunekin jokatzeko aukera izanik, edonon daudela ere.
