@@ -1,4 +1,4 @@
-# 🎴 MusRoyale
+# 🎴 MusRayale
 
 **MusRayale** Android (Kotlin/Java) teknologian garatutako plataforma digitala da, Euskal Herriko mus joko tradizionala gailu mugikorretara egokitzen duena. Proiektu honek denbora errealeko joko-esperientzia bat eskaintzen du, erabiltzaileek mundu osoko beste jokalari batzuekin edo lagunekin jokatzeko aukera izanik, edonon daudela ere.
 
@@ -37,14 +37,26 @@ Zerbitzariak puntuak automatikoki kalkulatzen ditu eta markagailuan animazioen b
 
 ---
 
-## 👥 Bikoteak: Jokatu Lagun Batekin
+## 🕹️ Joko Modalitateak
 
-MusRayale-n zure lagunekin taldea osatzea oso erraza da:
+### ⚡ Partida Azkarra
+Berehala jokatzeko aproposa.
+1.  Sakatu **"Partida Azkarra"** botoia menu nagusian.
+2.  Sistemak *matchmaking* automatikoa egingo du ausazko 4 jokalari elkartzeko (bikote moduan edo banaka, aukeratu denaren arabera).
+3.  Lau jokalariak elkartzean, partida hasiko da.
 
-1.  Joan **"Lagunak"** atalera.
-2.  Bilatu zure laguna eta bidali **gonbidapena**.
+### 👥 Bikoteak: Jokatu Lagun Batekin
+Zure lagunekin taldea osatzea oso erraza da:
+1.  Joan **"Lagunak"** atalera eta bilatu zure laguna.
+2.  Bidali **gonbidapena**.
 3.  Lagunak onartzen duenean, **"Bikoteak"** modua aukeratuz, biok taldekide gisa sartuko zarete gela berean.
 4.  Sistemak beste bikote bat bilatuko du partida hasteko.
+
+### 🔐 Partida Pribatua (Kodea)
+Lagunarteko partidetarako kontrolatua.
+1.  **Anfitrioia:** Sakatu "Partida Pribatua" eta **"Sortu Kodea"**. Pop-up batean agertuko den kodea lagunei pasatu.
+2.  **Gonbidatuak:** Sakatu "Partida Pribatua" eta sartu kodea **input eremuan** anfitrioiaren gela pribatuan sartzeko.
+3.  4 jokalari elkartzean, zerbitzariak partida hasiko du.
 
 ---
 
@@ -53,3 +65,6 @@ MusRayale-n zure lagunekin taldea osatzea oso erraza da:
 * **Frontend:** Android Studio (Kotlin/Java) Material Design interfazearekin.
 * **Backend:** Sockets/API bidezko komunikazio asinkronoa denbora errealean.
 * **Arkitektura:** Zerbitzari-bezero (Server-Client) eredua jokoaren logikaren osotasuna bermatzeko.
+
+---
+
