@@ -118,6 +118,7 @@ class RegistroActivity : AppCompatActivity() {
                                 userMap["avatares"] = arrayListOf("avadef.png")
                                 userMap["partidaIrabaziak"] = 0
                                 userMap["partidak"] = 0
+                                userMap["elo"] = 0
 
                                 db.collection("Users")
                                     .add(userMap)

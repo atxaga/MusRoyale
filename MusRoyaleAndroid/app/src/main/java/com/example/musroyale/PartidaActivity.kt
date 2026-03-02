@@ -78,7 +78,7 @@ class PartidaActivity : AppCompatActivity() {
     private var puntosEquipo2 = 0
     private var turnoID = ""
     private var apuestaRealizada = 0
-
+    private lateinit var socket: Socket
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -173,14 +173,28 @@ class PartidaActivity : AppCompatActivity() {
             val btnNo = view.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnNo)
 
             btnSi.setOnClickListener {
-                dialog.dismiss()
-                finish()
+                lifecycleScope.launch(Dispatchers.IO) {
+                    try {
+                        val s = socket
+                        if (s != null && !s.isClosed) {
+                            val writer = s.getOutputStream().bufferedWriter()
+                            writer.write("ABANDONO") // Enviamos un mensaje que el servidor entienda
+                            writer.newLine()
+                            writer.flush()
+
+                            s.close() // Ahora sí, cerramos
+                        }
+                    } catch (e: Exception) {
+                        Log.e("Socket", "Error al cerrar: ${e.message}")
+                    }
+                    withContext(Dispatchers.Main) {
+                        dialog.dismiss()
+                        finish()
+                    }
+                }
             }
 
-            btnNo.setOnClickListener {
-                dialog.dismiss()
-            }
-
+            btnNo.setOnClickListener { dialog.dismiss() }
             dialog.show()
         }
 
@@ -258,7 +272,6 @@ class PartidaActivity : AppCompatActivity() {
 
     fun partidaHasi() {
         lifecycleScope.launch(Dispatchers.IO) {
-            var socket: Socket? = null
             try {
                 socket = Socket()
                 socket.connect(InetSocketAddress(serverHost, serverPort), connectTimeoutMs)
@@ -479,6 +492,12 @@ class PartidaActivity : AppCompatActivity() {
                                 findViewById<TextView>(R.id.txtCodigoPartida).text = kodea
                             }
                         }
+                        serverMsg == "END_GAME" -> {
+                            withContext(Dispatchers.Main) {
+                                mostrarDialogoFalloRed()
+                            }
+                            return@launch // Salimos del bucle de lectura del socket
+                        }
 
                         serverMsg == "PEDIR_CODIGO" -> {
                             val kodea = intent.getStringExtra(EXTRA_CODE) ?: ""
@@ -522,13 +541,40 @@ class PartidaActivity : AppCompatActivity() {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(this@PartidaActivity, "Konexio errorea: ${e.message}", Toast.LENGTH_LONG).show()
+                    Log.e("PartidaActivity", "Error de red: ${e.message}")
+                    mostrarDialogoFalloRed()
                 }
             } finally {
-                socket?.close()
+                socket.close()
             }
         }
     }
+    private fun mostrarDialogoFalloRed() {
+        val builder = com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+        val inflater = layoutInflater
+        val dialogView = inflater.inflate(R.layout.dialog_fallo_red, null)
+
+        builder.setView(dialogView)
+        builder.setCancelable(false) // No se puede cerrar tocando fuera
+
+        val alertDialog = builder.create()
+
+        // Configurar el botón del XML
+        val btnAceptar = dialogView.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnAceptarFallo)
+        btnAceptar.setOnClickListener {
+            alertDialog.dismiss()
+            // Ir al Main (asumiendo que se llama MainActivity)
+            val intent = Intent(this, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            finish()
+        }
+
+        // Fondo transparente para respetar las esquinas redondeadas del CardView
+        alertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        alertDialog.show()
+    }
+
     private fun ocultarBarrasSistema() {
         val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
         windowInsetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
@@ -667,93 +713,93 @@ class PartidaActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.valJokua).text = ""
     }
     private fun mostrarDialogoFinal(ganaste: Boolean) {
+        val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        val uid = prefs.getString("userRegistrado", "") ?: ""
+
+        // 1. LÓGICA DE ACTUALIZACIÓN EN FIREBASE
+        if (uid.isNotEmpty()) {
+            val userRef = db.collection("Users").document(uid)
+            db.runTransaction { transaction ->
+                val snapshot = transaction.get(userRef)
+
+                // --- GESTIÓN DE DINERO Y VICTORIAS (Solo si gana) ---
+                if (ganaste) {
+                    val dineroStr = snapshot.getString("dinero") ?: "0"
+                    val dineroActual = dineroStr.replace(",", ".").toDoubleOrNull() ?: 0.0
+                    val nuevoSaldo = dineroActual + (apuestaRealizada.toDouble() * 2)
+                    val saldoFinalStr = "%.2f".format(java.util.Locale.US, nuevoSaldo)
+                    transaction.update(userRef, "dinero", saldoFinalStr)
+
+                    val victoriasActuales = snapshot.getLong("partidaIrabaziak") ?: 0L
+                    transaction.update(userRef, "partidaIrabaziak", victoriasActuales + 1)
+                }
+
+                // --- GESTIÓN DE ELO (Tanto si gana como si pierde) ---
+                val eloActual = snapshot.getLong("elo") ?: 1000L // 1000 por defecto si no existe
+                val cambioElo = if (ganaste) 50L else -50L
+                val nuevoElo = (eloActual + cambioElo).coerceAtLeast(0L) // No permitimos ELO negativo
+
+                transaction.update(userRef, "elo", nuevoElo)
+
+                null
+            }.addOnSuccessListener {
+                Log.d("Firebase", "Datuak (ELO barne) ondo eguneratu dira.")
+            }.addOnFailureListener { e ->
+                Log.e("Firebase", "Errorea ELOa eguneratzerakoan: ${e.message}")
+            }
+        }
+
+        // 2. INTERFAZ DE USUARIO (UI)
         runOnUiThread {
             val dialog = android.app.Dialog(this)
-            // Asegúrate de que el XML se llame exactamente así
             val view = layoutInflater.inflate(R.layout.dialog_resultado_final, null)
             dialog.setContentView(view)
             dialog.setCancelable(false)
+
             dialog.window?.apply {
                 setBackgroundDrawableResource(android.R.color.transparent)
                 setDimAmount(0.90f)
             }
 
             val titulo = view.findViewById<TextView>(R.id.txtTituloFinal)
-            val cuerpo = view.findViewById<TextView>(R.id.txtCuerpoFinal) // Asegúrate de que este ID existe en el XML
+            val cuerpo = view.findViewById<TextView>(R.id.txtCuerpoFinal)
             val mensaje = view.findViewById<TextView>(R.id.txtMensajeFinal)
             val icono = view.findViewById<ImageView>(R.id.imgCopa)
             val btn = view.findViewById<Button>(R.id.btnIrtenFinal)
 
+            // Configuración de textos según resultado
             if (ganaste) {
                 titulo.text = "ZORIONAK!"
-                titulo.setTextColor(Color.parseColor("#FFD700")) // Oro
-                val premio = apuestaRealizada * 2
-                cuerpo?.text = "IRABAZIA: +$premio €"
-                mensaje.text = "Partida bikaina!\nBenetako txapeldunak zarete."
+                titulo.setTextColor(Color.parseColor("#FFD700"))
+                cuerpo?.text = "IRABAZIA: +${apuestaRealizada * 2} €\nELO: +50 PTS"
+                mensaje.text = "Partida bikaina!\nMailaz igotzen ari zara."
             } else {
                 titulo.text = "GALDU DUZUE"
-                titulo.setTextColor(Color.parseColor("#B0BEC5")) // Zilarra
-                cuerpo?.text = "GALDURA: -$apuestaRealizada €"
-                mensaje.text = "Gaur ez da zuen eguna izan.\nAnimo hurrengorako!"
+                titulo.setTextColor(Color.parseColor("#B0BEC5"))
+                cuerpo?.text = "GALDURA: -${apuestaRealizada} €\nELO: -50 PTS"
+                mensaje.text = "Gaur ez da zuen eguna izan.\nEz etsi, jarraitu jokatzen!"
                 icono.apply {
                     alpha = 0.5f
                     rotation = 15f
+                    setColorFilter(Color.GRAY, android.graphics.PorterDuff.Mode.SRC_IN)
                 }
             }
 
             btn.setOnClickListener {
-                actualizarDineroFirebase(ganaste)
                 dialog.dismiss()
-                var inent = Intent(this@PartidaActivity, MainActivity::class.java)
-                startActivity(inent)
+                val intent = Intent(this@PartidaActivity, MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+                finish()
             }
 
             dialog.show()
 
-            // Animación Pop-up
+            // Animación de entrada
             view.alpha = 0f
-            view.scaleX = 0.5f
-            view.scaleY = 0.5f
-            view.animate()
-                .alpha(1f)
-                .scaleX(1f)
-                .scaleY(1f)
-                .setDuration(700)
-                .setInterpolator(android.view.animation.OvershootInterpolator(1.5f))
-                .start()
-        }
-    }
-
-    private fun actualizarDineroFirebase(ganaste: Boolean) {
-        if (!ganaste) return // Si ha perdido, el dinero ya se le quitó al empezar. No hacemos nada.
-
-        val prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
-        val uid = prefs.getString("userRegistrado", "") ?: ""
-        if (uid.isEmpty()) return
-
-        val userRef = db.collection("Users").document(uid)
-
-        db.runTransaction { transaction ->
-            val snapshot = transaction.get(userRef)
-
-            // 1. Leer saldo actual (que ya tiene la apuesta restada)
-            val dineroStr = snapshot.getString("dinero") ?: "0"
-            val dineroActual = dineroStr.replace(",", ".").toDoubleOrNull() ?: 0.0
-
-            // 2. Sumar el premio (Apuesta original * 2)
-            // Ejemplo: apostó 10, se le quitaron 10. Ahora gana 20 (recupera sus 10 + 10 del rival)
-            val nuevoSaldo = dineroActual + (apuestaRealizada.toDouble() * 2)
-            val saldoFinalStr = "%.2f".format(java.util.Locale.US, nuevoSaldo)
-
-            // 3. Actualizar saldo y contador de victorias
-            transaction.update(userRef, "dinero", saldoFinalStr)
-
-            val victoriasActuales = snapshot.getLong("partidaIrabaziak") ?: 0L
-            transaction.update(userRef, "partidaIrabaziak", victoriasActuales + 1)
-
-            null
-        }.addOnSuccessListener {
-            Log.d("Firebase", "Saria emanda eta garaipena zenbatuta!")
+            view.scaleX = 0.7f
+            view.scaleY = 0.7f
+            view.animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(600).start()
         }
     }
 
@@ -961,6 +1007,7 @@ class PartidaActivity : AppCompatActivity() {
     }
 
     private fun cargarInfoEnVista(uid: String, posicion: String) {
+
         db.collection("Users").document(uid).get()
             .addOnSuccessListener { document ->
                 if (document != null && document.exists()) {

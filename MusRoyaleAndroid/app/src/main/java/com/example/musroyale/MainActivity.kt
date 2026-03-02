@@ -28,6 +28,8 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.google.firebase.database.FirebaseDatabase
+import kotlin.text.toInt
+
 class MainActivity : BaseActivity() {
     private lateinit var binding: ActivityMainBinding
     private val AD_UNIT_ID = "ca-app-pub-3940256099942544/5224354917"
@@ -70,6 +72,9 @@ class MainActivity : BaseActivity() {
         cargarDatosUser()
         validarSesionUnica(currentUserId!!)
         escucharSolicitudes()
+
+        // --- LÓGICA DE RANGOS POR ELO ---
+
 
     }
 
@@ -247,8 +252,75 @@ class MainActivity : BaseActivity() {
         val docRef = FirebaseFirestore.getInstance().collection("Users").document(currentUserId!!)
 
         userListener = docRef.addSnapshotListener { document, _ ->
+
             if (document != null && document.exists()) {
                 binding.loadingOverlay.visibility = View.GONE
+                // --- DENTRO DE cargarDatosUser() ---
+                val elo = document.getLong("elo")?.toInt() ?: 0
+
+// Configuración de los rangos según tus especificaciones
+                val (rankName, rankColor, rankIcon) = when {
+                    elo < 100 -> Triple("Brontzea", "#CD7F32", R.drawable.bronce)
+                    elo in 100..299 -> Triple("Zilarra", "#C0C0C0", R.drawable.plata)
+                    elo in 300..499 -> Triple("Urrea", "#FFD700", R.drawable.oro)
+                    elo in 500..699 -> Triple("Platinoa", "#E5E4E2", R.drawable.platino)
+                    elo in 700..1499 -> Triple("Diamantea", "#B9F2FF", R.drawable.diamante)
+                    else -> Triple("Legenda", "#FF4444", R.drawable.leyenda) // +1500
+                }
+
+// Aplicar a la UI
+                binding.txtRankName.text = rankName
+                binding.txtRankName.setTextColor(Color.parseColor(rankColor))
+                binding.imgRankIcon.setImageResource(rankIcon)
+                binding.txtEloValue.text = "$elo LP"
+
+                binding.rankDisplayContainer.alpha = 0f
+                binding.rankDisplayContainer.translationY = 20f
+                binding.rankDisplayContainer.animate()
+                    .alpha(1f)
+                    .translationY(0f)
+                    .setDuration(600)
+                    .setInterpolator(android.view.animation.DecelerateInterpolator())
+                    .start()
+                binding.walletContainer.alpha = 0f
+                binding.walletContainer.translationY = -20f // Viene de arriba
+                binding.walletContainer.animate()
+                    .alpha(1f)
+                    .translationY(0f)
+                    .setDuration(700)
+                    .setStartDelay(100) // Un pequeño retraso para que no salgan a la vez
+                    .setInterpolator(android.view.animation.OvershootInterpolator())
+                    .start()
+
+// Si es Leyenda, le damos un brillo especial
+
+// ... (después de asignar los textos)
+                if (elo >= 1500) {
+                    // 1. Cambiamos el fondo al especial de fuego
+                    binding.rankDisplayContainer.setBackgroundResource(R.drawable.bg_rank_legend_glow)
+
+                    // 2. Color con gradiente simulado para el texto (Sombra roja)
+                    binding.txtRankName.setShadowLayer(15f, 0f, 0f, Color.RED)
+
+                    // 3. Animación de "Latido" (Beating effect)
+                    val beat = android.view.animation.ScaleAnimation(
+                        1f, 1.05f, 1f, 1.05f,
+                        android.view.animation.Animation.RELATIVE_TO_SELF, 0.5f,
+                        android.view.animation.Animation.RELATIVE_TO_SELF, 0.5f
+                    ).apply {
+                        duration = 1000
+                        repeatMode = android.view.animation.Animation.REVERSE
+                        repeatCount = android.view.animation.Animation.INFINITE
+                        interpolator = android.view.animation.AccelerateDecelerateInterpolator()
+                    }
+                    binding.imgRankIcon.startAnimation(beat)
+
+                } else {
+                    // Si no es leyenda, quitamos efectos
+                    binding.rankDisplayContainer.setBackgroundResource(R.drawable.bg_rank_card)
+                    binding.txtRankName.setShadowLayer(0f, 0f, 0f, Color.TRANSPARENT)
+                    binding.imgRankIcon.clearAnimation()
+                }
 
                 // 1. Datos básicos
                 val username = document.getString("username") ?: "Usuario"

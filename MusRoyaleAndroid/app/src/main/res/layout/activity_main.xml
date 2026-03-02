@@ -100,7 +100,6 @@
                     app:tint="#FFD700" />
 
             </LinearLayout>
-
             <ImageButton
                 android:id="@+id/btnLogout"
                 android:layout_width="40dp"
@@ -140,11 +139,12 @@
                     android:id="@+id/balanceContainer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:background="@drawable/bg_balance_solid"
+                    android:layout_marginEnd="6dp"
+                    android:background="@drawable/bg_wallet_item_premium"
                     android:gravity="center_vertical"
-                    android:paddingHorizontal="10dp"
-                    android:paddingVertical="4dp">
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="6dp"
+                    android:elevation="4dp">
 
                     <TextView
                         android:id="@+id/txtBalance"
@@ -152,41 +152,43 @@
                         android:layout_height="wrap_content"
                         android:text="50.00"
                         android:textColor="#FFFFFF"
-                        android:textSize="16sp"
+                        android:textSize="15sp"
+                        android:fontFamily="sans-serif-medium"
                         android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=" €"
-                        android:textColor="#2ecc71"
+                        android:textColor="#4CAF50"
                         android:textStyle="bold"
                         android:textSize="14sp" />
 
                     <ImageView
                         android:id="@+id/btnAddBalance"
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
-                        android:layout_marginStart="6dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="8dp"
                         android:src="@android:drawable/ic_input_add"
-                        app:tint="#2ecc71" />
+                        app:tint="#4CAF50" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/oroContainer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:background="@drawable/bg_oro"
+                    android:layout_marginStart="6dp"
+                    android:background="@drawable/bg_wallet_item_premium"
                     android:gravity="center_vertical"
-                    android:paddingHorizontal="10dp"
-                    android:paddingVertical="4dp">
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="6dp"
+                    android:elevation="4dp">
 
                     <ImageView
                         android:layout_width="18dp"
                         android:layout_height="18dp"
                         android:layout_marginEnd="6dp"
-                        android:src="@drawable/oro"/>
+                        android:src="@drawable/oro" />
 
                     <TextView
                         android:id="@+id/txtOro"
@@ -194,25 +196,82 @@
                         android:layout_height="wrap_content"
                         android:text="1.250"
                         android:textColor="#FFD700"
-                        android:textSize="16sp"
+                        android:textSize="15sp"
+                        android:fontFamily="sans-serif-medium"
                         android:textStyle="bold" />
 
                     <ImageView
                         android:id="@+id/btnAddOro"
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
-                        android:layout_marginStart="6dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="8dp"
                         android:src="@android:drawable/ic_input_add"
                         app:tint="#FFD700" />
                 </LinearLayout>
             </LinearLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/rankDisplayContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/bg_rank_card"
+                android:elevation="4dp"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/walletContainer">
+
+                <ImageView
+                    android:id="@+id/imgRankIcon"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:src="@drawable/bronce"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:gravity="start"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/imgRankIcon"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/txtRankName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-black"
+                        android:letterSpacing="0.1"
+                        android:text="BRONTZEA"
+                        android:textAllCaps="true"
+                        android:textColor="#CD7F32"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/txtEloValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="85 LP"
+                        android:textColor="#FFFFFF"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/mainContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="-25dp"
         app:layout_constraintTop_toBottomOf="@id/header"
         app:layout_constraintBottom_toTopOf="@id/footerWrapper" />
 
